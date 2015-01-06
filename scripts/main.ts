@@ -193,6 +193,7 @@ class Game {
 	}
 }
 
+
 var game = new Game();
 var camera = new Camera();
 var map = new World();

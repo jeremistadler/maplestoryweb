@@ -1,6 +1,7 @@
 ﻿var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var eventStream = require('event-stream');
+var connect = require('gulp-connect');
 
 gulp.task('scripts', function() {
     var tsResult = gulp.src('scripts/*.ts')
@@ -15,7 +16,25 @@ gulp.task('scripts', function() {
     );
 });
 
-gulp.task('default', ['scripts'], function() {
+
+gulp.task('serve', function() {
+    connect.server({
+        livereload: true
+    });
+});
+
+gulp.task('watch', function() {
+    gulp.watch('./**/*.ts', ['scripts']);
+    gulp.watch(['build/**/*.*', 'index.html'], ['reload']);
+});
+
+
+gulp.task('reload', function() {
+    gulp.src('index.html')
+      .pipe(connect.reload());
+});
+
+gulp.task('default', ['scripts', 'serve', 'watch'], function() {
 
 
 });
