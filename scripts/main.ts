@@ -145,7 +145,7 @@ class Player {
 	}
 }
 
-class Map {
+class World {
 	Background : Texture;
 	Footholds : Foothold[];
 	
@@ -195,7 +195,7 @@ class Game {
 
 var game = new Game();
 var camera = new Camera();
-var map = new Map();
+var map = new World();
 var player = new Player();
 
 game.init();
