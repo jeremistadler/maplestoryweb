@@ -24,8 +24,8 @@ gulp.task('serve', function() {
 });
 
 gulp.task('watch', function() {
-    gulp.watch('./**/*.ts', ['scripts']);
-    gulp.watch(['build/**/*.*', 'index.html'], ['reload']);
+    gulp.watch('./**/*.ts', { debounceDelay: 200 },['scripts']);
+    gulp.watch(['build/**/*.*', 'index.html'], { debounceDelay: 200 }, ['reload']);
 });
 
 
