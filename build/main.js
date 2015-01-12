@@ -1,54 +1,5 @@
-var Size = (function () {
-    function Size(width, height) {
-        this.width = width;
-        this.height = height;
-    }
-    Object.defineProperty(Size, "zero", {
-        get: function () {
-            return new Size(0, 0);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Size;
-})();
-var Vector = (function () {
-    function Vector(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    Vector.times = function (k, v) {
-        return new Vector(k * v.x, k * v.y);
-    };
-    Vector.minus = function (v1, v2) {
-        return new Vector(v1.x - v2.x, v1.y - v2.y);
-    };
-    Vector.plus = function (v1, v2) {
-        return new Vector(v1.x + v2.x, v1.y + v2.y);
-    };
-    Vector.plusSize = function (v1, v2) {
-        return new Vector(v1.x + v2.width, v1.y + v2.height);
-    };
-    Vector.dot = function (v1, v2) {
-        return v1.x * v2.x + v1.y * v2.y;
-    };
-    Vector.mag = function (v) {
-        return Math.sqrt(v.x * v.x + v.y * v.y);
-    };
-    Vector.norm = function (v) {
-        var mag = Vector.mag(v);
-        var div = (mag === 0) ? Infinity : 1.0 / mag;
-        return Vector.times(div, v);
-    };
-    Object.defineProperty(Vector, "Zero", {
-        get: function () {
-            return new Vector(0, 0);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Vector;
-})();
+/// <reference path="sprites.ts"/>
+/// <reference path="vector.ts"/>
 var Foothold = (function () {
     function Foothold(Position, Size) {
         this.Position = Position;
@@ -193,16 +144,38 @@ var Player = (function () {
 var World = (function () {
     function World() {
     }
-    World.prototype.init = function () {
-        this.Background = new Texture('http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png');
+    World.prototype.init = function (id) {
+        this.Tiles = [];
+        this.Id = id;
+        this.BasePath = 'Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
+        var instance = this;
+        httpGetAsset(this.BasePath + 'properties.json', function (data) {
+            instance.loadData(data);
+        });
         this.Footholds = [];
         for (var i = 0; i < 10; i++)
             this.Footholds.push(new Foothold(new Vector(Math.random() * 1400, Math.random() * 1000), new Size(Math.random() * 500 + 200, 40)));
     };
+    World.prototype.loadData = function (mapData) {
+        for (var key in mapData.back) {
+            var item = mapData.back[key];
+            var bg = new BackgroundSprite();
+            bg.Sprite = new TextureSprite(item.bS.bS, item.no.no);
+            bg.Position = new Vector(item.x.x, item.y.y);
+            bg.C = new Vector(item.cx, item.cy);
+            bg.R = new Vector(item.rx, item.ry);
+            if (item.type.type == 0)
+                bg.Type = 0 /* LensFlare */;
+            else
+                bg.Type = 5 /* unknown6 */;
+            this.Tiles.push(bg);
+        }
+    };
     World.prototype.update = function () {
     };
     World.prototype.draw = function () {
-        this.Background.draw(game.ctx, Vector.Zero);
+        for (var i = 0; i < this.Tiles.length; i++)
+            this.Tiles[i].draw(game.ctx);
         for (var i = 0; i < this.Footholds.length; i++)
             this.Footholds[i].draw(game.ctx);
     };
@@ -218,6 +191,7 @@ var Game = (function () {
         this.ctx = this.canvas.getContext('2d', { alpha: false });
     };
     Game.prototype.update = function () {
+        this.totalGameTime = Date.now();
         camera.update();
         map.update();
         player.update();
@@ -237,8 +211,24 @@ var map = new World();
 var player = new Player();
 game.init();
 camera.init();
-map.init();
 player.init();
+map.init('100000000');
+function httpGet(path, callback) {
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState === 4) {
+            if (httpRequest.status === 200) {
+                var data = JSON.parse(httpRequest.responseText);
+                callback(data);
+            }
+        }
+    };
+    httpRequest.open('GET', path);
+    httpRequest.send();
+}
+function httpGetAsset(path, callback) {
+    return httpGet('http://mapleassets.jeremi.se/' + path, callback);
+}
 function gotAnimationFrame() {
     requestAnimationFrame(gotAnimationFrame);
     game.update();

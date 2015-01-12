@@ -4,16 +4,13 @@ var eventStream = require('event-stream');
 var connect = require('gulp-connect');
 
 gulp.task('scripts', function() {
-    var tsResult = gulp.src('scripts/*.ts')
-                       .pipe(ts({
-                           declarationFiles: true,
-                           noExternalResolve: true
-                       }));
-
-    return eventStream.merge(
-        tsResult.dts.pipe(gulp.dest('build/def')),
-        tsResult.js.pipe(gulp.dest('build/js'))
-    );
+    return gulp.src('scripts/*.ts')
+               .pipe(ts({
+                    declarationFiles: false,
+                    noExternalResolve: false
+                }))
+                .js
+                .pipe(gulp.dest('build'));
 });
 
 
