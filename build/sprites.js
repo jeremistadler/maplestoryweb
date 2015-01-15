@@ -1,9 +1,10 @@
 var TextureSprite = (function () {
-    function TextureSprite(backgroundSprite, num) {
-        this.Tex = new Texture("http://mapleassets.jeremi.se/Back/" + backgroundSprite + ".img/back/" + num + ".png");
+    function TextureSprite(path) {
+        this.Tex = new Texture(http.baseUrl + path + '.png');
+        this.Offset = new Vector(0, 0);
         var inst = this;
-        httpGetAsset("Back/" + backgroundSprite + ".img/properties.json", function (responce) {
-            var origin = responce.back[num].origin.origin;
+        http.getJsonPropertyForPath(path, function (prop) {
+            var origin = prop;
             inst.Offset = new Vector(origin.x, origin.y);
         });
     }
@@ -17,7 +18,7 @@ var TextureAnimation = (function () {
 var Tile = (function () {
     function Tile() {
     }
-    Tile.prototype.Draw = function (ctx) {
+    Tile.prototype.draw = function (ctx) {
         this.Sprite.Tex.draw(ctx, this.Position);
     };
     return Tile;

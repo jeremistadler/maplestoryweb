@@ -20,6 +20,12 @@ var Vector = (function () {
     Vector.times = function (k, v) {
         return new Vector(k * v.x, k * v.y);
     };
+    Vector.min = function (v1, v2) {
+        return new Vector(Math.min(v1.x, v2.x), Math.min(v1.y, v2.y));
+    };
+    Vector.max = function (v1, v2) {
+        return new Vector(Math.max(v1.x, v2.x), Math.max(v1.y, v2.y));
+    };
     Vector.minus = function (v1, v2) {
         return new Vector(v1.x - v2.x, v1.y - v2.y);
     };

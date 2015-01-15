@@ -3,12 +3,14 @@
     Tex: Texture;
     Offset: Vector;
 
-    constructor(backgroundSprite, num) {
-        this.Tex = new Texture("http://mapleassets.jeremi.se/Back/" + backgroundSprite + ".img/back/" + num + ".png"); 
+    constructor(path) {
+        this.Tex = new Texture(http.baseUrl + path + '.png'); 
+        this.Offset = new Vector(0, 0);
         var inst = this;
-        httpGetAsset("Back/" + backgroundSprite + ".img/properties.json", function (responce) 
+
+        http.getJsonPropertyForPath(path, function (prop) 
         { 
-            var origin = responce.back[num].origin.origin;
+            var origin = prop;
             inst.Offset = new Vector(origin.x, origin.y); 
         });
     }
@@ -28,7 +30,7 @@ class Tile
     //Tint: Color;
     Z: number; 
 
-    Draw(ctx: CanvasRenderingContext2D)
+    draw(ctx: CanvasRenderingContext2D)
     {
         this.Sprite.Tex.draw(ctx, this.Position);
     }
