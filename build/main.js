@@ -1,3 +1,4 @@
+<<<<<<< HEAD:build/js/main.js
 /*
 
 PortalTypeNames = new string[] {
@@ -80,11 +81,31 @@ var Vector = (function () {
     });
     return Vector;
 })();
+=======
+/// <reference path="sprites.ts"/>
+/// <reference path="vector.ts"/>
+>>>>>>> origin/master:build/main.js
 var Foothold = (function () {
     function Foothold(Position, Size) {
         this.Position = Position;
         this.Size = Size;
     }
+    Foothold.loadFootholds = function (current) {
+        var list = [];
+        if (current.x1) {
+            var pos1 = new Vector(current.x1.x1, current.y1.y1);
+            var pos2 = new Vector(current.x2.x2, current.y2.y2);
+            var min = Vector.min(pos1, pos2);
+            var max = Vector.max(pos1, pos2);
+            list.push(new Foothold(new Vector(min.x, min.y), new Size(max.x - min.x, max.y - min.y)));
+        }
+        else {
+            for (var key in current) {
+                list = list.concat(Foothold.loadFootholds(current[key]));
+            }
+        }
+        return list;
+    };
     Foothold.prototype.draw = function (ctx) {
         ctx.fillStyle = this.playerTouches ? 'rgba(100, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.2)';
         ctx.fillRect(this.Position.x, this.Position.y, this.Size.width, this.Size.height);
@@ -142,12 +163,16 @@ var Camera = (function () {
     Camera.prototype.init = function () {
         this.Position = new Vector(0, 0);
     };
+    Camera.prototype.reset = function () {
+        game.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    };
     Camera.prototype.update = function () {
         var targetPos = new Vector(0, 0);
         targetPos.x = player.Position.x + -game.canvas.width / 2 - player.Size.width / 2;
-        //this.Position = targetPos;
-        game.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        game.ctx.translate(this.Position.x, this.Position.y);
+        targetPos.y = player.Position.y + -game.canvas.height / 2 - player.Size.height / 2;
+        this.Position = targetPos;
+        this.reset();
+        game.ctx.translate(-this.Position.x, -this.Position.y);
         game.ctx.scale(this.Zoom, this.Zoom);
     };
     Camera.prototype.draw = function () {
@@ -224,16 +249,67 @@ var Player = (function () {
 var World = (function () {
     function World() {
     }
-    World.prototype.init = function () {
-        this.Background = new Texture('http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png');
+    World.prototype.init = function (id) {
+        this.Tiles = [];
+        this.Backgrounds = [];
         this.Footholds = [];
-        for (var i = 0; i < 10; i++)
-            this.Footholds.push(new Foothold(new Vector(Math.random() * 1400, Math.random() * 1000), new Size(Math.random() * 500 + 200, 40)));
+        this.Id = id;
+        this.BasePath = 'Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
+        var instance = this;
+        http.httpGetAsset(this.BasePath + 'properties.json', function (data) {
+            instance.loadData(data);
+        });
+    };
+    World.prototype.loadData = function (mapData) {
+        this.Footholds = Foothold.loadFootholds(mapData.foothold);
+        for (var key in mapData.back) {
+            var item = mapData.back[key];
+            var bg = new BackgroundSprite();
+            bg.Sprite = new TextureSprite('Back/' + item.bS.bS + '.img/back/' + item.no.no);
+            bg.Position = new Vector(item.x.x, item.y.y);
+            bg.C = new Vector(item.cx, item.cy);
+            bg.R = new Vector(item.rx, item.ry);
+            if (item.type.type == 0)
+                bg.Type = 0 /* LensFlare */;
+            else
+                bg.Type = 5 /* unknown6 */;
+            this.Backgrounds.push(bg);
+        }
+        for (var key in mapData) {
+            var layer = mapData[key];
+            if (!layer.info || !layer.info.tS)
+                continue;
+            var spriteBaseNameProp = layer.info.tS.tS;
+            var spriteBaseName = spriteBaseNameProp;
+            for (var tileKey in layer.tile) {
+                var item = layer.tile[tileKey];
+                var x = item.x.x;
+                var y = item.y.y;
+                var z = item.zM.zM;
+                var u = item.u.u;
+                var no = item.no.no;
+                var tile = new Tile();
+                tile.Sprite = new TextureSprite('Tile/' + spriteBaseName + '.img/' + u + '/' + no);
+                tile.Position = new Vector(x, y);
+                tile.Z = z;
+                this.Tiles.push(tile);
+            }
+            for (var objKey in layer["obj"]) {
+                var x = item.x;
+                var y = item.y;
+                var z = item.zM;
+                var u = item.oS;
+                var l0 = item.l0;
+                var l1 = item.l1;
+                var l2 = item.l2;
+            }
+        }
     };
     World.prototype.update = function () {
     };
     World.prototype.draw = function () {
-        this.Background.draw(game.ctx, Vector.Zero);
+        for (var i = 0; i < this.Tiles.length; i++)
+            this.Tiles[i].draw(game.ctx);
         for (var i = 0; i < this.Footholds.length; i++)
             this.Footholds[i].draw(game.ctx);
     };
@@ -249,14 +325,16 @@ var Game = (function () {
         this.ctx = this.canvas.getContext('2d', { alpha: false });
     };
     Game.prototype.update = function () {
-        camera.update();
+        http.update();
+        this.totalGameTime = Date.now();
         map.update();
         player.update();
     };
     Game.prototype.draw = function () {
+        camera.reset();
         this.ctx.fillStyle = 'rgb(100, 149, 237)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        camera.draw();
+        camera.update();
         map.draw();
         player.draw();
     };
@@ -266,10 +344,11 @@ var game = new Game();
 var camera = new Camera();
 var map = new World();
 var player = new Player();
+var http = new HttpManager();
 game.init();
 camera.init();
-map.init();
 player.init();
+map.init('100000000');
 function gotAnimationFrame() {
     requestAnimationFrame(gotAnimationFrame);
     game.update();

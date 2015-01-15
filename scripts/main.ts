@@ -1,3 +1,5 @@
+/// <reference path="sprites.ts"/>
+/// <reference path="vector.ts"/>
 
 /*
 
@@ -30,36 +32,29 @@ BackgroundTypeNames = new string[] {
 };
 
 */
-class Size {
-	constructor(public width: number, public height: number) { }
-	
-	static get zero(): Size {
-		return new Size(0, 0);
-	}
-}
-
-class Vector {
-	constructor(public x: number, public y: number) { }
-	static times(k: number, v: Vector) { return new Vector(k * v.x, k * v.y); }
-	static minus(v1: Vector, v2: Vector) { return new Vector(v1.x - v2.x, v1.y - v2.y); }
-    static plus(v1: Vector, v2: Vector) { return new Vector(v1.x + v2.x, v1.y + v2.y); }
-    static plusSize(v1: Vector, v2: Size) { return new Vector(v1.x + v2.width, v1.y + v2.height); }
-	static dot(v1: Vector, v2: Vector) { return v1.x * v2.x + v1.y * v2.y; }
-	static mag(v: Vector) { return Math.sqrt(v.x * v.x + v.y * v.y); }
-	static norm(v: Vector) {
-		var mag = Vector.mag(v);
-		var div = (mag === 0) ? Infinity : 1.0 / mag;
-		return Vector.times(div, v);
-	}
-	static get Zero(): Vector {
-		return new Vector(0, 0);
-	}
-}
 
 class Foothold {
     playerTouches: boolean;
 
     constructor(public Position: Vector, public Size: Size) { }
+
+    static loadFootholds(current): Foothold[] {
+        var list = [];
+        if (current.x1) {
+            var pos1 = new Vector(current.x1.x1, current.y1.y1);
+            var pos2 = new Vector(current.x2.x2, current.y2.y2);
+            var min = Vector.min(pos1, pos2);
+            var max = Vector.max(pos1, pos2);
+            list.push(new Foothold(new Vector(min.x, min.y), new Size(max.x - min.x, max.y - min.y)));
+        }
+        else {
+            for (var key in current) {
+                list = list.concat(Foothold.loadFootholds(current[key]));
+            }
+        }
+
+        return list;
+    }
 
 	draw(ctx : CanvasRenderingContext2D){
         ctx.fillStyle = this.playerTouches ? 'rgba(100, 0, 0, 0.2)':'rgba(0, 0, 0, 0.2)';
@@ -75,7 +70,7 @@ class Foothold {
             true);
     }
 }
-
+ 
 enum KeyCodes { 
 	left = 37,
 	right = 39,
@@ -132,14 +127,19 @@ class Camera {
 	init() {
 		this.Position = new Vector(0, 0);
 	}
+
+    reset() {
+        game.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
 	update() {
 		var targetPos = new Vector(0, 0);
 		targetPos.x = player.Position.x + -game.canvas.width / 2 - player.Size.width / 2;
 		
-		//this.Position = targetPos;
-		
-		game.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		game.ctx.translate(this.Position.x, this.Position.y);
+		this.Position = targetPos;
+
+        this.reset();
+		game.ctx.translate(-this.Position.x, -this.Position.y);
 		game.ctx.scale(this.Zoom, this.Zoom);
 	}
 	draw() { }
@@ -224,31 +224,105 @@ class Player {
 	}
 }
 
+
 class World {
-	Background : Texture;
 	Footholds : Foothold[];
-	
-	init() {
-		this.Background = new Texture('http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png');
-	    
+    Id: string;
+    BasePath: string;
+    Backgrounds: BackgroundSprite[];
+    Tiles: Tile[];
+
+	init(id: string) {
+        this.Tiles = [];
+        this.Backgrounds = [];
 		this.Footholds = [];
-		for (var i = 0; i < 10; i++)
-			this.Footholds.push(new Foothold(
-				new Vector(Math.random() * 1400, Math.random() * 1000), 
-				new Size(Math.random() * 500 + 200, 40)))
+        this.Id = id;
+        this.BasePath = 'Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
+        var instance = this;
+        http.httpGetAsset(this.BasePath + 'properties.json', function (data) { instance.loadData(data) });
+	    
 	}
+
+    loadData(mapData) {
+        this.Footholds = Foothold.loadFootholds(mapData.foothold);
+
+        for (var key in mapData.back) {
+            var item = mapData.back[key];
+            var bg = new BackgroundSprite();
+            bg.Sprite = new TextureSprite('Back/' + item.bS.bS + '.img/back/' + item.no.no);
+            bg.Position = new Vector(item.x.x, item.y.y);
+            bg.C = new Vector(item.cx, item.cy);
+            bg.R = new Vector(item.rx, item.ry);
+            if (item.type.type == 0) bg.Type = BackgroundType.LensFlare;
+            else bg.Type = BackgroundType.unknown6;
+
+            this.Backgrounds.push(bg);
+        }
+
+        for (var key in mapData)
+        {
+            var layer = mapData[key];
+        if (!layer.info || !layer.info.tS)
+            continue;
+
+        var spriteBaseNameProp = <string>layer.info.tS.tS;
+        var spriteBaseName = spriteBaseNameProp;
+
+        for(var tileKey in layer.tile)
+        {
+            var item = layer.tile[tileKey];
+            var x = item.x.x;
+            var y = item.y.y;
+            var z = item.zM.zM;
+            var u = item.u.u;
+            var no = item.no.no;
+
+            var tile = new Tile();
+            tile.Sprite = new TextureSprite('Tile/' + spriteBaseName + '.img/' + u + '/' + no);
+            tile.Position = new Vector(x, y);
+            tile.Z = z;
+            this.Tiles.push(tile);
+        }
+
+        for(var objKey in layer["obj"])
+        {
+            var x = item.x;
+            var y = item.y;
+            var z = item.zM;
+
+            var u = item.oS;
+            var l0 = item.l0;
+            var l1 = item.l1;
+            var l2 = item.l2;
+
+            //var spriteName = "Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
+            //var animation = Cache.GetAnimation(spriteName);
+
+            //Animations.Add(new AnimationSprite()
+            //        { 
+            //            Position = new Vector2(x, y), 
+            //            Anim = animation,
+            //            Z = z
+            //    });
+        }
+    }
+    }
+
 	update() { }
 	draw() {
-		this.Background.draw(game.ctx, Vector.Zero);
-		
+        for (var i = 0; i < this.Tiles.length; i++)
+            this.Tiles[i].draw(game.ctx);
+
 		for (var i = 0; i < this.Footholds.length; i++)
 			this.Footholds[i].draw(game.ctx);
 	}
 }
-   
+
+
 class Game {
 	public ctx : CanvasRenderingContext2D;
 	public canvas : HTMLCanvasElement;
+    public totalGameTime : number;
 	
 	init() {
 		this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
@@ -258,11 +332,14 @@ class Game {
 	}
 		
 	update() {
+        http.update();
+        this.totalGameTime = Date.now();
 		camera.update();
 		map.update();
 		player.update();
 	}
 	draw() {
+        camera.reset();
 		this.ctx.fillStyle = 'rgb(100, 149, 237)';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 		
@@ -276,11 +353,13 @@ var game = new Game();
 var camera = new Camera();
 var map = new World();
 var player = new Player();
+var http = new HttpManager();
 
 game.init();
 camera.init();
-map.init();
 player.init();
+map.init('100000000');
+
 
 function gotAnimationFrame() {
 	requestAnimationFrame(gotAnimationFrame);
