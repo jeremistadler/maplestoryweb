@@ -1,9 +1,9 @@
 /// <reference path="sprites.ts"/>
 /// <reference path="vector.ts"/>
 
-/*
 
-PortalTypeNames = new string[] { 
+
+enum PortalTypeNames { 
     "Start Point",
     "Invisible",
     "Visible",
@@ -20,7 +20,7 @@ PortalTypeNames = new string[] {
     "Custom Impact Spring",
     "Unknown (PCIG)" };
 
-BackgroundTypeNames = new string[] {
+enum BackgroundTypeNames {
     "Regular",
     "Horizontal Copies",
     "Vertical Copies",
@@ -30,8 +30,6 @@ BackgroundTypeNames = new string[] {
     "H+V Copies, Horizontal Moving",
     "H+V Copies, Vertical Moving"
 };
-
-*/
 
 class Foothold {
     playerTouches: boolean;
@@ -134,15 +132,16 @@ class Camera {
 
 	update() {
 		var targetPos = new Vector(0, 0);
-		targetPos.x = player.Position.x + -game.canvas.width / 2 - player.Size.width / 2;
+        targetPos.x = player.Position.x + -game.canvas.width / 2 - player.Size.width / 2;
+        targetPos.y = player.Position.y + -game.canvas.height / 2 - player.Size.height / 2;
 		
-		this.Position = targetPos;
-
-        this.reset();
-		game.ctx.translate(-this.Position.x, -this.Position.y);
-		game.ctx.scale(this.Zoom, this.Zoom);
+		this.Position = Vector.lerp(this.Position, targetPos, 0.04);
 	}
-	draw() { }
+    draw() {
+        this.reset();
+        game.ctx.translate(-this.Position.x, -this.Position.y);
+        game.ctx.scale(this.Zoom, this.Zoom);
+    }
 }
 
 class Player {
@@ -226,16 +225,14 @@ class Player {
 
 
 class World {
-	Footholds : Foothold[];
+    Footholds: Foothold[] = [];
     Id: string;
     BasePath: string;
-    Backgrounds: BackgroundSprite[];
-    Tiles: Tile[];
+    Backgrounds: BackgroundSprite[] = [];
+    Animations: AnimationSprite[] = [];
+    Tiles: Tile[] = [];
 
 	init(id: string) {
-        this.Tiles = [];
-        this.Backgrounds = [];
-		this.Footholds = [];
         this.Id = id;
         this.BasePath = 'Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
         var instance = this;
@@ -286,6 +283,7 @@ class World {
 
         for(var objKey in layer["obj"])
         {
+            var item = layer["obj"][objKey];
             var x = item.x;
             var y = item.y;
             var z = item.zM;
@@ -295,23 +293,24 @@ class World {
             var l1 = item.l1;
             var l2 = item.l2;
 
-            //var spriteName = "Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
-            //var animation = Cache.GetAnimation(spriteName);
-
-            //Animations.Add(new AnimationSprite()
-            //        { 
-            //            Position = new Vector2(x, y), 
-            //            Anim = animation,
-            //            Z = z
-            //    });
+            var spriteName = "Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
+            var animation = new AnimationSprite(spriteName, new Vector(x, y));
+            animation.Z = z;
+            this.Animations.push(animation);
         }
     }
     }
 
 	update() { }
-	draw() {
+    draw() {
+        for (var i = 0; i < this.Backgrounds.length; i++)
+            this.Backgrounds[i].draw(game.ctx);
+
         for (var i = 0; i < this.Tiles.length; i++)
             this.Tiles[i].draw(game.ctx);
+
+        for (var i = 0; i < this.Animations.length; i++)
+            this.Animations[i].draw(game.ctx);
 
 		for (var i = 0; i < this.Footholds.length; i++)
 			this.Footholds[i].draw(game.ctx);
