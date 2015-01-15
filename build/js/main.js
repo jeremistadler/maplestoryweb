@@ -1,3 +1,34 @@
+/*
+
+PortalTypeNames = new string[] {
+    "Start Point",
+    "Invisible",
+    "Visible",
+    "Collision",
+    "Changable",
+    "Changable Invisible",
+    "Town Portal",
+    "Script",
+    "Script Invisible",
+    "Script Collision",
+    "Hidden",
+    "Script Hidden",
+    "Vertical Spring",
+    "Custom Impact Spring",
+    "Unknown (PCIG)" };
+
+BackgroundTypeNames = new string[] {
+    "Regular",
+    "Horizontal Copies",
+    "Vertical Copies",
+    "H+V Copies",
+    "Horizontal Moving+Copies",
+    "Vertical Moving+Copies",
+    "H+V Copies, Horizontal Moving",
+    "H+V Copies, Vertical Moving"
+};
+
+*/
 var Size = (function () {
     function Size(width, height) {
         this.width = width;
