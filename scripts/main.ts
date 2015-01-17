@@ -336,3 +336,13 @@ function gotAnimationFrame() {
 	game.draw();
 }
 gotAnimationFrame();
+
+angular.module('maplestory', [])
+.controller('minimap', function ($scope) {
+    $scope.map = {
+        name: 'Henesys',
+        minimap: {
+            background: '/images/image-placeholder.png'
+        }
+    }
+})
