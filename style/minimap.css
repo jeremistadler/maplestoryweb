@@ -1,0 +1,14 @@
+﻿.window__minimap {
+    top: 10px;
+    left: 10px;
+    width: 250px;
+}
+
+.image--full__width{
+    width: 100%;
+}
+
+.image--small__padding {
+    padding: 5px;
+    box-sizing: border-box;
+}

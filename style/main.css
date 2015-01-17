@@ -1,0 +1,27 @@
+﻿body,html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: cornflowerblue;
+}
+
+canvas{
+    display: none;
+}
+
+p {
+    font-family: 'Segoe UI', Helvetica, sans-serif;
+    color: #262626;
+}
+
+.text {
+    margin: 5px 7px;
+    padding: 0;
+}
+
+.window {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 2px;
+    overflow: hidden;
+}

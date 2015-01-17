@@ -1,18 +1,23 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Maplestory</title>
-    <style>
-        html, body{
-            padding: 0;
-            margin: 0;
-        }
-        body{
-            overflow: hidden;
-        }
-    </style>
+    <link href="style/main.css" rel="stylesheet" />
+    <link href="style/minimap.css" rel="stylesheet" />
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
+    <div ng-app="maplestory">
+        <div ng-controller="minimap" class="minimap-container">
+            <p class="text">{{map.name}}</p>
+            <img ng-src="{{map.minimap.background}}" class="image--full__width image--small__padding" />
+        </div>
+    </div>
+
+    <script src="libs/angular/jquery-2.1.1.js"></script>
+    <script src="libs/angular/angular.js"></script>
+    <script src="libs/angular/jquery.signalr-2.1.2.js"></script>
+
     <script src="build/vector.js"></script>
     <script src="build/sprites.js"></script>
     <script src="build/http-manager.js"></script>
