@@ -10,7 +10,7 @@ var TextureSprite = (function () {
                 var origin = prop.origin;
                 if (!origin || typeof origin.x != 'number')
                     debugger;
-                inst.Offset = new Vector(origin.x, -origin.y);
+                inst.Offset = new Vector(origin.x, origin.y);
             });
         }
     }
@@ -20,7 +20,7 @@ var Tile = (function () {
     function Tile() {
     }
     Tile.prototype.draw = function (ctx) {
-        this.Sprite.Tex.draw(ctx, Vector.plus(this.Position, this.Sprite.Offset));
+        this.Sprite.Tex.draw(ctx, Vector.minus(this.Position, this.Sprite.Offset));
     };
     return Tile;
 })();
@@ -50,35 +50,44 @@ var BackgroundSprite = (function () {
     };
     return BackgroundSprite;
 })();
-var TextureAnimation = (function () {
-    function TextureAnimation() {
-        this.Sprites = [];
-        this.FrameLength = 200;
+var AnimationFrame = (function () {
+    function AnimationFrame(sprite, frameLength) {
+        this.sprite = sprite;
+        this.frameLength = frameLength;
     }
-    return TextureAnimation;
+    return AnimationFrame;
 })();
 var AnimationSprite = (function () {
     function AnimationSprite(path, pos) {
+        this.Frames = [];
         this.loaded = false;
+        this.timeToNextFrame = 0;
+        this.currentFrame = 0;
         this.Position = pos;
         var instance = this;
         http.getJsonPropertyForPath(path, function (data) {
-            instance.Anim = new TextureAnimation();
-            var i = 0;
             for (var key in data) {
+                if (isNaN(key))
+                    continue;
                 var origin = data[key].origin;
-                var sprite = new TextureSprite(path + '/0', origin);
-                instance.Anim.Sprites.push(sprite);
-                i++;
+                if (!origin)
+                    continue;
+                var frame = new AnimationFrame(new TextureSprite(path + '/0', new Vector(origin.x, origin.y)), data[key].delay || 200);
+                instance.Frames.push(frame);
             }
             instance.loaded = true;
+            instance.timeToNextFrame = instance.Frames[0].frameLength;
         });
     }
     AnimationSprite.prototype.draw = function (ctx) {
         if (!this.loaded)
             return;
-        var index = Math.floor((game.totalGameTime / this.Anim.FrameLength) % this.Anim.Sprites.length);
-        this.Anim.Sprites[index].Tex.draw(ctx, Vector.minus(this.Position, this.Anim.Sprites[index].Offset));
+        this.timeToNextFrame -= game.frameTime;
+        while (this.timeToNextFrame < 0) {
+            this.currentFrame = (this.currentFrame + 1) % this.Frames.length;
+            this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;
+        }
+        this.Frames[this.currentFrame].sprite.Tex.draw(ctx, Vector.minus(this.Position, this.Frames[this.currentFrame].sprite.Offset));
     };
     return AnimationSprite;
 })();

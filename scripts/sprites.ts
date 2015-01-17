@@ -15,7 +15,7 @@
                 var origin = prop.origin;
                 if (!origin || typeof origin.x != 'number')
                     debugger;
-                inst.Offset = new Vector(origin.x, -origin.y);
+                inst.Offset = new Vector(origin.x, origin.y);
             });
         }
     }
@@ -31,7 +31,7 @@ class Tile
 
     draw(ctx: CanvasRenderingContext2D)
     {
-        this.Sprite.Tex.draw(ctx, Vector.plus(this.Position, this.Sprite.Offset));
+        this.Sprite.Tex.draw(ctx, Vector.minus(this.Position, this.Sprite.Offset));
     }
 }
 
@@ -93,33 +93,39 @@ enum BackgroundType {
 }
 
 
-
-class TextureAnimation {
-    Sprites: TextureSprite[] = [];
-    FrameLength: number = 200;
+class AnimationFrame {
+    constructor(public sprite: TextureSprite, public frameLength: number) { }
 }
-
 
 class AnimationSprite
 {
-    Anim: TextureAnimation;
+    Frames: AnimationFrame[] = [];
     Position: Vector; 
     Z: number; 
     loaded: boolean = false;
+    timeToNextFrame: number = 0;
+    currentFrame: number = 0;
 
     constructor(path: string, pos: Vector) {
         this.Position = pos;
         var instance = this;
         http.getJsonPropertyForPath(path, (data) => {
-            instance.Anim = new TextureAnimation();
-            var i = 0;
             for (var key in data) {
+
+                if (isNaN(key))
+                    continue;
+
                 var origin = data[key].origin;
-                var sprite = new TextureSprite(path + '/0', origin);
-                instance.Anim.Sprites.push(sprite);
-                i++;
+
+                if (!origin)
+                    continue;
+
+                var frame = new AnimationFrame(new TextureSprite(path + '/0', new Vector(origin.x, origin.y)), data[key].delay || 200);
+                instance.Frames.push(frame);
             }
+
             instance.loaded = true;
+            instance.timeToNextFrame = instance.Frames[0].frameLength;
         });
     }
 
@@ -127,7 +133,12 @@ class AnimationSprite
     {
         if (!this.loaded) return;
 
-        var index = Math.floor((game.totalGameTime / this.Anim.FrameLength) % this.Anim.Sprites.length);
-        this.Anim.Sprites[index].Tex.draw(ctx, Vector.minus(this.Position, this.Anim.Sprites[index].Offset));
+        this.timeToNextFrame -= game.frameTime;
+        while (this.timeToNextFrame < 0) {
+            this.currentFrame = (this.currentFrame + 1) % this.Frames.length;
+            this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;
+        }
+
+        this.Frames[this.currentFrame].sprite.Tex.draw(ctx, Vector.minus(this.Position, this.Frames[this.currentFrame].sprite.Offset));
     }
 }

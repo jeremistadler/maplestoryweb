@@ -1,5 +1,7 @@
 /// <reference path="sprites.ts"/>
 /// <reference path="vector.ts"/>
+/// <reference path="libs/jquery/jquery.d.ts" />
+/// <reference path="libs/angular/angular.d.ts" />
 // http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png
 var PortalTypeNames;
 (function (PortalTypeNames) {
@@ -54,6 +56,7 @@ var Foothold = (function () {
         return list;
     };
     Foothold.prototype.draw = function (ctx) {
+        ctx.beginPath();
         if (this.isWall()) {
             ctx.moveTo(this.Position.x, this.Position.y);
             ctx.lineTo(this.Position.x + this.Size.width, this.Position.y + this.Size.height);
@@ -207,12 +210,38 @@ var Player = (function () {
         game.ctx.stroke();
         game.ctx.fillStyle = 'black';
         game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
+        game.ctx.fillText('frame time: ' + game.frameTime, this.Position.x - 30, this.Position.y - 130);
     };
     return Player;
+})();
+var Portal = (function () {
+    function Portal(position, name) {
+        this.position = position;
+        this.name = name;
+    }
+    Portal.prototype.draw = function (ctx) {
+        ctx.beginPath();
+        ctx.arc(this.position.x, this.position.y, 20, 0, Math.PI * 2, false);
+        ctx.strokeStyle = 'pink';
+        ctx.stroke();
+        ctx.fillStyle = 'black';
+        ctx.fillText(this.name, this.position.x - 30, this.position.y - 30);
+    };
+    Portal.loadPortals = function (data) {
+        var list = [];
+        for (var key in data) {
+            var portal = data[key];
+            var pos = new Vector(portal.x, portal.y);
+            list.push(new Portal(new Vector(pos.x, pos.y), portal.pn + ":" + portal.pt));
+        }
+        return list;
+    };
+    return Portal;
 })();
 var World = (function () {
     function World() {
         this.Footholds = [];
+        this.portals = [];
         this.Backgrounds = [];
         this.Animations = [];
         this.Tiles = [];
@@ -228,19 +257,7 @@ var World = (function () {
     };
     World.prototype.loadData = function (mapData) {
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
-        for (var key in mapData.back) {
-            var item = mapData.back[key];
-            var bg = new BackgroundSprite();
-            bg.Sprite = new TextureSprite('Map/Back/' + item.bS + '.img/back/' + item.no);
-            bg.Position = new Vector(item.x, item.y);
-            bg.C = new Vector(item.cx, item.cy);
-            bg.R = new Vector(item.rx, item.ry);
-            if (item.type.type == 0)
-                bg.Type = 0 /* LensFlare */;
-            else
-                bg.Type = 5 /* unknown6 */;
-            this.Backgrounds.push(bg);
-        }
+        this.portals = Portal.loadPortals(mapData.portal);
         for (var key in mapData) {
             var layer = mapData[key];
             if (!layer.info || !layer.info.tS)
@@ -257,10 +274,10 @@ var World = (function () {
                 var tile = new Tile();
                 tile.Sprite = new TextureSprite('Map/Tile/' + spriteBaseName + '.img/' + u + '/' + no);
                 tile.Position = new Vector(x, y);
-                tile.Z = z;
+                tile.Z = parseInt(tileKey);
                 this.Tiles.push(tile);
             }
-            this.Tiles.sort(function (a, b) { return b.Z - a.Z; });
+            this.Tiles.sort(function (a, b) { return a.Z - b.Z; });
             for (var objKey in layer["obj"]) {
                 var item = layer["obj"][objKey];
                 var x = item.x;
@@ -282,8 +299,8 @@ var World = (function () {
     World.prototype.update = function () {
     };
     World.prototype.draw = function () {
-        //for (var i = 0; i < this.Backgrounds.length; i++)
-        //    this.Backgrounds[i].draw(game.ctx);
+        for (var i = 0; i < this.Backgrounds.length; i++)
+            this.Backgrounds[i].draw(game.ctx);
         for (var i = 0; i < this.Animations.length; i++)
             this.Animations[i].draw(game.ctx);
         for (var i = 0; i < this.Tiles.length; i++)
@@ -305,6 +322,9 @@ var World = (function () {
                 this.Footholds[i].draw(game.ctx);
         game.ctx.fill();
         game.ctx.stroke();
+        game.ctx.beginPath();
+        for (var i = 0; i < this.portals.length; i++)
+            this.portals[i].draw(game.ctx);
     };
     return World;
 })();
@@ -316,10 +336,19 @@ var Game = (function () {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.ctx = this.canvas.getContext('2d', { alpha: false });
+        this.totalGameTime = Date.now();
+        this.lastGameTime = this.totalGameTime - 20;
+        this.frameTime = 20;
+    };
+    Game.prototype.resize = function () {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     };
     Game.prototype.update = function () {
         http.update();
+        this.lastGameTime = this.totalGameTime;
         this.totalGameTime = Date.now();
+        this.frameTime = this.totalGameTime - this.lastGameTime;
         camera.update();
         map.update();
         player.update();
@@ -343,6 +372,9 @@ game.init();
 camera.init();
 player.init();
 map.init('100000200');
+$(window).resize(function () {
+    game.resize();
+});
 function gotAnimationFrame() {
     requestAnimationFrame(gotAnimationFrame);
     game.update();
@@ -353,7 +385,7 @@ angular.module('maplestory', []).controller('minimap', function ($scope) {
     $scope.map = {
         name: 'Henesys',
         minimap: {
-            background: '/images/image-placeholder.png'
+            background: http.baseUrl + map.BasePath + 'minimap/canvas.png'
         }
     };
 });
