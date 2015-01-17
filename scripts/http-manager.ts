@@ -1,4 +1,6 @@
-﻿class HttpManagerCachedRequest {
+﻿/// <reference path="main.ts" />
+
+class HttpManagerCachedRequest {
     public done: boolean = false;
     public data: any;
     public callbacks: Array<(any) => void>;

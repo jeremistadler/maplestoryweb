@@ -1,3 +1,4 @@
+/// <reference path="../main.ts" />
 var AnimationFrame = (function () {
     function AnimationFrame(sprite, frameLength) {
         this.sprite = sprite;

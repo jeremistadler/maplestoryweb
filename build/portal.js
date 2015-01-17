@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var PortalTypeNames;
 (function (PortalTypeNames) {
     PortalTypeNames[PortalTypeNames["Start Point"] = 0] = "Start Point";

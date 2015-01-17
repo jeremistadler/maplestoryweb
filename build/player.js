@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var KeyCodes;
 (function (KeyCodes) {
     KeyCodes[KeyCodes["left"] = 37] = "left";

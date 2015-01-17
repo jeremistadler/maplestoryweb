@@ -1,4 +1,6 @@
-﻿enum PortalTypeNames {
+﻿/// <reference path="main.ts" />
+
+enum PortalTypeNames {
     "Start Point",
     "Invisible",
     "Visible",

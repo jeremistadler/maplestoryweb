@@ -1,4 +1,6 @@
-﻿class TextureSprite
+﻿/// <reference path="main.ts" />
+
+class TextureSprite
 {
     Tex: Texture;
     Offset: Vector;

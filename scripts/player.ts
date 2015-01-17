@@ -1,4 +1,4 @@
-﻿
+﻿/// <reference path="main.ts" />
 
 enum KeyCodes {
     left = 37,

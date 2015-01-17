@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var Camera = (function () {
     function Camera() {
         this.Zoom = 1;

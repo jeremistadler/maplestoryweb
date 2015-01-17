@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="main.ts" />
+
 class World {
     Footholds: Foothold[] = [];
     portals: Portal[] = [];

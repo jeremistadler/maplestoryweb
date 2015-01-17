@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var Texture = (function () {
     function Texture(path) {
         this.image = new Image();

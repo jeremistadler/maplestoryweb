@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var Foothold = (function () {
     function Foothold(Position, Size) {
         this.Position = Position;

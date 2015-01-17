@@ -22,7 +22,7 @@ gulp.task('serve', function() {
 
 gulp.task('watch', function() {
     gulp.watch('./**/*.ts', { debounceDelay: 200 },['scripts']);
-    gulp.watch(['build/**/*.*', 'index.html'], { debounceDelay: 200 }, ['reload']);
+    gulp.watch(['build/**/*.*', 'index.html', 'style/**/*.css'], { debounceDelay: 200 }, ['reload']);
 });
 
 

@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var Size = (function () {
     function Size(width, height) {
         this.width = width;

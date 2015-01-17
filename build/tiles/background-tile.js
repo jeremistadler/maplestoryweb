@@ -1,3 +1,4 @@
+/// <reference path="../main.ts" />
 var BackgroundTypeNames;
 (function (BackgroundTypeNames) {
     BackgroundTypeNames[BackgroundTypeNames["Regular"] = 0] = "Regular";

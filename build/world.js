@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var World = (function () {
     function World() {
         this.Footholds = [];

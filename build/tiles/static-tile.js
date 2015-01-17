@@ -1,3 +1,4 @@
+/// <reference path="../main.ts" />
 var Tile = (function () {
     function Tile() {
     }

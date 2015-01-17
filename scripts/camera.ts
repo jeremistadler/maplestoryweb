@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="main.ts" />
+
 class Camera {
     Position: Vector;
     Zoom: number = 1;

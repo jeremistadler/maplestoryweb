@@ -1,4 +1,4 @@
-﻿
+﻿/// <reference path="../main.ts" />
 
 class AnimationFrame {
     constructor(public sprite: TextureSprite, public frameLength: number) { }

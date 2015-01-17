@@ -1,9 +1,8 @@
 /// <reference path="libs/jquery/jquery.d.ts" />
 /// <reference path="libs/angular/angular.d.ts" />
 
+
 // http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png
-
-
 
 
 class Game {

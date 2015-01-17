@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="../main.ts" />
+
 class Tile {
     Sprite: TextureSprite;
     Position: Vector;

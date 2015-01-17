@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="../main.ts" />
+
 enum BackgroundTypeNames {
     "Regular",
     "Horizontal Copies",

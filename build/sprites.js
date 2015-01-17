@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var TextureSprite = (function () {
     function TextureSprite(path, offset) {
         this.Tex = new Texture(http.baseUrl + path + '.png');

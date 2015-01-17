@@ -1,3 +1,4 @@
+/// <reference path="main.ts" />
 var HttpManagerCachedRequest = (function () {
     function HttpManagerCachedRequest(path, callback) {
         this.path = path;
