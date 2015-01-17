@@ -11,15 +11,12 @@
         http.getJsonPropertyForPath(path, function (prop) 
         { 
             var origin = prop;
+            while (origin.origin)
+                origin = origin.origin;
+            
             inst.Offset = new Vector(origin.x, origin.y); 
         });
     }
-}
-
-class TextureAnimation
-{
-    Sprites: TextureSprite[];
-    FrameLength: number;
 }
 
 
@@ -32,7 +29,7 @@ class Tile
 
     draw(ctx: CanvasRenderingContext2D)
     {
-        this.Sprite.Tex.draw(ctx, this.Position);
+        this.Sprite.Tex.draw(ctx, Vector.plus(this.Position, this.Sprite.Offset));
     }
 }
 
@@ -58,7 +55,7 @@ enum BackgroundType {
 
         draw(ctx: CanvasRenderingContext2D)
         {
-            this.Sprite.Tex.draw(ctx, this.Position);
+            this.Sprite.Tex.draw(ctx, Vector.plus(this.Position, this.Sprite.Offset));
             return;
 
             var pos: Vector;
@@ -91,17 +88,41 @@ enum BackgroundType {
     }
             
         }
+}
+
+
+
+class TextureAnimation {
+    Sprites: TextureSprite[];
+    FrameLength: number;
+}
+
+
+class AnimationSprite
+{
+    Anim: TextureAnimation;
+    Position: Vector; 
+    Z: number; 
+    loaded: boolean = false;
+
+    constructor(path: string, pos: Vector) {
+        this.Position = pos;
+        var instance = this;
+        http.httpGetAsset(path, (data) => {
+            instance.Anim = new TextureAnimation();
+            for (var key in data) {
+                var origin = data[key].origin;
+                var sprite = new TextureSprite(path + '');
+                instance.Anim.Sprites.push(sprite);
+            }
+        });
     }
 
-    class AnimationSprite
+    draw(ctx: CanvasRenderingContext2D)
     {
-        Anim: TextureAnimation;
-        Position: Vector; 
-        Z: number; 
+        if (!this.loaded) return;
 
-        Draw(ctx: CanvasRenderingContext2D)
-        {
-            var index = Math.floor((game.totalGameTime / this.Anim.FrameLength) % this.Anim.Sprites.length);
-            this.Anim.Sprites[index].Tex.draw(ctx, Vector.minus(this.Position, this.Anim.Sprites[index].Offset));
-        }
+        var index = Math.floor((game.totalGameTime / this.Anim.FrameLength) % this.Anim.Sprites.length);
+        this.Anim.Sprites[index].Tex.draw(ctx, Vector.minus(this.Position, this.Anim.Sprites[index].Offset));
     }
+}

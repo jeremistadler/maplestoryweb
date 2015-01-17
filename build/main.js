@@ -1,5 +1,36 @@
 /// <reference path="sprites.ts"/>
 /// <reference path="vector.ts"/>
+var PortalTypeNames;
+(function (PortalTypeNames) {
+    PortalTypeNames[PortalTypeNames["Start Point"] = 0] = "Start Point";
+    PortalTypeNames[PortalTypeNames["Invisible"] = 1] = "Invisible";
+    PortalTypeNames[PortalTypeNames["Visible"] = 2] = "Visible";
+    PortalTypeNames[PortalTypeNames["Collision"] = 3] = "Collision";
+    PortalTypeNames[PortalTypeNames["Changable"] = 4] = "Changable";
+    PortalTypeNames[PortalTypeNames["Changable Invisible"] = 5] = "Changable Invisible";
+    PortalTypeNames[PortalTypeNames["Town Portal"] = 6] = "Town Portal";
+    PortalTypeNames[PortalTypeNames["Script"] = 7] = "Script";
+    PortalTypeNames[PortalTypeNames["Script Invisible"] = 8] = "Script Invisible";
+    PortalTypeNames[PortalTypeNames["Script Collision"] = 9] = "Script Collision";
+    PortalTypeNames[PortalTypeNames["Hidden"] = 10] = "Hidden";
+    PortalTypeNames[PortalTypeNames["Script Hidden"] = 11] = "Script Hidden";
+    PortalTypeNames[PortalTypeNames["Vertical Spring"] = 12] = "Vertical Spring";
+    PortalTypeNames[PortalTypeNames["Custom Impact Spring"] = 13] = "Custom Impact Spring";
+    PortalTypeNames[PortalTypeNames["Unknown (PCIG)"] = 14] = "Unknown (PCIG)";
+})(PortalTypeNames || (PortalTypeNames = {}));
+;
+var BackgroundTypeNames;
+(function (BackgroundTypeNames) {
+    BackgroundTypeNames[BackgroundTypeNames["Regular"] = 0] = "Regular";
+    BackgroundTypeNames[BackgroundTypeNames["Horizontal Copies"] = 1] = "Horizontal Copies";
+    BackgroundTypeNames[BackgroundTypeNames["Vertical Copies"] = 2] = "Vertical Copies";
+    BackgroundTypeNames[BackgroundTypeNames["H+V Copies"] = 3] = "H+V Copies";
+    BackgroundTypeNames[BackgroundTypeNames["Horizontal Moving+Copies"] = 4] = "Horizontal Moving+Copies";
+    BackgroundTypeNames[BackgroundTypeNames["Vertical Moving+Copies"] = 5] = "Vertical Moving+Copies";
+    BackgroundTypeNames[BackgroundTypeNames["H+V Copies, Horizontal Moving"] = 6] = "H+V Copies, Horizontal Moving";
+    BackgroundTypeNames[BackgroundTypeNames["H+V Copies, Vertical Moving"] = 7] = "H+V Copies, Vertical Moving";
+})(BackgroundTypeNames || (BackgroundTypeNames = {}));
+;
 var Foothold = (function () {
     function Foothold(Position, Size) {
         this.Position = Position;
@@ -85,12 +116,12 @@ var Camera = (function () {
         var targetPos = new Vector(0, 0);
         targetPos.x = player.Position.x + -game.canvas.width / 2 - player.Size.width / 2;
         targetPos.y = player.Position.y + -game.canvas.height / 2 - player.Size.height / 2;
-        this.Position = targetPos;
+        this.Position = Vector.lerp(this.Position, targetPos, 0.04);
+    };
+    Camera.prototype.draw = function () {
         this.reset();
         game.ctx.translate(-this.Position.x, -this.Position.y);
         game.ctx.scale(this.Zoom, this.Zoom);
-    };
-    Camera.prototype.draw = function () {
     };
     return Camera;
 })();
@@ -163,11 +194,12 @@ var Player = (function () {
 })();
 var World = (function () {
     function World() {
+        this.Footholds = [];
+        this.Backgrounds = [];
+        this.Animations = [];
+        this.Tiles = [];
     }
     World.prototype.init = function (id) {
-        this.Tiles = [];
-        this.Backgrounds = [];
-        this.Footholds = [];
         this.Id = id;
         this.BasePath = 'Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
         var instance = this;
@@ -210,6 +242,7 @@ var World = (function () {
                 this.Tiles.push(tile);
             }
             for (var objKey in layer["obj"]) {
+                var item = layer["obj"][objKey];
                 var x = item.x;
                 var y = item.y;
                 var z = item.zM;
@@ -217,14 +250,22 @@ var World = (function () {
                 var l0 = item.l0;
                 var l1 = item.l1;
                 var l2 = item.l2;
+                var spriteName = "Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
+                var animation = new AnimationSprite(spriteName, new Vector(x, y));
+                animation.Z = z;
+                this.Animations.push(animation);
             }
         }
     };
     World.prototype.update = function () {
     };
     World.prototype.draw = function () {
+        for (var i = 0; i < this.Backgrounds.length; i++)
+            this.Backgrounds[i].draw(game.ctx);
         for (var i = 0; i < this.Tiles.length; i++)
             this.Tiles[i].draw(game.ctx);
+        for (var i = 0; i < this.Animations.length; i++)
+            this.Animations[i].draw(game.ctx);
         for (var i = 0; i < this.Footholds.length; i++)
             this.Footholds[i].draw(game.ctx);
     };
@@ -242,6 +283,7 @@ var Game = (function () {
     Game.prototype.update = function () {
         http.update();
         this.totalGameTime = Date.now();
+        camera.update();
         map.update();
         player.update();
     };
@@ -249,7 +291,7 @@ var Game = (function () {
         camera.reset();
         this.ctx.fillStyle = 'rgb(100, 149, 237)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        camera.update();
+        camera.draw();
         map.draw();
         player.draw();
     };

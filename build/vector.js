@@ -41,6 +41,9 @@ var Vector = (function () {
     Vector.mag = function (v) {
         return Math.sqrt(v.x * v.x + v.y * v.y);
     };
+    Vector.lerp = function (v0, v1, t) {
+        return new Vector(v0.x + t * (v1.x - v0.x), v0.y + t * (v1.y - v0.y));
+    };
     Vector.norm = function (v) {
         var mag = Vector.mag(v);
         var div = (mag === 0) ? Infinity : 1.0 / mag;
