@@ -1,14 +1,18 @@
 var TextureSprite = (function () {
-    function TextureSprite(path) {
+    function TextureSprite(path, offset) {
         this.Tex = new Texture(http.baseUrl + path + '.png');
-        this.Offset = new Vector(0, 0);
-        var inst = this;
-        http.getJsonPropertyForPath(path, function (prop) {
-            var origin = prop;
-            while (origin.origin)
-                origin = origin.origin;
-            inst.Offset = new Vector(origin.x, origin.y);
-        });
+        if (offset)
+            this.Offset = offset;
+        else {
+            this.Offset = new Vector(0, 0);
+            var inst = this;
+            http.getJsonPropertyForPath(path, function (prop) {
+                var origin = prop.origin;
+                if (!origin || typeof origin.x != 'number')
+                    debugger;
+                inst.Offset = new Vector(origin.x, -origin.y);
+            });
+        }
     }
     return TextureSprite;
 })();
@@ -48,6 +52,8 @@ var BackgroundSprite = (function () {
 })();
 var TextureAnimation = (function () {
     function TextureAnimation() {
+        this.Sprites = [];
+        this.FrameLength = 200;
     }
     return TextureAnimation;
 })();
@@ -56,13 +62,16 @@ var AnimationSprite = (function () {
         this.loaded = false;
         this.Position = pos;
         var instance = this;
-        http.httpGetAsset(path, function (data) {
+        http.getJsonPropertyForPath(path, function (data) {
             instance.Anim = new TextureAnimation();
+            var i = 0;
             for (var key in data) {
                 var origin = data[key].origin;
-                var sprite = new TextureSprite(path + '');
+                var sprite = new TextureSprite(path + '/0', origin);
                 instance.Anim.Sprites.push(sprite);
+                i++;
             }
+            instance.loaded = true;
         });
     }
     AnimationSprite.prototype.draw = function (ctx) {

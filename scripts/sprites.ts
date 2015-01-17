@@ -3,19 +3,21 @@
     Tex: Texture;
     Offset: Vector;
 
-    constructor(path) {
+    constructor(path, offset?: Vector) {
         this.Tex = new Texture(http.baseUrl + path + '.png'); 
-        this.Offset = new Vector(0, 0);
-        var inst = this;
 
-        http.getJsonPropertyForPath(path, function (prop) 
-        { 
-            var origin = prop;
-            while (origin.origin)
-                origin = origin.origin;
-            
-            inst.Offset = new Vector(origin.x, origin.y); 
-        });
+        if (offset)
+            this.Offset = offset;
+        else {
+            this.Offset = new Vector(0, 0);
+            var inst = this;
+            http.getJsonPropertyForPath(path, function (prop) {
+                var origin = prop.origin;
+                if (!origin || typeof origin.x != 'number')
+                    debugger;
+                inst.Offset = new Vector(origin.x, -origin.y);
+            });
+        }
     }
 }
 
@@ -93,8 +95,8 @@ enum BackgroundType {
 
 
 class TextureAnimation {
-    Sprites: TextureSprite[];
-    FrameLength: number;
+    Sprites: TextureSprite[] = [];
+    FrameLength: number = 200;
 }
 
 
@@ -108,13 +110,16 @@ class AnimationSprite
     constructor(path: string, pos: Vector) {
         this.Position = pos;
         var instance = this;
-        http.httpGetAsset(path, (data) => {
+        http.getJsonPropertyForPath(path, (data) => {
             instance.Anim = new TextureAnimation();
+            var i = 0;
             for (var key in data) {
                 var origin = data[key].origin;
-                var sprite = new TextureSprite(path + '');
+                var sprite = new TextureSprite(path + '/0', origin);
                 instance.Anim.Sprites.push(sprite);
+                i++;
             }
+            instance.loaded = true;
         });
     }
 
