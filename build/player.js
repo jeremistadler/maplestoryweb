@@ -12,7 +12,7 @@ var Player = (function () {
     function Player() {
     }
     Player.prototype.init = function () {
-        this.Position = new Vector(500, 450);
+        this.Position = new Vector(3000, 570);
         this.Velocity = new Vector(0, 0);
         this.Size = new Size(60, 80);
         this.image = new Texture('http://nxcache.nexon.net/spotlight/112/007kn-7e9ea6e9-e3c1-402e-803d-7df82ad5ac53.gif');

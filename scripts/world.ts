@@ -9,6 +9,8 @@ class World {
     Animations: AnimationSprite[] = [];
     Tiles: Tile[] = [];
     loaded: boolean = false;
+    size: Size;
+    center: Vector;
 
     init(id: string) {
         this.Id = id;
@@ -19,6 +21,9 @@ class World {
     }
 
     loadData(mapData) {
+        this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
+        this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
+
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(mapData.portal);
 
@@ -44,8 +49,8 @@ class World {
             AnimationSprite.loadTiles(layer, this.Animations);
         }
 
-        this.Tiles.sort((a, b) => a.Z - b.Z);
-        this.Animations.sort((a, b) => a.Z - b.Z);
+        this.Tiles.sort((a, b) => a.layer * 1000 + a.Z - b.layer * 1000 + b.Z);
+        this.Animations.sort((a, b) => a.layer * 1000 + a.Z - b.layer * 1000 + b.Z);
 
         this.loaded = true;
     }

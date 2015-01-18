@@ -1,6 +1,19 @@
 /// <reference path="libs/jquery/jquery.d.ts" />
 /// <reference path="libs/angular/angular.d.ts" />
 
+/// <reference path="world.ts" />
+/// <reference path="vector.ts" />
+/// <reference path="player.ts" />
+/// <reference path="texture.ts" />
+/// <reference path="foothold.ts" />
+/// <reference path="camera.ts" />
+/// <reference path="portal.ts" />
+/// <reference path="sprites.ts" />
+/// <reference path="http-manager.ts" />
+/// <reference path="tiles/static-tile.ts" />
+/// <reference path="tiles/background-tile.ts" />
+/// <reference path="tiles/animated-tile.ts" />
+
 
 // http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png
 

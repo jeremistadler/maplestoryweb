@@ -1,7 +1,7 @@
 ﻿/// <reference path="../main.ts" />
 
 class AnimationFrame {
-    constructor(public sprite: TextureSprite, public frameLength: number) { }
+    constructor(public tex: Texture, public frameLength: number, public origin: Vector) { }
 }
 
 class AnimationSprite {
@@ -9,6 +9,7 @@ class AnimationSprite {
     Position: Vector;
     Z: number;
     loaded: boolean = false;
+    layer: number;
     timeToNextFrame: number = 0;
     currentFrame: number = 0;
 
@@ -26,7 +27,7 @@ class AnimationSprite {
                 if (!origin)
                     continue;
 
-                var frame = new AnimationFrame(new TextureSprite(path + '/0', new Vector(origin.x, origin.y)), data[key].delay || 200);
+                var frame = new AnimationFrame(new Texture(http.baseUrl + path + '/' + key + '.png'), data[key].delay || 200, new Vector(origin.x, origin.y));
                 instance.Frames.push(frame);
             }
 
@@ -47,9 +48,13 @@ class AnimationSprite {
             var l1 = item.l1;
             var l2 = item.l2;
 
+            //if (l0 != 'house14' || l2 != 2)
+            //    continue;
+
             var spriteName = "Map/Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
             var animation = new AnimationSprite(spriteName, new Vector(x, y));
             animation.Z = z;
+            animation.layer = parseInt(objKey);
             tileList.push(animation);
         }
     }
@@ -63,6 +68,7 @@ class AnimationSprite {
             this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;
         }
 
-        this.Frames[this.currentFrame].sprite.Tex.draw(ctx, Vector.minus(this.Position, this.Frames[this.currentFrame].sprite.Offset));
+        var frame = this.Frames[this.currentFrame];
+        frame.tex.draw(ctx, new Vector(this.Position.x - frame.origin.x, this.Position.y - frame.origin.y));
     }
 }

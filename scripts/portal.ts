@@ -35,6 +35,10 @@ class Portal {
         var list = [];
         for (var key in data) {
             var portal = data[key];
+            var mapId = portal.tm;
+            var portalName = portal.tn;
+            var type = portal.tn;
+
             var pos = new Vector(portal.x, portal.y);
             list.push(new Portal(new Vector(pos.x, pos.y), portal.pn + ":" + portal.pt));
         }

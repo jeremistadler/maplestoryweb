@@ -11,8 +11,12 @@ var Camera = (function () {
     };
     Camera.prototype.update = function () {
         var targetPos = new Vector(0, 0);
-        targetPos.x = player.Position.x + -game.canvas.width / 2 - player.Size.width / 2;
-        targetPos.y = player.Position.y + -game.canvas.height / 2 - player.Size.height / 2;
+        targetPos.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);
+        targetPos.y = Math.round(player.Position.y + -game.canvas.height / 2 - player.Size.height / 2);
+        if (Math.abs(this.Position.x - targetPos.x) < 0.7)
+            this.Position.x = targetPos.x;
+        if (Math.abs(this.Position.y - targetPos.y) < 0.7)
+            this.Position.y = targetPos.y;
         this.Position = Vector.lerp(this.Position, targetPos, 0.04);
     };
     Camera.prototype.draw = function () {
