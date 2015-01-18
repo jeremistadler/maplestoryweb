@@ -41,26 +41,26 @@ var World = (function () {
             this.Animations[i].draw(game.ctx);
         for (var i = 0; i < this.Tiles.length; i++)
             this.Tiles[i].draw(game.ctx);
-        game.ctx.beginPath();
-        game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-        game.ctx.lineWidth = 1;
-        for (var i = 0; i < this.Footholds.length; i++)
-            this.Footholds[i].draw(game.ctx);
-        game.ctx.fill();
-        game.ctx.stroke();
-        game.ctx.beginPath();
-        game.ctx.fillStyle = 'rgba(200, 0, 0, 0.3)';
-        game.ctx.strokeStyle = 'rgba(200, 0, 0, 0.5)';
-        game.ctx.lineWidth = 1;
-        for (var i = 0; i < this.Footholds.length; i++)
-            if (this.Footholds[i].playerTouches)
-                this.Footholds[i].draw(game.ctx);
-        game.ctx.fill();
-        game.ctx.stroke();
-        game.ctx.beginPath();
-        for (var i = 0; i < this.portals.length; i++)
-            this.portals[i].draw(game.ctx);
+        //game.ctx.beginPath();
+        //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        //game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+        //game.ctx.lineWidth = 1;
+        //for (var i = 0; i < this.Footholds.length; i++)
+        //    this.Footholds[i].draw(game.ctx);
+        //game.ctx.fill();
+        //game.ctx.stroke();
+        //game.ctx.beginPath();
+        //game.ctx.fillStyle = 'rgba(200, 0, 0, 0.3)';
+        //game.ctx.strokeStyle = 'rgba(200, 0, 0, 0.5)';
+        //game.ctx.lineWidth = 1;
+        //for (var i = 0; i < this.Footholds.length; i++)
+        //    if (this.Footholds[i].playerTouches)
+        //        this.Footholds[i].draw(game.ctx);
+        //game.ctx.fill();
+        //game.ctx.stroke();
+        //game.ctx.beginPath();
+        //for (var i = 0; i < this.portals.length; i++)
+        //    this.portals[i].draw(game.ctx);
     };
     return World;
 })();
