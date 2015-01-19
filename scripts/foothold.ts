@@ -2,6 +2,7 @@
 
 class Foothold {
     playerTouches: boolean;
+    id: number;
 
     constructor(public Position: Vector, public Size: Size) { }
 

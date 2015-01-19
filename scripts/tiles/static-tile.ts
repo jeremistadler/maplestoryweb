@@ -19,13 +19,15 @@ class Tile {
 
             var path = 'Map/Tile/' + layer.info.tS + '.img/' + u + '/' + no;
             var tile = new Tile();
-            tile.Position = new Vector(x, y);
+            tile.layer = layer.id;
             tile.Z = parseInt(tileKey);
+            tile.Position = new Vector(x, y);
+            tile.origin = new Vector(0, 1000);
             tile.Tex = new Texture(http.baseUrl + path + '.png');
-            tile.origin = new Vector(0, 0);
             Tile.loadTileMetadata(tile, path);
-            tile.layer = parseInt(tileKey);
-            tileList.push(tile);
+
+            if (tile.layer == 1)
+                tileList.push(tile);
         }
     }
 
@@ -39,6 +41,16 @@ class Tile {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.Tex.draw(ctx, Vector.minus(this.Position, this.origin));
+        var x = this.Position.x - this.origin.x;
+        var y = this.Position.y - this.origin.y;
+
+        this.Tex.draw(ctx, new Vector(x, y));
+
+        if (this.Tex.hasLoaded) {
+            ctx.fillStyle = 'hsla(' + ((this.Z) % 360) + ', 50%, 50%, 0.4)';
+            ctx.fillRect(x, y, this.Tex.image.width, this.Tex.image.height);
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillText('origin: x: ' + this.origin.x + '  y: ' + this.origin.y, x, y);
+        }
     }
 }

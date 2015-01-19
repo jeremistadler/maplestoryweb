@@ -1,7 +1,10 @@
 ﻿/// <reference path="../main.ts" />
 
 class AnimationFrame {
-    constructor(public tex: Texture, public frameLength: number, public origin: Vector) { }
+    public id: number;
+    public tex: Texture;
+    public frameLength: number;
+    public origin: Vector
 }
 
 class AnimationSprite {
@@ -18,18 +21,25 @@ class AnimationSprite {
         var instance = this;
         http.getJsonPropertyForPath(path, (data) => {
             for (var key in data) {
-
                 if (isNaN(key))
                     continue;
 
+                var frame = new AnimationFrame();
+
                 var origin = data[key].origin;
+                var delay = data[key].delay || 100;
 
                 if (!origin)
                     continue;
 
-                var frame = new AnimationFrame(new Texture(http.baseUrl + path + '/' + key + '.png'), data[key].delay || 200, new Vector(origin.x, origin.y));
+                frame.tex = new Texture(http.baseUrl + path + '/' + key + '.png');
+                frame.origin = new Vector(origin.x, origin.y);
+                frame.id = parseInt(key);
+                frame.frameLength = delay;
                 instance.Frames.push(frame);
             }
+
+            instance.Frames.sort((a, b) => b.id - a.id);
 
             instance.loaded = true;
             instance.timeToNextFrame = instance.Frames[0].frameLength;
@@ -69,6 +79,12 @@ class AnimationSprite {
         }
 
         var frame = this.Frames[this.currentFrame];
-        frame.tex.draw(ctx, new Vector(this.Position.x - frame.origin.x, this.Position.y - frame.origin.y));
+
+        var flipped = false;
+
+        var topLeftX = this.Position.x - frame.origin.x;
+        var topLeftY = this.Position.y - frame.origin.y;
+
+        frame.tex.draw(ctx, new Vector(topLeftX, topLeftY));
     }
 }

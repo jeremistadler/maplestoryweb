@@ -19,7 +19,11 @@ enum PortalTypeNames {
 };
 
 class Portal {
-    constructor(public position: Vector, public name: string) { }
+    public toMapId: number;
+    public toPortal: string;
+    public name: string;
+    public position: Vector;
+    public id: string;
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
@@ -28,19 +32,22 @@ class Portal {
         ctx.stroke();
 
         ctx.fillStyle = 'black';
-        ctx.fillText(this.name, this.position.x - 30, this.position.y - 30);
+        ctx.fillText(this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
     }
 
     static loadPortals(data): Portal[] {
         var list = [];
         for (var key in data) {
-            var portal = data[key];
-            var mapId = portal.tm;
-            var portalName = portal.tn;
-            var type = portal.tn;
+            var item = data[key];
+            var portal = new Portal();
 
-            var pos = new Vector(portal.x, portal.y);
-            list.push(new Portal(new Vector(pos.x, pos.y), portal.pn + ":" + portal.pt));
+            portal.position = new Vector(item.x, item.y);
+            portal.toMapId = item.tm;
+            portal.toPortal = item.tn;
+            portal.name = item.pn;
+            portal.id = key;
+
+            list.push(portal);
         }
 
         return list;

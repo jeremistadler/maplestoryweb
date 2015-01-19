@@ -10,7 +10,7 @@ class World {
     Tiles: Tile[] = [];
     loaded: boolean = false;
     size: Size;
-    center: Vector;
+    center: Vector = new Vector(0, 0);
 
     init(id: string) {
         this.Id = id;
@@ -45,11 +45,15 @@ class World {
             if (!layer.info || !layer.info.tS)
                 continue;
 
+            layer.id = parseInt(key);
+
             Tile.loadTiles(layer, this.Tiles);
-            AnimationSprite.loadTiles(layer, this.Animations);
+            //AnimationSprite.loadTiles(layer, this.Animations);
         }
 
-        this.Tiles.sort((a, b) => a.layer * 1000 + a.Z - b.layer * 1000 + b.Z);
+        this.Tiles.sort(function (a, b) {
+            return (a.layer * 1000 + a.Z) - (b.layer * 1000 + b.Z)
+        });
         this.Animations.sort((a, b) => a.layer * 1000 + a.Z - b.layer * 1000 + b.Z);
 
         this.loaded = true;
@@ -68,27 +72,27 @@ class World {
         for (var i = 0; i < this.Tiles.length; i++)
             this.Tiles[i].draw(game.ctx);
 
-        //game.ctx.beginPath();
-        //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        //game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-        //game.ctx.lineWidth = 1;
-        //for (var i = 0; i < this.Footholds.length; i++)
-        //    this.Footholds[i].draw(game.ctx);
-        //game.ctx.fill();
-        //game.ctx.stroke();
+        game.ctx.beginPath();
+        game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+        game.ctx.lineWidth = 1;
+        for (var i = 0; i < this.Footholds.length; i++)
+            this.Footholds[i].draw(game.ctx);
+        game.ctx.fill();
+        game.ctx.stroke();
 
-        //game.ctx.beginPath();
-        //game.ctx.fillStyle = 'rgba(200, 0, 0, 0.3)';
-        //game.ctx.strokeStyle = 'rgba(200, 0, 0, 0.5)';
-        //game.ctx.lineWidth = 1;
-        //for (var i = 0; i < this.Footholds.length; i++)
-        //    if (this.Footholds[i].playerTouches)
-        //        this.Footholds[i].draw(game.ctx);
-        //game.ctx.fill();
-        //game.ctx.stroke();
+        game.ctx.beginPath();
+        game.ctx.fillStyle = 'rgba(200, 0, 0, 0.3)';
+        game.ctx.strokeStyle = 'rgba(200, 0, 0, 0.5)';
+        game.ctx.lineWidth = 1;
+        for (var i = 0; i < this.Footholds.length; i++)
+            if (this.Footholds[i].playerTouches)
+                this.Footholds[i].draw(game.ctx);
+        game.ctx.fill();
+        game.ctx.stroke();
 
-        //game.ctx.beginPath();
-        //for (var i = 0; i < this.portals.length; i++)
-        //    this.portals[i].draw(game.ctx);
+        game.ctx.beginPath();
+        for (var i = 0; i < this.portals.length; i++)
+            this.portals[i].draw(game.ctx);
     }
 }

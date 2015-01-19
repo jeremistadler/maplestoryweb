@@ -23,7 +23,8 @@ enum BackgroundType {
 
 class BackgroundSprite {
     Type: BackgroundType;
-    Sprite: TextureSprite;
+    Tex: Texture;
+    origin: Vector;
 
     C: Vector;
     R: Vector;
@@ -31,13 +32,13 @@ class BackgroundSprite {
     //  Tint :Color;
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.Sprite.Tex.draw(ctx, Vector.plus(this.Position, this.Sprite.Offset));
+        this.Tex.draw(ctx, Vector.minus(this.Position, this.origin));
         return;
 
         var pos: Vector;
         switch (this.Type) {
             case BackgroundType.unknown2:
-                this.Sprite.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
+                this.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
                 break;
 
             case BackgroundType.Clouds:
