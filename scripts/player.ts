@@ -37,10 +37,10 @@ class Player {
 
         if (e.keyCode == KeyCodes.down) { this.Position.y++; this.Velocity.y++; }
         if (e.keyCode == KeyCodes.up) {
-            if (map.loaded) {
-                for (var i = 0; i < map.portals.length; i++) {
-                    if (map.portals[i].isPlayerTouching(player)) {
-                        map.loadMap(map.portals[i].toMapId + '', map.portals[i].toPortal);
+            if (ms.map.loaded) {
+                for (var i = 0; i < ms.map.portals.length; i++) {
+                    if (ms.map.portals[i].isPlayerTouching(ms.player)) {
+                        ms.map.loadMap(ms.map.portals[i].toMapId + '', ms.map.portals[i].toPortal);
                         break;
                     }
                 }
@@ -62,20 +62,20 @@ class Player {
     }
 
     update() {
-        if (!map.loaded) return;
+        if (!ms.map.loaded) return;
 
         this.Velocity.y += 0.3;
 
-        for (var i = 0; i < map.Footholds.length; i++)
-            map.Footholds[i].playerTouches = false;
+        for (var i = 0; i < ms.map.Footholds.length; i++)
+            ms.map.Footholds[i].playerTouches = false;
 
 
-        for (var i = 0; i < map.Footholds.length; i++) {
-            if (map.Footholds[i].isPointColliding(Vector.plus(this.Position, new Vector(-this.Size.width / 2, 0)), this.Velocity) ||
-                map.Footholds[i].isPointColliding(Vector.plus(this.Position, new Vector(this.Size.width / 2, 0)), this.Velocity)) {
-                map.Footholds[i].playerTouches = true;
+        for (var i = 0; i < ms.map.Footholds.length; i++) {
+            if (ms.map.Footholds[i].isPointColliding(Vector.plus(this.Position, new Vector(-this.Size.width / 2, 0)), this.Velocity) ||
+                ms.map.Footholds[i].isPointColliding(Vector.plus(this.Position, new Vector(this.Size.width / 2, 0)), this.Velocity)) {
+                ms.map.Footholds[i].playerTouches = true;
                 this.Velocity.y = 0;
-                this.Position.y = map.Footholds[i].Position.y;
+                this.Position.y = ms.map.Footholds[i].Position.y;
                 this.hasJumped = false;
             }
         }
@@ -89,17 +89,17 @@ class Player {
     }
 
     draw() {
-        this.image.draw(game.ctx, new Vector(this.Position.x - this.Size.width / 2, this.Position.y - this.Size.height), this.Size);
-        game.ctx.beginPath();
-        game.ctx.strokeStyle = "black";
-        game.ctx.moveTo(this.Position.x - 5, this.Position.y);
-        game.ctx.lineTo(this.Position.x + 5, this.Position.y);
-        game.ctx.moveTo(this.Position.x, this.Position.y + 5);
-        game.ctx.lineTo(this.Position.x, this.Position.y - 5);
-        game.ctx.stroke();
+        this.image.draw(ms.game.ctx, new Vector(this.Position.x - this.Size.width / 2, this.Position.y - this.Size.height), this.Size);
+        ms.game.ctx.beginPath();
+        ms.game.ctx.strokeStyle = "black";
+        ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
+        ms.game.ctx.lineTo(this.Position.x + 5, this.Position.y);
+        ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
+        ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
+        ms.game.ctx.stroke();
 
-        game.ctx.fillStyle = 'black';
-        game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
-        game.ctx.fillText('frame time: ' + game.frameTime, this.Position.x - 30, this.Position.y - 130);
+        ms.game.ctx.fillStyle = 'black';
+        ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
+        ms.game.ctx.fillText('frame time: ' + ms.game.frameTime, this.Position.x - 30, this.Position.y - 130);
     }
 }

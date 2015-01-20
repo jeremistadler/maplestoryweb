@@ -25,7 +25,7 @@ var BackgroundTile = (function () {
     }
     BackgroundTile.LoadBackground = function (item) {
         var bg = new BackgroundTile();
-        bg.Tex = new Texture(http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
+        bg.Tex = new Texture(ms.http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
         bg.position = new Vector(item.x, item.y);
         bg.origin = new Vector(0, 0);
         bg.C = new Vector(item.cx, item.cy);
@@ -42,7 +42,7 @@ var BackgroundTile = (function () {
         var pos;
         switch (this.Type) {
             case 0 /* LensFlare */:
-                this.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
+                this.Tex.draw(ctx, Vector.Zero, new Size(ms.game.canvas.width, ms.game.canvas.height));
                 break;
             case 4 /* Clouds */:
         }

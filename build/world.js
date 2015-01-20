@@ -18,7 +18,7 @@ var World = (function () {
         this.targetPortal = targetPortal;
         this.BasePath = 'Map/Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
         var instance = this;
-        http.httpGetAsset(this.BasePath + 'properties.json', function (data) {
+        ms.http.httpGetAsset(this.BasePath + 'properties.json', function (data) {
             instance.loadData(data);
         });
     };
@@ -29,11 +29,11 @@ var World = (function () {
         this.portals = Portal.loadPortals(mapData.portal);
         for (var i = 0; i < this.portals.length; i++) {
             if (this.portals[i].name == this.targetPortal) {
-                player.Position = this.portals[i].position.clone();
+                ms.player.Position = this.portals[i].position.clone();
                 break;
             }
         }
-        camera.moveToPlayer();
+        ms.camera.moveToPlayer();
         for (var key in mapData.back) {
             var item = mapData.back[key];
         }
@@ -53,9 +53,9 @@ var World = (function () {
     };
     World.prototype.draw = function () {
         for (var i = 0; i < this.Backgrounds.length; i++)
-            this.Backgrounds[i].draw(game.ctx);
+            this.Backgrounds[i].draw(ms.game.ctx);
         for (var i = 0; i < this.LayeredTiles.length; i++)
-            this.LayeredTiles[i].draw(game.ctx);
+            this.LayeredTiles[i].draw(ms.game.ctx);
         //game.ctx.beginPath();
         //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
         //game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
@@ -73,9 +73,9 @@ var World = (function () {
         //        this.Footholds[i].draw(game.ctx);
         //game.ctx.fill();
         //game.ctx.stroke();
-        game.ctx.beginPath();
+        ms.game.ctx.beginPath();
         for (var i = 0; i < this.portals.length; i++)
-            this.portals[i].draw(game.ctx);
+            this.portals[i].draw(ms.game.ctx);
     };
     return World;
 })();

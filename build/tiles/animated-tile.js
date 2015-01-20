@@ -12,7 +12,7 @@ var AnimationSprite = (function () {
         this.currentFrame = 0;
         this.position = pos;
         var instance = this;
-        http.getJsonPropertyForPath(path, function (data) {
+        ms.http.getJsonPropertyForPath(path, function (data) {
             for (var key in data) {
                 if (isNaN(key))
                     continue;
@@ -21,7 +21,7 @@ var AnimationSprite = (function () {
                 var delay = data[key].delay || 600;
                 if (!origin)
                     continue;
-                frame.tex = new Texture(http.baseUrl + path + '/' + key + '.png');
+                frame.tex = new Texture(ms.http.baseUrl + path + '/' + key + '.png');
                 frame.origin = new Vector(origin.x, origin.y);
                 frame.id = parseInt(key);
                 frame.frameLength = delay;
@@ -54,7 +54,7 @@ var AnimationSprite = (function () {
     AnimationSprite.prototype.draw = function (ctx) {
         if (!this.loaded)
             return;
-        this.timeToNextFrame -= game.frameTime;
+        this.timeToNextFrame -= ms.game.frameTime;
         while (this.timeToNextFrame < 0) {
             this.currentFrame = (this.currentFrame + 1) % this.Frames.length;
             this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;

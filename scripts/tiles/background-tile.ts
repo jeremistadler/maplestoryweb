@@ -32,7 +32,7 @@ class BackgroundTile implements ITile {
 
     static LoadBackground(item: any): BackgroundTile {
         var bg = new BackgroundTile();
-        bg.Tex = new Texture(http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
+        bg.Tex = new Texture(ms.http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
         bg.position = new Vector(item.x, item.y);
         bg.origin = new Vector(0, 0);
         bg.C = new Vector(item.cx, item.cy);
@@ -50,7 +50,7 @@ class BackgroundTile implements ITile {
         var pos: Vector;
         switch (this.Type) {
             case BackgroundType.LensFlare:
-                this.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
+                this.Tex.draw(ctx, Vector.Zero, new Size(ms.game.canvas.width, ms.game.canvas.height));
                 break;
 
             case BackgroundType.Clouds:

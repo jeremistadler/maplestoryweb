@@ -5,6 +5,7 @@ interface ITile {
 }
 
 interface ILayeredTile {
+    draw(ctx: CanvasRenderingContext2D): void;
     position: Vector;
     z: number;
     layer: number;
@@ -32,7 +33,7 @@ class StaticTile implements ILayeredTile, ITile {
             tile.z = parseInt(tileKey);
             tile.position = new Vector(x, y);
             tile.origin = new Vector(0, 1000);
-            tile.Tex = new Texture(http.baseUrl + path + '.png');
+            tile.Tex = new Texture(ms.http.baseUrl + path + '.png');
             StaticTile.loadTileMetadata(tile, path);
 
             if (tile.layer < 7)
@@ -41,7 +42,7 @@ class StaticTile implements ILayeredTile, ITile {
     }
 
     static loadTileMetadata(tile, path) {
-        http.getJsonPropertyForPath(path, function (prop) {
+        ms.http.getJsonPropertyForPath(path, function (prop) {
             var origin = prop.origin;
             if (!origin || typeof origin.x != 'number')
                 debugger;
@@ -54,7 +55,5 @@ class StaticTile implements ILayeredTile, ITile {
         var y = this.position.y - this.origin.y;
 
         this.Tex.draw(ctx, new Vector(x, y));
-
-    
     }
 }

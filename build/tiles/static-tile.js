@@ -16,14 +16,14 @@ var StaticTile = (function () {
             tile.z = parseInt(tileKey);
             tile.position = new Vector(x, y);
             tile.origin = new Vector(0, 1000);
-            tile.Tex = new Texture(http.baseUrl + path + '.png');
+            tile.Tex = new Texture(ms.http.baseUrl + path + '.png');
             StaticTile.loadTileMetadata(tile, path);
             if (tile.layer < 7)
                 tileList.push(tile);
         }
     };
     StaticTile.loadTileMetadata = function (tile, path) {
-        http.getJsonPropertyForPath(path, function (prop) {
+        ms.http.getJsonPropertyForPath(path, function (prop) {
             var origin = prop.origin;
             if (!origin || typeof origin.x != 'number')
                 debugger;

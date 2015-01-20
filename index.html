@@ -7,19 +7,20 @@
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-    <div ng-app="maplestory">
-        <div ng-controller="minimap" class="window window__minimap">
+    <div>
+        <div class="window window__minimap">
             <p class="text">{{map.name}}</p>
             <img ng-src="{{map.minimap.background}}" class="image--full__width image--small__padding" />
         </div>
     </div>
 
     <script src="scripts/libs/jquery/jquery-2.1.1.js"></script>
-    <script src="scripts/libs/angular/angular.js"></script>
     <script src="scripts/libs/signalr/jquery.signalr-2.1.2.js"></script>
 
     <script src="build/vector.js"></script>
     <script src="build/tiles/animated-tile.js"></script>
+    <script src="build/UI.js"></script>
+    <script src="build/event.js"></script>
     <script src="build/tiles/background-tile.js"></script>
     <script src="build/portal.js"></script>
     <script src="build/tiles/static-tile.js"></script>

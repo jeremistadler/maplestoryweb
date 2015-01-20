@@ -1,5 +1,4 @@
 /// <reference path="libs/jquery/jquery.d.ts" />
-/// <reference path="libs/angular/angular.d.ts" />
 
 /// <reference path="world.ts" />
 /// <reference path="vector.ts" />
@@ -12,10 +11,6 @@
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
 /// <reference path="tiles/animated-tile.ts" />
-
-
-// http://fc09.deviantart.net/fs25/f/2008/086/e/e/Render__Henesys_by_iChicken.png
-
 
 class Game {
 	public ctx : CanvasRenderingContext2D;
@@ -41,62 +36,59 @@ class Game {
 	}	
 
 	update() {
-		http.update();
+		ms.http.update();
 		this.lastGameTime = this.totalGameTime;
 		this.totalGameTime = Date.now();
 		this.frameTime = this.totalGameTime - this.lastGameTime;
-		camera.update();
-		map.update();
-		player.update();
+		ms.camera.update();
+		ms.map.update();
+        ms.player.update();
 	}
+
 	draw() {
-		camera.reset();
+        ms.camera.reset();
 		this.ctx.fillStyle = 'rgb(100, 149, 237)';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 		
-		camera.draw();
-		map.draw();
-		player.draw();
+        ms.camera.draw();
+        ms.map.draw();
+        ms.player.draw();
 
-        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        //this.ctx.scale(0.1, 0.1);
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.scale(0.1, 0.1);
         //this.ctx.translate(-100, 0);
-        //map.draw();
+        ms.map.draw();
 	}
 }
 
-var game = new Game();
-var camera = new Camera();
-var map = new World();
-var player = new Player();
-var http = new HttpManager();
+class Engine {
+    public game: Game = new Game();
+    public camera: Camera = new Camera();
+    public map: World = new World();
+    public player: Player = new Player();
+    public http: HttpManager = new HttpManager();
+    public ui: UI = new UI();
 
-game.init();
-camera.init();
-player.init();
-map.loadMap('100000200');
+    run() {
+        this.game.init();
+        this.camera.init();
+        this.player.init();
 
+        this.map.loadMap('100000003', null);
 
-$(window).resize(function () {
-	game.resize();
-});
+        $(window).resize(function () {
+            this.game.resize();
+        });
 
-function gotAnimationFrame() {
-	requestAnimationFrame(gotAnimationFrame);
-	
-	game.update();
-	game.draw();
+        function gotAnimationFrame() {
+            requestAnimationFrame(gotAnimationFrame);
+
+            ms.game.update();
+            ms.game.draw();
+        }
+        gotAnimationFrame();
+    }
 }
-gotAnimationFrame();
 
-
-angular.module('maplestory', [])
-.controller('minimap', function ($scope) {
-	$scope.map = {
-		name: 'Henesys',
-		minimap: {
-			background: http.baseUrl + map.BasePath + 'minimap/canvas.png'
-		}
-	}
-});
-
+var ms = new Engine();
+ms.run();

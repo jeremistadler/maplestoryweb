@@ -26,7 +26,7 @@ var Portal = (function () {
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
         ctx.strokeStyle = 'green';
-        if (this.isPlayerTouching(player))
+        if (this.isPlayerTouching(ms.player))
             ctx.strokeStyle = 'red';
         ctx.stroke();
         ctx.fillStyle = 'white';

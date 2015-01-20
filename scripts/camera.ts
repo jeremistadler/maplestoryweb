@@ -9,18 +9,18 @@ class Camera {
     }
 
     reset() {
-        game.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ms.game.ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     moveToPlayer() {
-        this.Position.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);
-        this.Position.y = Math.round(player.Position.y + -game.canvas.height / 2 - player.Size.height / 2);
+        this.Position.x = Math.round(ms.player.Position.x + -ms.game.canvas.width / 2 - ms.player.Size.width / 2);
+        this.Position.y = Math.round(ms.player.Position.y + -ms.game.canvas.height / 2 - ms.player.Size.height / 2);
     }
 
     update() {
         var targetPos = new Vector(0, 0);
-        targetPos.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);
-        targetPos.y = Math.round(player.Position.y + -game.canvas.height / 2 - player.Size.height / 2);
+        targetPos.x = Math.round(ms.player.Position.x + -ms.game.canvas.width / 2 - ms.player.Size.width / 2);
+        targetPos.y = Math.round(ms.player.Position.y + -ms.game.canvas.height / 2 - ms.player.Size.height / 2);
 
         if (Math.abs(this.Position.x - targetPos.x) < 0.7)
             this.Position.x = targetPos.x;
@@ -32,7 +32,7 @@ class Camera {
     }
     draw() {
         this.reset();
-        game.ctx.translate(-this.Position.x, -this.Position.y);
-        game.ctx.scale(this.Zoom, this.Zoom);
+        ms.game.ctx.translate(-this.Position.x, -this.Position.y);
+        ms.game.ctx.scale(this.Zoom, this.Zoom);
     }
 }
