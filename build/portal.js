@@ -26,7 +26,7 @@ var Portal = (function () {
         ctx.arc(this.position.x, this.position.y, 20, 0, Math.PI * 2, false);
         ctx.strokeStyle = 'pink';
         ctx.stroke();
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'white';
         ctx.fillText(this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
     };
     Portal.loadPortals = function (data) {

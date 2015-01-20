@@ -31,7 +31,7 @@ class Portal {
         ctx.strokeStyle = 'pink';
         ctx.stroke();
 
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'white';
         ctx.fillText(this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
     }
 
