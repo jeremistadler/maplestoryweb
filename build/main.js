@@ -7,7 +7,6 @@
 /// <reference path="foothold.ts" />
 /// <reference path="camera.ts" />
 /// <reference path="portal.ts" />
-/// <reference path="sprites.ts" />
 /// <reference path="http-manager.ts" />
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
@@ -45,6 +44,10 @@ var Game = (function () {
         camera.draw();
         map.draw();
         player.draw();
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.scale(0.1, 0.1);
+        this.ctx.translate(-100, 0);
+        map.draw();
     };
     return Game;
 })();

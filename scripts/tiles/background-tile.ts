@@ -21,23 +21,35 @@ enum BackgroundType {
     unknown6
 }
 
-class BackgroundSprite {
+class BackgroundTile implements ITile {
     Type: BackgroundType;
     Tex: Texture;
     origin: Vector;
 
     C: Vector;
     R: Vector;
-    Position: Vector;
-    //  Tint :Color;
+    position: Vector;
+
+    static LoadBackground(item: any): BackgroundTile {
+        var bg = new BackgroundTile();
+        bg.Tex = new Texture(http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
+        bg.position = new Vector(item.x, item.y);
+        bg.origin = new Vector(0, 0);
+        bg.C = new Vector(item.cx, item.cy);
+        bg.R = new Vector(item.rx, item.ry);
+        if (item.type.type == 0) bg.Type = BackgroundType.LensFlare;
+        else bg.Type = BackgroundType.unknown6;
+
+        return bg;
+    }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.Tex.draw(ctx, Vector.minus(this.Position, this.origin));
+        this.Tex.draw(ctx, Vector.minus(this.position, this.origin));
         return;
 
         var pos: Vector;
         switch (this.Type) {
-            case BackgroundType.unknown2:
+            case BackgroundType.LensFlare:
                 this.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
                 break;
 

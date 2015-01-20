@@ -1,8 +1,8 @@
 /// <reference path="../main.ts" />
-var Tile = (function () {
-    function Tile() {
+var StaticTile = (function () {
+    function StaticTile() {
     }
-    Tile.loadTiles = function (layer, tileList) {
+    StaticTile.loadTiles = function (layer, tileList) {
         for (var tileKey in layer.tile) {
             var item = layer.tile[tileKey];
             var x = item.x;
@@ -11,17 +11,18 @@ var Tile = (function () {
             var u = item.u;
             var no = item.no;
             var path = 'Map/Tile/' + layer.info.tS + '.img/' + u + '/' + no;
-            var tile = new Tile();
-            tile.Position = new Vector(x, y);
-            tile.Z = parseInt(tileKey);
+            var tile = new StaticTile();
+            tile.layer = layer.id;
+            tile.z = parseInt(tileKey);
+            tile.position = new Vector(x, y);
+            tile.origin = new Vector(0, 1000);
             tile.Tex = new Texture(http.baseUrl + path + '.png');
-            tile.origin = new Vector(0, 0);
-            Tile.loadTileMetadata(tile, path);
-            tile.layer = parseInt(tileKey);
-            tileList.push(tile);
+            StaticTile.loadTileMetadata(tile, path);
+            if (tile.layer < 7)
+                tileList.push(tile);
         }
     };
-    Tile.loadTileMetadata = function (tile, path) {
+    StaticTile.loadTileMetadata = function (tile, path) {
         http.getJsonPropertyForPath(path, function (prop) {
             var origin = prop.origin;
             if (!origin || typeof origin.x != 'number')
@@ -29,8 +30,10 @@ var Tile = (function () {
             tile.origin = new Vector(origin.x, origin.y);
         });
     };
-    Tile.prototype.draw = function (ctx) {
-        this.Tex.draw(ctx, Vector.minus(this.Position, this.origin));
+    StaticTile.prototype.draw = function (ctx) {
+        var x = this.position.x - this.origin.x;
+        var y = this.position.y - this.origin.y;
+        this.Tex.draw(ctx, new Vector(x, y));
     };
-    return Tile;
+    return StaticTile;
 })();

@@ -7,17 +7,17 @@ class AnimationFrame {
     public origin: Vector
 }
 
-class AnimationSprite {
+class AnimationSprite implements ILayeredTile, ITile {
     Frames: AnimationFrame[] = [];
-    Position: Vector;
-    Z: number;
+    position: Vector;
+    z: number;
     loaded: boolean = false;
     layer: number;
     timeToNextFrame: number = 0;
     currentFrame: number = 0;
 
     constructor(path: string, pos: Vector) {
-        this.Position = pos;
+        this.position = pos;
         var instance = this;
         http.getJsonPropertyForPath(path, (data) => {
             for (var key in data) {
@@ -27,7 +27,7 @@ class AnimationSprite {
                 var frame = new AnimationFrame();
 
                 var origin = data[key].origin;
-                var delay = data[key].delay || 100;
+                var delay = data[key].delay || 600;
 
                 if (!origin)
                     continue;
@@ -63,8 +63,8 @@ class AnimationSprite {
 
             var spriteName = "Map/Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
             var animation = new AnimationSprite(spriteName, new Vector(x, y));
-            animation.Z = z;
-            animation.layer = parseInt(objKey);
+            animation.z = z;
+            animation.layer = layer.id;
             tileList.push(animation);
         }
     }
@@ -82,8 +82,8 @@ class AnimationSprite {
 
         var flipped = false;
 
-        var topLeftX = this.Position.x - frame.origin.x;
-        var topLeftY = this.Position.y - frame.origin.y;
+        var topLeftX = this.position.x - frame.origin.x;
+        var topLeftY = this.position.y - frame.origin.y;
 
         frame.tex.draw(ctx, new Vector(topLeftX, topLeftY));
     }

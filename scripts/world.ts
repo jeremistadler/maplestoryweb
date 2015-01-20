@@ -5,9 +5,8 @@ class World {
     portals: Portal[] = [];
     Id: string;
     BasePath: string;
-    Backgrounds: BackgroundSprite[] = [];
-    Animations: AnimationSprite[] = [];
-    Tiles: Tile[] = [];
+    Backgrounds: BackgroundTile[] = [];
+    LayeredTiles: ILayeredTiles[] = [];
     loaded: boolean = false;
     size: Size;
     center: Vector = new Vector(0, 0);
@@ -27,18 +26,11 @@ class World {
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(mapData.portal);
 
-        //for (var key in mapData.back) {
-        //	var item = mapData.back[key];
-        //	var bg = new BackgroundSprite();
-        //	bg.Sprite = new TextureSprite('Map/Back/' + item.bS + '.img/back/' + item.no);
-        //	bg.Position = new Vector(item.x, item.y);
-        //	bg.C = new Vector(item.cx, item.cy);
-        //	bg.R = new Vector(item.rx, item.ry);
-        //	if (item.type.type == 0) bg.Type = BackgroundType.LensFlare;
-        //	else bg.Type = BackgroundType.unknown6;
-
-        //	this.Backgrounds.push(bg);
-        //}
+        for (var key in mapData.back) {
+        	var item = mapData.back[key];
+            //var back = BackgroundTile.LoadBackground(item);
+        	//this.Backgrounds.push(back);
+        }
 
         for (var key in mapData) {
             var layer = mapData[key];
@@ -47,15 +39,11 @@ class World {
 
             layer.id = parseInt(key);
 
-            Tile.loadTiles(layer, this.Tiles);
-            //AnimationSprite.loadTiles(layer, this.Animations);
+            StaticTile.loadTiles(layer, this.LayeredTiles);
+            AnimationSprite.loadTiles(layer, this.LayeredTiles);
         }
 
-        this.Tiles.sort(function (a, b) {
-            return (a.layer * 1000 + a.Z) - (b.layer * 1000 + b.Z)
-        });
-        this.Animations.sort((a, b) => a.layer * 1000 + a.Z - b.layer * 1000 + b.Z);
-
+        this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z) );
         this.loaded = true;
     }
 
@@ -65,12 +53,8 @@ class World {
         for (var i = 0; i < this.Backgrounds.length; i++)
             this.Backgrounds[i].draw(game.ctx);
 
-        for (var i = 0; i < this.Animations.length; i++)
-            this.Animations[i].draw(game.ctx);
-
-
-        for (var i = 0; i < this.Tiles.length; i++)
-            this.Tiles[i].draw(game.ctx);
+        for (var i = 0; i < this.LayeredTiles.length; i++)
+            this.LayeredTiles[i].draw(game.ctx);
 
         game.ctx.beginPath();
         game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';

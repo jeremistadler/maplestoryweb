@@ -20,20 +20,32 @@ var BackgroundType;
     BackgroundType[BackgroundType["Clouds"] = 4] = "Clouds";
     BackgroundType[BackgroundType["unknown6"] = 5] = "unknown6";
 })(BackgroundType || (BackgroundType = {}));
-var BackgroundSprite = (function () {
-    function BackgroundSprite() {
+var BackgroundTile = (function () {
+    function BackgroundTile() {
     }
-    //  Tint :Color;
-    BackgroundSprite.prototype.draw = function (ctx) {
-        this.Sprite.Tex.draw(ctx, Vector.plus(this.Position, this.Sprite.Offset));
+    BackgroundTile.LoadBackground = function (item) {
+        var bg = new BackgroundTile();
+        bg.Tex = new Texture(http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
+        bg.position = new Vector(item.x, item.y);
+        bg.origin = new Vector(0, 0);
+        bg.C = new Vector(item.cx, item.cy);
+        bg.R = new Vector(item.rx, item.ry);
+        if (item.type.type == 0)
+            bg.Type = 0 /* LensFlare */;
+        else
+            bg.Type = 5 /* unknown6 */;
+        return bg;
+    };
+    BackgroundTile.prototype.draw = function (ctx) {
+        this.Tex.draw(ctx, Vector.minus(this.position, this.origin));
         return;
         var pos;
         switch (this.Type) {
-            case 1 /* unknown2 */:
-                this.Sprite.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
+            case 0 /* LensFlare */:
+                this.Tex.draw(ctx, Vector.Zero, new Size(game.canvas.width, game.canvas.height));
                 break;
             case 4 /* Clouds */:
         }
     };
-    return BackgroundSprite;
+    return BackgroundTile;
 })();

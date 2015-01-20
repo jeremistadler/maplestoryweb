@@ -1,9 +1,6 @@
 /// <reference path="../main.ts" />
 var AnimationFrame = (function () {
-    function AnimationFrame(tex, frameLength, origin) {
-        this.tex = tex;
-        this.frameLength = frameLength;
-        this.origin = origin;
+    function AnimationFrame() {
     }
     return AnimationFrame;
 })();
@@ -13,18 +10,24 @@ var AnimationSprite = (function () {
         this.loaded = false;
         this.timeToNextFrame = 0;
         this.currentFrame = 0;
-        this.Position = pos;
+        this.position = pos;
         var instance = this;
         http.getJsonPropertyForPath(path, function (data) {
             for (var key in data) {
                 if (isNaN(key))
                     continue;
+                var frame = new AnimationFrame();
                 var origin = data[key].origin;
+                var delay = data[key].delay || 600;
                 if (!origin)
                     continue;
-                var frame = new AnimationFrame(new Texture(http.baseUrl + path + '/' + key + '.png'), data[key].delay || 200, new Vector(origin.x, origin.y));
+                frame.tex = new Texture(http.baseUrl + path + '/' + key + '.png');
+                frame.origin = new Vector(origin.x, origin.y);
+                frame.id = parseInt(key);
+                frame.frameLength = delay;
                 instance.Frames.push(frame);
             }
+            instance.Frames.sort(function (a, b) { return b.id - a.id; });
             instance.loaded = true;
             instance.timeToNextFrame = instance.Frames[0].frameLength;
         });
@@ -43,8 +46,8 @@ var AnimationSprite = (function () {
             //    continue;
             var spriteName = "Map/Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
             var animation = new AnimationSprite(spriteName, new Vector(x, y));
-            animation.Z = z;
-            animation.layer = parseInt(objKey);
+            animation.z = z;
+            animation.layer = layer.id;
             tileList.push(animation);
         }
     };
@@ -57,7 +60,10 @@ var AnimationSprite = (function () {
             this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;
         }
         var frame = this.Frames[this.currentFrame];
-        frame.tex.draw(ctx, new Vector(this.Position.x - frame.origin.x, this.Position.y - frame.origin.y));
+        var flipped = false;
+        var topLeftX = this.position.x - frame.origin.x;
+        var topLeftY = this.position.y - frame.origin.y;
+        frame.tex.draw(ctx, new Vector(topLeftX, topLeftY));
     };
     return AnimationSprite;
 })();

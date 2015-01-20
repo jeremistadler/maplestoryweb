@@ -1,14 +1,23 @@
 ﻿/// <reference path="../main.ts" />
 
-class Tile {
-    Position: Vector;
+interface ITile {
+    draw(ctx: CanvasRenderingContext2D): void;
+}
+
+interface ILayeredTile {
+    position: Vector;
+    z: number;
+    layer: number;
+}
+
+class StaticTile implements ILayeredTile, ITile {
+    position: Vector;
     origin: Vector;
-    //Tint: Color;
-    Z: number;
+    z: number;
     layer: number;
     Tex: Texture;
 
-    static loadTiles(layer, tileList : Tile[]) {
+    static loadTiles(layer, tileList : StaticTile[]) {
         for (var tileKey in layer.tile) {
             var item = layer.tile[tileKey];
             var x = item.x;
@@ -18,15 +27,15 @@ class Tile {
             var no = item.no;
 
             var path = 'Map/Tile/' + layer.info.tS + '.img/' + u + '/' + no;
-            var tile = new Tile();
+            var tile = new StaticTile();
             tile.layer = layer.id;
-            tile.Z = parseInt(tileKey);
-            tile.Position = new Vector(x, y);
+            tile.z = parseInt(tileKey);
+            tile.position = new Vector(x, y);
             tile.origin = new Vector(0, 1000);
             tile.Tex = new Texture(http.baseUrl + path + '.png');
-            Tile.loadTileMetadata(tile, path);
+            StaticTile.loadTileMetadata(tile, path);
 
-            if (tile.layer == 1)
+            if (tile.layer < 7)
                 tileList.push(tile);
         }
     }
@@ -41,16 +50,11 @@ class Tile {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        var x = this.Position.x - this.origin.x;
-        var y = this.Position.y - this.origin.y;
+        var x = this.position.x - this.origin.x;
+        var y = this.position.y - this.origin.y;
 
         this.Tex.draw(ctx, new Vector(x, y));
 
-        if (this.Tex.hasLoaded) {
-            ctx.fillStyle = 'hsla(' + ((this.Z) % 360) + ', 50%, 50%, 0.4)';
-            ctx.fillRect(x, y, this.Tex.image.width, this.Tex.image.height);
-            ctx.fillStyle = 'rgb(0, 0, 0)';
-            ctx.fillText('origin: x: ' + this.origin.x + '  y: ' + this.origin.y, x, y);
-        }
+    
     }
 }
