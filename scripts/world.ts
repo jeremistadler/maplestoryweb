@@ -6,17 +6,23 @@ class World {
     Id: string;
     BasePath: string;
     Backgrounds: BackgroundTile[] = [];
-    LayeredTiles: ILayeredTiles[] = [];
+    LayeredTiles: ILayeredTile[] = [];
     loaded: boolean = false;
     size: Size;
     center: Vector = new Vector(0, 0);
+    targetPortal: string;
 
-    init(id: string) {
+    loadMap(id: string, targetPortal: string) {
+        this.loaded = false;
+        this.Footholds = [];
+        this.LayeredTiles = [];
+        this.Backgrounds = [];
+        this.portals = [];
         this.Id = id;
+        this.targetPortal = targetPortal;
         this.BasePath = 'Map/Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
         var instance = this;
         http.httpGetAsset(this.BasePath + 'properties.json', function (data) { instance.loadData(data) });
-
     }
 
     loadData(mapData) {
@@ -25,6 +31,14 @@ class World {
 
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(mapData.portal);
+
+        for (var i = 0; i < this.portals.length; i++) {
+            if (this.portals[i].name == this.targetPortal) {
+                player.Position = this.portals[i].position.clone();
+                break;
+            }
+        }
+        camera.moveToPlayer();
 
         for (var key in mapData.back) {
         	var item = mapData.back[key];
@@ -38,6 +52,8 @@ class World {
                 continue;
 
             layer.id = parseInt(key);
+
+            //if (layer.id != 1) continue;
 
             StaticTile.loadTiles(layer, this.LayeredTiles);
             AnimationSprite.loadTiles(layer, this.LayeredTiles);

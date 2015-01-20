@@ -44,10 +44,10 @@ var Game = (function () {
         camera.draw();
         map.draw();
         player.draw();
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.scale(0.1, 0.1);
-        this.ctx.translate(-100, 0);
-        map.draw();
+        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //this.ctx.scale(0.1, 0.1);
+        //this.ctx.translate(-100, 0);
+        //map.draw();
     };
     return Game;
 })();
@@ -59,7 +59,7 @@ var http = new HttpManager();
 game.init();
 camera.init();
 player.init();
-map.init('100000200');
+map.loadMap('100000200');
 $(window).resize(function () {
     game.resize();
 });

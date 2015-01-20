@@ -17,7 +17,7 @@ class StaticTile implements ILayeredTile, ITile {
     layer: number;
     Tex: Texture;
 
-    static loadTiles(layer, tileList : StaticTile[]) {
+    static loadTiles(layer, tileList : ILayeredTile[]) {
         for (var tileKey in layer.tile) {
             var item = layer.tile[tileKey];
             var x = item.x;

@@ -12,6 +12,11 @@ class Camera {
         game.ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
+    moveToPlayer() {
+        this.Position.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);
+        this.Position.y = Math.round(player.Position.y + -game.canvas.height / 2 - player.Size.height / 2);
+    }
+
     update() {
         var targetPos = new Vector(0, 0);
         targetPos.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);

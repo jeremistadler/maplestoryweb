@@ -36,7 +36,16 @@ class Player {
             this.Velocity.x = 3;
 
         if (e.keyCode == KeyCodes.down) { this.Position.y++; this.Velocity.y++; }
-        if (e.keyCode == KeyCodes.up) { }
+        if (e.keyCode == KeyCodes.up) {
+            if (map.loaded) {
+                for (var i = 0; i < map.portals.length; i++) {
+                    if (map.portals[i].isPlayerTouching(player)) {
+                        map.loadMap(map.portals[i].toMapId + '', map.portals[i].toPortal);
+                        break;
+                    }
+                }
+            }
+        }
         if (e.keyCode == KeyCodes.space) {
             if (this.hasJumped == false) {
                 this.Velocity.y -= 8;

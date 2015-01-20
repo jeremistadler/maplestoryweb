@@ -31,6 +31,14 @@ var Player = (function () {
             this.Velocity.y++;
         }
         if (e.keyCode == 38 /* up */) {
+            if (map.loaded) {
+                for (var i = 0; i < map.portals.length; i++) {
+                    if (map.portals[i].isPlayerTouching(player)) {
+                        map.loadMap(map.portals[i].toMapId + '', map.portals[i].toPortal);
+                        break;
+                    }
+                }
+            }
         }
         if (e.keyCode == 32 /* space */) {
             if (this.hasJumped == false) {

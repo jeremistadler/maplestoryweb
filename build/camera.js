@@ -9,6 +9,10 @@ var Camera = (function () {
     Camera.prototype.reset = function () {
         game.ctx.setTransform(1, 0, 0, 1, 0, 0);
     };
+    Camera.prototype.moveToPlayer = function () {
+        this.Position.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);
+        this.Position.y = Math.round(player.Position.y + -game.canvas.height / 2 - player.Size.height / 2);
+    };
     Camera.prototype.update = function () {
         var targetPos = new Vector(0, 0);
         targetPos.x = Math.round(player.Position.x + -game.canvas.width / 2 - player.Size.width / 2);

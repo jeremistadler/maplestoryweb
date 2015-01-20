@@ -39,11 +39,17 @@ var Vector = (function () {
     Vector.dot = function (v1, v2) {
         return v1.x * v2.x + v1.y * v2.y;
     };
+    Vector.distance = function (v1, v2) {
+        return Math.sqrt(Math.abs(v1.x - v2.x) + Math.abs(v1.y - v2.y));
+    };
     Vector.mag = function (v) {
         return Math.sqrt(v.x * v.x + v.y * v.y);
     };
     Vector.lerp = function (v0, v1, t) {
         return new Vector(v0.x + t * (v1.x - v0.x), v0.y + t * (v1.y - v0.y));
+    };
+    Vector.prototype.clone = function () {
+        return new Vector(this.x, this.y);
     };
     Vector.norm = function (v) {
         var mag = Vector.mag(v);

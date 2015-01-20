@@ -20,14 +20,21 @@ var PortalTypeNames;
 ;
 var Portal = (function () {
     function Portal() {
+        this.size = 20;
     }
     Portal.prototype.draw = function (ctx) {
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, 20, 0, Math.PI * 2, false);
-        ctx.strokeStyle = 'pink';
+        ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
+        ctx.strokeStyle = 'green';
+        if (this.isPlayerTouching(player))
+            ctx.strokeStyle = 'red';
         ctx.stroke();
         ctx.fillStyle = 'white';
         ctx.fillText(this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+    };
+    Portal.prototype.isPlayerTouching = function (play) {
+        var distance = Vector.distance(this.position, play.Position);
+        return distance < 4;
     };
     Portal.loadPortals = function (data) {
         var list = [];

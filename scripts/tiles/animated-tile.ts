@@ -46,7 +46,7 @@ class AnimationSprite implements ILayeredTile, ITile {
         });
     }
 
-    static loadTiles(layer, tileList: AnimationSprite[]) {
+    static loadTiles(layer, tileList: ILayeredTile[]) {
         for (var objKey in layer["obj"]) {
             var item = layer["obj"][objKey];
             var x = item.x;
