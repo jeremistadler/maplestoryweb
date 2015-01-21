@@ -48,7 +48,7 @@ var Portal = (function () {
             portal.toMapId = item.tm;
             portal.toPortal = item.tn;
             portal.name = item.pn;
-            portal.id = key;
+            portal.id = parseInt(key);
             portal.type = item.pt;
             list.push(portal);
         }

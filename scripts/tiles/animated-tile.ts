@@ -15,6 +15,7 @@ class AnimationSprite implements ILayeredTile, ITile {
     layer: number;
     timeToNextFrame: number = 0;
     currentFrame: number = 0;
+    flip: boolean;
 
     constructor(path: string, pos: Vector) {
         this.position = pos;
@@ -51,20 +52,25 @@ class AnimationSprite implements ILayeredTile, ITile {
             var item = layer["obj"][objKey];
             var x = item.x;
             var y = item.y;
-            var z = item.zM;
+            var z = item.z;
 
-            var u = item.oS;
+            var objectSet = item.oS;
             var l0 = item.l0;
             var l1 = item.l1;
             var l2 = item.l2;
+            var quest = item.quest;
 
             //if (l0 != 'house14' || l2 != 2)
             //    continue;
 
-            var spriteName = "Map/Obj/" + u + ".img/" + l0 + "/" + l1 + "/" + l2;
+            if (typeof item.piece === 'number')
+                continue;
+
+            var spriteName = "Map/Obj/" + objectSet + ".img/" + l0 + "/" + l1 + "/" + l2;
             var animation = new AnimationSprite(spriteName, new Vector(x, y));
             animation.z = z;
             animation.layer = layer.id;
+            animation.flip = item.flip == '1';
             tileList.push(animation);
         }
     }

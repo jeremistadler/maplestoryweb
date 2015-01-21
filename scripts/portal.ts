@@ -23,7 +23,7 @@ class Portal {
     public toPortal: string;
     public name: string;
     public position: Vector;
-    public id: string;
+    public id: number;
     public size: number = 30;
     public type: PortalType;
 
@@ -59,7 +59,7 @@ class Portal {
             portal.toMapId = item.tm;
             portal.toPortal = item.tn;
             portal.name = item.pn;
-            portal.id = key;
+            portal.id = parseInt(key);
             portal.type = <PortalType>item.pt;
 
             list.push(portal);

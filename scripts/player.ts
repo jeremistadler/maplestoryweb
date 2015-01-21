@@ -33,6 +33,7 @@ class Player {
         for (var i = 0; i < ms.map.portals.length; i++) {
             if (ms.map.portals[i].name == "" || true) {
                 this.Position = ms.map.portals[i].position.clone();
+                this.Position.y -= 10;
                 break;
             }
         }
@@ -43,6 +44,7 @@ class Player {
         for (var i = 0; i < ms.map.portals.length; i++) {
             if (ms.map.portals[i].name == name) {
                 this.Position = ms.map.portals[i].position.clone();
+                this.Position.y -= 10;
                 moved = true;
                 break;
             }
@@ -67,7 +69,7 @@ class Player {
                             ms.player.moveToPortal(ms.map.portals[i].toPortal);
                         }
                         else {
-                            ms.map.loadMap(ms.map.portals[i].toMapId + '', ms.map.portals[i].toPortal);
+                            ms.map.loadMap(ms.map.portals[i].toMapId, ms.map.portals[i].toPortal);
                         }
 
                         break;

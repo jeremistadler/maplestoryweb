@@ -5,6 +5,7 @@
 /// <reference path="texture.ts" />
 /// <reference path="foothold.ts" />
 /// <reference path="camera.ts" />
+/// <reference path="event.ts" />
 /// <reference path="portal.ts" />
 /// <reference path="UI.ts" />
 /// <reference path="http-manager.ts" />
