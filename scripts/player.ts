@@ -29,6 +29,29 @@ class Player {
         window.onkeyup = (e) => instance.onKeyUp(e);
     }
 
+    moveToRandomPortal() {
+        for (var i = 0; i < ms.map.portals.length; i++) {
+            if (ms.map.portals[i].name == "" || true) {
+                this.Position = ms.map.portals[i].position.clone();
+                break;
+            }
+        }
+    }
+
+    moveToPortal(name) {
+        var moved = false;
+        for (var i = 0; i < ms.map.portals.length; i++) {
+            if (ms.map.portals[i].name == name) {
+                this.Position = ms.map.portals[i].position.clone();
+                moved = true;
+                break;
+            }
+        }
+
+        if (!moved)
+            this.moveToRandomPortal();
+    }
+
     onKeyDown(e: KeyboardEvent) {
         if (e.keyCode == KeyCodes.left)
             this.Velocity.x = -3;
@@ -39,8 +62,14 @@ class Player {
         if (e.keyCode == KeyCodes.up) {
             if (ms.map.loaded) {
                 for (var i = 0; i < ms.map.portals.length; i++) {
-                    if (ms.map.portals[i].isPlayerTouching(ms.player)) {
-                        ms.map.loadMap(ms.map.portals[i].toMapId + '', ms.map.portals[i].toPortal);
+                    if (ms.map.portals[i].canUse(ms.player)) {
+                        if (ms.map.portals[i].toMapId == ms.map.Id) {
+                            ms.player.moveToPortal(ms.map.portals[i].toPortal);
+                        }
+                        else {
+                            ms.map.loadMap(ms.map.portals[i].toMapId + '', ms.map.portals[i].toPortal);
+                        }
+
                         break;
                     }
                 }
@@ -60,6 +89,8 @@ class Player {
         else if (e.keyCode == KeyCodes.right && this.Velocity.x > 0) // right
             this.Velocity.x = 0;
     }
+
+
 
     update() {
         if (!ms.map.loaded) return;

@@ -3,7 +3,7 @@
 class World {
     Footholds: Foothold[] = [];
     portals: Portal[] = [];
-    Id: string;
+    Id: number;
     BasePath: string;
     Backgrounds: BackgroundTile[] = [];
     LayeredTiles: ILayeredTile[] = [];
@@ -12,7 +12,7 @@ class World {
     center: Vector = new Vector(0, 0);
     targetPortal: string;
 
-    loadMap(id: string, targetPortal: string) {
+    loadMap(id: number, targetPortal: string) {
         this.loaded = false;
         this.Footholds = [];
         this.LayeredTiles = [];
@@ -20,7 +20,7 @@ class World {
         this.portals = [];
         this.Id = id;
         this.targetPortal = targetPortal;
-        this.BasePath = 'Map/Map/Map' + this.Id.substr(0, 1) + '/' + this.Id + '.img/';
+        this.BasePath = 'Map/Map/Map' + id.toString().substr(0, 1) + '/' + this.Id + '.img/';
         var instance = this;
         ms.http.httpGetAsset(this.BasePath + 'properties.json', function (data) { instance.loadData(data) });
     }
@@ -32,12 +32,7 @@ class World {
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(mapData.portal);
 
-        for (var i = 0; i < this.portals.length; i++) {
-            if (this.portals[i].name == this.targetPortal) {
-                ms.player.Position = this.portals[i].position.clone();
-                break;
-            }
-        }
+        ms.player.moveToPortal(this.targetPortal);
         ms.camera.moveToPlayer();
 
         for (var key in mapData.back) {
@@ -48,14 +43,18 @@ class World {
 
         for (var key in mapData) {
             var layer = mapData[key];
-            if (!layer.info || !layer.info.tS)
+            var id = parseInt(key);
+
+            if (isNaN(id))
                 continue;
 
-            layer.id = parseInt(key);
+            layer.id = id;
 
             //if (layer.id != 1) continue;
 
-            StaticTile.loadTiles(layer, this.LayeredTiles);
+            if (layer.info && layer.info.tS)
+                StaticTile.loadTiles(layer, this.LayeredTiles);
+
             AnimationSprite.loadTiles(layer, this.LayeredTiles);
         }
 

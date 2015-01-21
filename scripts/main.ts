@@ -7,6 +7,7 @@
 /// <reference path="foothold.ts" />
 /// <reference path="camera.ts" />
 /// <reference path="portal.ts" />
+/// <reference path="UI.ts" />
 /// <reference path="http-manager.ts" />
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
@@ -55,8 +56,8 @@ class Game {
         ms.player.draw();
 
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.translate(this.canvas.width / 2, 100);
         this.ctx.scale(0.1, 0.1);
-        //this.ctx.translate(-100, 0);
         ms.map.draw();
 	}
 }
@@ -74,10 +75,10 @@ class Engine {
         this.camera.init();
         this.player.init();
 
-        this.map.loadMap('100000003', null);
+        this.map.loadMap(100000003, null);
 
         $(window).resize(function () {
-            this.game.resize();
+            ms.game.resize();
         });
 
         function gotAnimationFrame() {

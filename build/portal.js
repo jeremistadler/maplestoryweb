@@ -1,22 +1,22 @@
 /// <reference path="main.ts" />
-var PortalTypeNames;
-(function (PortalTypeNames) {
-    PortalTypeNames[PortalTypeNames["Start Point"] = 0] = "Start Point";
-    PortalTypeNames[PortalTypeNames["Invisible"] = 1] = "Invisible";
-    PortalTypeNames[PortalTypeNames["Visible"] = 2] = "Visible";
-    PortalTypeNames[PortalTypeNames["Collision"] = 3] = "Collision";
-    PortalTypeNames[PortalTypeNames["Changable"] = 4] = "Changable";
-    PortalTypeNames[PortalTypeNames["Changable Invisible"] = 5] = "Changable Invisible";
-    PortalTypeNames[PortalTypeNames["Town Portal"] = 6] = "Town Portal";
-    PortalTypeNames[PortalTypeNames["Script"] = 7] = "Script";
-    PortalTypeNames[PortalTypeNames["Script Invisible"] = 8] = "Script Invisible";
-    PortalTypeNames[PortalTypeNames["Script Collision"] = 9] = "Script Collision";
-    PortalTypeNames[PortalTypeNames["Hidden"] = 10] = "Hidden";
-    PortalTypeNames[PortalTypeNames["Script Hidden"] = 11] = "Script Hidden";
-    PortalTypeNames[PortalTypeNames["Vertical Spring"] = 12] = "Vertical Spring";
-    PortalTypeNames[PortalTypeNames["Custom Impact Spring"] = 13] = "Custom Impact Spring";
-    PortalTypeNames[PortalTypeNames["Unknown (PCIG)"] = 14] = "Unknown (PCIG)";
-})(PortalTypeNames || (PortalTypeNames = {}));
+var PortalType;
+(function (PortalType) {
+    PortalType[PortalType["Start Point"] = 0] = "Start Point";
+    PortalType[PortalType["Invisible"] = 1] = "Invisible";
+    PortalType[PortalType["Visible"] = 2] = "Visible";
+    PortalType[PortalType["Collision"] = 3] = "Collision";
+    PortalType[PortalType["Changable"] = 4] = "Changable";
+    PortalType[PortalType["Changable Invisible"] = 5] = "Changable Invisible";
+    PortalType[PortalType["Town Portal"] = 6] = "Town Portal";
+    PortalType[PortalType["Script"] = 7] = "Script";
+    PortalType[PortalType["Script Invisible"] = 8] = "Script Invisible";
+    PortalType[PortalType["Script Collision"] = 9] = "Script Collision";
+    PortalType[PortalType["Hidden"] = 10] = "Hidden";
+    PortalType[PortalType["Script Hidden"] = 11] = "Script Hidden";
+    PortalType[PortalType["Vertical Spring"] = 12] = "Vertical Spring";
+    PortalType[PortalType["Custom Impact Spring"] = 13] = "Custom Impact Spring";
+    PortalType[PortalType["Unknown (PCIG)"] = 14] = "Unknown (PCIG)";
+})(PortalType || (PortalType = {}));
 ;
 var Portal = (function () {
     function Portal() {
@@ -30,11 +30,14 @@ var Portal = (function () {
             ctx.strokeStyle = 'red';
         ctx.stroke();
         ctx.fillStyle = 'white';
-        ctx.fillText(this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+        ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+    };
+    Portal.prototype.canUse = function (player) {
+        return this.isPlayerTouching(player) && (this.type == 2 /* Visible */ || this.type == 10 /* Hidden */);
     };
     Portal.prototype.isPlayerTouching = function (play) {
-        var distance = Vector.distance(this.position, play.Position);
-        return distance < 4;
+        var distance = Vector.distanceSquared(this.position, play.Position);
+        return distance < this.size * this.size;
     };
     Portal.loadPortals = function (data) {
         var list = [];
@@ -46,6 +49,7 @@ var Portal = (function () {
             portal.toPortal = item.tn;
             portal.name = item.pn;
             portal.id = key;
+            portal.type = item.pt;
             list.push(portal);
         }
         return list;

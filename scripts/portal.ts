@@ -1,6 +1,6 @@
 ﻿/// <reference path="main.ts" />
 
-enum PortalTypeNames {
+enum PortalType {
     "Start Point",
     "Invisible",
     "Visible",
@@ -25,6 +25,7 @@ class Portal {
     public position: Vector;
     public id: string;
     public size: number = 20;
+    public type: PortalType;
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
@@ -35,12 +36,17 @@ class Portal {
         ctx.stroke();
 
         ctx.fillStyle = 'white';
-        ctx.fillText(this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+        ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+    }
+
+    canUse(player: Player) {
+        return this.isPlayerTouching(player) &&
+            (this.type == PortalType.Visible || this.type == PortalType.Hidden);
     }
 
     isPlayerTouching(play: Player) {
-        var distance = Vector.distance(this.position, play.Position);
-        return distance < 4;
+        var distance = Vector.distanceSquared(this.position, play.Position);
+        return distance < this.size * this.size;
     }
 
     static loadPortals(data): Portal[] {
@@ -54,6 +60,7 @@ class Portal {
             portal.toPortal = item.tn;
             portal.name = item.pn;
             portal.id = key;
+            portal.type = <PortalType>item.pt;
 
             list.push(portal);
         }

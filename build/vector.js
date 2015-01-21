@@ -39,8 +39,11 @@ var Vector = (function () {
     Vector.dot = function (v1, v2) {
         return v1.x * v2.x + v1.y * v2.y;
     };
+    Vector.distanceSquared = function (v1, v2) {
+        return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
+    };
     Vector.distance = function (v1, v2) {
-        return Math.sqrt(Math.abs(v1.x - v2.x) + Math.abs(v1.y - v2.y));
+        return Math.sqrt(Vector.distanceSquared(v1, v2));
     };
     Vector.mag = function (v) {
         return Math.sqrt(v.x * v.x + v.y * v.y);
