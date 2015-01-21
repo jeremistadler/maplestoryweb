@@ -1,26 +1,19 @@
 /// <reference path="main.ts" />
 var UI = (function () {
     function UI() {
-        this.onLogin = new MSEvent();
-        this.onLogout = new MSEvent();
     }
-    Object.defineProperty(UI.prototype, "LoggedIn", {
-        get: function () {
-            return this.onLogin;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UI.prototype, "LoggedOut", {
-        get: function () {
-            return this.onLogout;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UI.prototype.test = function () {
-        this.onLogin.trigger('bob');
+    UI.prototype.init = function () {
+        var instance = this;
+        ms.map.mapLoadedEvent.on(instance.mapChanged);
         //http.baseUrl + map.BasePath + 'minimap/canvas.png'
+    };
+    UI.prototype.mapChanged = function () {
+        var nameElm = document.getElementById('map_name');
+        nameElm.innerHTML = ms.map.name;
+        var imgElm = document.getElementById('minimap_image');
+        imgElm.src = ms.http.baseUrl + ms.map.BasePath + 'minimap/canvas.png';
+    };
+    UI.prototype.update = function () {
     };
     return UI;
 })();

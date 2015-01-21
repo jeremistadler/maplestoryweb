@@ -19,6 +19,7 @@ var Game = (function () {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.ctx = this.canvas.getContext('2d', { alpha: false });
+        this.ctx.font = '12px Segoe UI';
         this.totalGameTime = Date.now();
         this.lastGameTime = this.totalGameTime - 20;
         this.frameTime = 20;
@@ -35,6 +36,7 @@ var Game = (function () {
         ms.camera.update();
         ms.map.update();
         ms.player.update();
+        ms.ui.update();
     };
     Game.prototype.draw = function () {
         ms.camera.reset();
@@ -63,7 +65,8 @@ var Engine = (function () {
         this.game.init();
         this.camera.init();
         this.player.init();
-        this.map.loadMap(100000003, null);
+        this.ui.init();
+        this.map.loadMap(100000000, null);
         $(window).resize(function () {
             ms.game.resize();
         });

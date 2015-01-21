@@ -7,6 +7,7 @@ var World = (function () {
         this.LayeredTiles = [];
         this.loaded = false;
         this.center = new Vector(0, 0);
+        this.mapLoadedEvent = new MapleEvent();
     }
     World.prototype.loadMap = function (id, targetPortal) {
         this.loaded = false;
@@ -25,6 +26,7 @@ var World = (function () {
     World.prototype.loadData = function (mapData) {
         this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
         this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
+        this.name = mapData.info.mapMark;
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(mapData.portal);
         ms.player.moveToPortal(this.targetPortal);
@@ -45,6 +47,7 @@ var World = (function () {
         }
         this.LayeredTiles.sort(function (a, b) { return (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z); });
         this.loaded = true;
+        this.mapLoadedEvent.trigger();
     };
     World.prototype.update = function () {
     };

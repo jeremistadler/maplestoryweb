@@ -1,11 +1,11 @@
 ﻿/// <reference path="main.ts" />
 
-interface IMSEvent<T> {
+interface IEvent<T> {
     on(handler: { (data?: T): void });
     off(handler: { (data?: T): void });
 }
 
-class MSEvent<T> implements IMSEvent<T> {
+class MapleEvent<T> implements IEvent<T> {
     private handlers: { (data?: T): void; }[] = [];
 
     public on(handler: { (data?: T): void }) {

@@ -11,6 +11,8 @@ class World {
     size: Size;
     center: Vector = new Vector(0, 0);
     targetPortal: string;
+    mapLoadedEvent: MapleEvent<void> = new MapleEvent<void>();
+    name: string;
 
     loadMap(id: number, targetPortal: string) {
         this.loaded = false;
@@ -28,6 +30,7 @@ class World {
     loadData(mapData) {
         this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
         this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
+        this.name = mapData.info.mapMark;
 
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(mapData.portal);
@@ -60,6 +63,7 @@ class World {
 
         this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z) );
         this.loaded = true;
+        this.mapLoadedEvent.trigger();
     }
 
     update() { }

@@ -24,7 +24,9 @@ class Game {
 		this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
+
 		this.ctx = this.canvas.getContext('2d', { alpha: false });
+        this.ctx.font = '12px Segoe UI';
 
 		this.totalGameTime = Date.now();
 		this.lastGameTime = this.totalGameTime - 20;
@@ -44,6 +46,7 @@ class Game {
 		ms.camera.update();
 		ms.map.update();
         ms.player.update();
+        ms.ui.update();
 	}
 
 	draw() {
@@ -74,8 +77,9 @@ class Engine {
         this.game.init();
         this.camera.init();
         this.player.init();
+        this.ui.init();
 
-        this.map.loadMap(100000003, null);
+        this.map.loadMap(100000000, null);
 
         $(window).resize(function () {
             ms.game.resize();

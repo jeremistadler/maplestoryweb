@@ -20,7 +20,7 @@ var PortalType;
 ;
 var Portal = (function () {
     function Portal() {
-        this.size = 20;
+        this.size = 30;
     }
     Portal.prototype.draw = function (ctx) {
         ctx.beginPath();
@@ -29,7 +29,7 @@ var Portal = (function () {
         if (this.isPlayerTouching(ms.player))
             ctx.strokeStyle = 'red';
         ctx.stroke();
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'black';
         ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
     };
     Portal.prototype.canUse = function (player) {

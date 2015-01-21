@@ -24,7 +24,7 @@ class Portal {
     public name: string;
     public position: Vector;
     public id: string;
-    public size: number = 20;
+    public size: number = 30;
     public type: PortalType;
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -35,7 +35,7 @@ class Portal {
             ctx.strokeStyle = 'red';
         ctx.stroke();
 
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'black';
         ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
     }
 
