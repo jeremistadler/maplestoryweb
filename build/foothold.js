@@ -32,8 +32,8 @@ var Foothold = (function () {
     Foothold.prototype.isWall = function () {
         return this.Size.height == 0 || this.Size.width == 0;
     };
-    Foothold.prototype.isPointColliding = function (point, velocity) {
-        return (this.Position.x <= point.x && this.Position.x + this.Size.width >= point.x && this.Position.y >= point.y && this.Position.y <= point.y + velocity.y && true);
+    Foothold.prototype.isPointColliding = function (pointX, pointY, nextPosX, nextPosY) {
+        return (this.Position.x <= pointX && this.Position.x + this.Size.width >= pointX && this.Position.y >= pointY && this.Position.y <= nextPosY);
     };
     return Foothold;
 })();

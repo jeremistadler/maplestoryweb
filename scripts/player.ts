@@ -97,23 +97,27 @@ class Player {
     update() {
         if (!ms.map.loaded) return;
 
-        this.Velocity.y += 0.3;
+        this.Velocity.y += 0.5; 
 
         for (var i = 0; i < ms.map.Footholds.length; i++)
             ms.map.Footholds[i].playerTouches = false;
 
+        var nextX = this.Position.x + this.Velocity.x * ms.game.frameTime * 0.05;
+        var nextY = this.Position.y + this.Velocity.y * ms.game.frameTime * 0.05;
+
 
         for (var i = 0; i < ms.map.Footholds.length; i++) {
-            if (ms.map.Footholds[i].isPointColliding(Vector.plus(this.Position, new Vector(-this.Size.width / 2, 0)), this.Velocity) ||
-                ms.map.Footholds[i].isPointColliding(Vector.plus(this.Position, new Vector(this.Size.width / 2, 0)), this.Velocity)) {
+            if (ms.map.Footholds[i].isPointColliding(this.Position.x - this.Size.width / 2, this.Position.y, nextX, nextY) ||
+                ms.map.Footholds[i].isPointColliding(this.Position.x + this.Size.width / 2, this.Position.y, nextX, nextY)) {
                 ms.map.Footholds[i].playerTouches = true;
                 this.Velocity.y = 0;
-                this.Position.y = ms.map.Footholds[i].Position.y;
+                nextY = this.Position.y = ms.map.Footholds[i].Position.y;
                 this.hasJumped = false;
             }
         }
 
-        this.Position = Vector.plus(this.Position, this.Velocity);
+        this.Position.x = nextX;
+        this.Position.y = nextY;
 
         if (this.Position.y > 1000) {
             this.Position.y = 0;

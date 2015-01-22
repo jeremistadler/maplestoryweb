@@ -38,12 +38,11 @@ class Foothold {
         return this.Size.height == 0 || this.Size.width == 0;
     }
 
-    isPointColliding(point: Vector, velocity: Vector): boolean {
+    isPointColliding(pointX: number, pointY: number, nextPosX: number, nextPosY: number): boolean {
         return (
-            this.Position.x <= point.x &&
-            this.Position.x + this.Size.width >= point.x &&
-            this.Position.y >= point.y &&
-            this.Position.y <= point.y + velocity.y &&
-            true);
+            this.Position.x <= pointX &&
+            this.Position.x + this.Size.width >= pointX &&
+            this.Position.y >= pointY &&
+            this.Position.y <= nextPosY);
     }
 }
