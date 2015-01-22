@@ -54,6 +54,6 @@ class StaticTile implements ILayeredTile, ITile {
         var x = this.position.x - this.origin.x;
         var y = this.position.y - this.origin.y;
 
-        this.Tex.draw(ctx, new Vector(x, y));
+        this.Tex.draw(ctx, x, y, false);
     }
 }

@@ -37,14 +37,12 @@ var BackgroundTile = (function () {
         return bg;
     };
     BackgroundTile.prototype.draw = function (ctx) {
-        this.Tex.draw(ctx, Vector.minus(this.position, this.origin));
-        return;
-        var pos;
         switch (this.Type) {
             case 0 /* LensFlare */:
-                this.Tex.draw(ctx, Vector.Zero, new Size(ms.game.canvas.width, ms.game.canvas.height));
+                this.Tex.drawWithSize(ctx, 0, 0, ms.game.canvas.width, ms.game.canvas.height, false);
                 break;
             case 4 /* Clouds */:
+                this.Tex.draw(ctx, this.position.x - this.origin.x, this.position.y - this.origin.y, false);
         }
     };
     return BackgroundTile;

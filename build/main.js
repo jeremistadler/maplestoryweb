@@ -8,6 +8,8 @@
 /// <reference path="event.ts" />
 /// <reference path="portal.ts" />
 /// <reference path="UI.ts" />
+/// <reference path="math-helper.ts" />
+/// <reference path="fps.ts" />
 /// <reference path="http-manager.ts" />
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
@@ -47,9 +49,7 @@ var Game = (function () {
         ms.map.draw();
         ms.player.draw();
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.translate(this.canvas.width / 2, 100);
-        this.ctx.scale(0.1, 0.1);
-        ms.map.draw();
+        ms.fps.draw(this.ctx);
     };
     return Game;
 })();
@@ -61,6 +61,7 @@ var Engine = (function () {
         this.player = new Player();
         this.http = new HttpManager();
         this.ui = new UI();
+        this.fps = new Fps();
     }
     Engine.prototype.run = function () {
         this.game.init();

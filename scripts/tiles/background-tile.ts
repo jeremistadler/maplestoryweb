@@ -44,16 +44,14 @@ class BackgroundTile implements ITile {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.Tex.draw(ctx, Vector.minus(this.position, this.origin));
-        return;
-
-        var pos: Vector;
         switch (this.Type) {
             case BackgroundType.LensFlare:
-                this.Tex.draw(ctx, Vector.Zero, new Size(ms.game.canvas.width, ms.game.canvas.height));
+                this.Tex.drawWithSize(ctx, 0, 0, ms.game.canvas.width, ms.game.canvas.height, false);
                 break;
 
             case BackgroundType.Clouds:
+                this.Tex.draw(ctx, this.position.x - this.origin.x, this.position.y - this.origin.y, false);
+
             //var pos = Vector.plus(new Vector(game.totalGameTime % 100, 0), Position);
             //batch.Draw(Sprite.Tex, pos, Color.White);
             //batch.RectangleStroke(pos, new Vector2(Sprite.Tex.Width, Sprite.Tex.Height), 1, Color.Red, 0);

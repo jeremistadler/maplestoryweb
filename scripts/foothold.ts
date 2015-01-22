@@ -9,11 +9,12 @@ class Foothold {
     static loadFootholds(current): Foothold[] {
         var list = [];
         if (current.x1) {
-            var pos1 = new Vector(current.x1, current.y1);
-            var pos2 = new Vector(current.x2, current.y2);
-            var min = Vector.min(pos1, pos2);
-            var max = Vector.max(pos1, pos2);
-            list.push(new Foothold(new Vector(min.x, min.y), new Size(max.x - min.x, max.y - min.y)));
+            var minX = Math.min(current.x1, current.x2);
+            var minY = Math.min(current.y1, current.y2);
+            var maxX = Math.max(current.x1, current.x2);
+            var maxY = Math.max(current.y1, current.y2);
+
+            list.push(new Foothold(new Vector(minX, minY), new Size(maxX - minX, maxY - minY)));
         }
         else {
             for (var key in current) {

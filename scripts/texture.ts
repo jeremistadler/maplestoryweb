@@ -14,35 +14,52 @@ class Texture {
 		this.image.onerror = () => instance.hasError = true;
 	}
 
-	draw(ctx: CanvasRenderingContext2D, pos: Vector, size?: Size) {
+	draw(ctx: CanvasRenderingContext2D, posX: number, posY: number, flip: boolean) {
 		if (this.hasError) {
-			size = size || new Size(100, 100);
 			ctx.fillStyle = 'rgba(200, 0, 0, 0.2)';
-			ctx.fillRect(pos.x, pos.y, size.width, size.height);
+			ctx.fillRect(posX, posY, 100, 100);
 			ctx.fillStyle = 'rgb(0, 0, 0)';
-			ctx.fillText('error...', pos.x + 10, pos.y + 10);
+			ctx.fillText('error...', posX + 10, posY + 10);
 			return;
 		}
 
 		if (!this.hasLoaded) {
-			size = size || new Size(100, 100);
 			ctx.fillStyle = 'rgba(0, 0, 200, 0.2)';
-			ctx.fillRect(pos.x, pos.y, size.width, size.height);
+			ctx.fillRect(posX, posY, 100, 100);
 			ctx.fillStyle = 'white';
-			ctx.fillText('loading...', pos.x, pos.y);
+			ctx.fillText('loading...', posX, posY);
 			return;
 		}
 
-		if (size == null)
-			ctx.drawImage(this.image, pos.x, pos.y, this.image.width, this.image.height);
-		else
-            ctx.drawImage(this.image, pos.x, pos.y, size.width, size.height);
+        if (posX + this.image.width < ms.camera.boundsLeft || 
+            posX > ms.camera.boundsRight ||
+            posY > ms.camera.boundsBottom ||
+            posY + this.image.height < ms.camera.boundsTop
+            ) return;
 
+        if (flip) ctx.scale(-1, 1);
+        ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
+        if (flip) ctx.scale(-1, 1);
+    }
 
-		//if (size == null)
-		//	size = new Size(this.image.width, this.image.height);
+    drawWithSize(ctx: CanvasRenderingContext2D, posX: number, posY: number, width: number, height: number, flip: boolean) {
+        if (this.hasError) {
+            ctx.fillStyle = 'rgba(200, 0, 0, 0.2)';
+            ctx.fillRect(posX, posY, width, height);
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillText('error...', posX + 10, posY + 10);
+            return;
+        }
 
-		//ctx.strokeStyle = 'rgba(0, 200, 0, 1)';
-		//ctx.strokeRect(pos.x, pos.y, size.width, size.height);
-	}
+        if (!this.hasLoaded) {
+            ctx.fillStyle = 'rgba(0, 0, 200, 0.2)';
+            ctx.fillRect(posX, posY, width, height);
+            ctx.fillStyle = 'white';
+            ctx.fillText('loading...', posX, posY);
+            return;
+        }
+        if (flip) ctx.scale(-1, 1);
+        ctx.drawImage(this.image, posX, posY, width, height);
+        if (flip) ctx.scale(-1, 1);
+    }
 }

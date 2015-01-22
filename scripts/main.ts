@@ -9,6 +9,8 @@
 /// <reference path="event.ts" />
 /// <reference path="portal.ts" />
 /// <reference path="UI.ts" />
+/// <reference path="math-helper.ts" />
+/// <reference path="fps.ts" />
 /// <reference path="http-manager.ts" />
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
@@ -60,9 +62,7 @@ class Game {
         ms.player.draw();
 
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.translate(this.canvas.width / 2, 100);
-        this.ctx.scale(0.1, 0.1);
-        ms.map.draw();
+        ms.fps.draw(this.ctx);
 	}
 }
 
@@ -73,6 +73,7 @@ class Engine {
     public player: Player = new Player();
     public http: HttpManager = new HttpManager();
     public ui: UI = new UI();
+    public fps: Fps = new Fps();
 
     run() {
         this.game.init();

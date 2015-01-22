@@ -85,12 +85,9 @@ class AnimationSprite implements ILayeredTile, ITile {
         }
 
         var frame = this.Frames[this.currentFrame];
-
-        var flipped = false;
-
         var topLeftX = this.position.x - frame.origin.x;
         var topLeftY = this.position.y - frame.origin.y;
 
-        frame.tex.draw(ctx, new Vector(topLeftX, topLeftY));
+        frame.tex.draw(ctx, topLeftX, topLeftY, this.flip);
     }
 }

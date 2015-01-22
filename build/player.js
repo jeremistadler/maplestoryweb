@@ -69,7 +69,7 @@ var Player = (function () {
         }
         if (e.keyCode == 32 /* space */) {
             if (this.hasJumped == false) {
-                this.Velocity.y -= 8;
+                this.Velocity.y -= 11;
                 this.hasJumped = true;
             }
         }
@@ -104,7 +104,7 @@ var Player = (function () {
         }
     };
     Player.prototype.draw = function () {
-        this.image.draw(ms.game.ctx, new Vector(this.Position.x - this.Size.width / 2, this.Position.y - this.Size.height), this.Size);
+        this.image.drawWithSize(ms.game.ctx, this.Position.x - this.Size.width / 2, this.Position.y - this.Size.height, this.Size.width, this.Size.height, false);
         ms.game.ctx.beginPath();
         ms.game.ctx.strokeStyle = "black";
         ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
@@ -114,7 +114,6 @@ var Player = (function () {
         ms.game.ctx.stroke();
         ms.game.ctx.fillStyle = 'black';
         ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
-        ms.game.ctx.fillText('frame time: ' + ms.game.frameTime, this.Position.x - 30, this.Position.y - 130);
     };
     return Player;
 })();
