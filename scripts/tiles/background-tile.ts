@@ -1,24 +1,14 @@
 ﻿/// <reference path="../main.ts" />
 
-enum BackgroundTypeNames {
-    "Regular",
-    "Horizontal Copies",
-    "Vertical Copies",
-    "H+V Copies",
-    "Horizontal Moving+Copies",
-    "Vertical Moving+Copies",
-    "H+V Copies, Horizontal Moving",
-    "H+V Copies, Vertical Moving"
-};
-
-
 enum BackgroundType {
-    LensFlare,
-    unknown2,
-    unknown3,
-    unknown4,
-    Clouds,
-    unknown6
+    "Regular",
+    "HorizontalCopies",
+    "VerticalCopies",
+    "HVCopies",
+    "HorizontalMovingCopies",
+    "VerticalMovingCopies",
+    "HVCopiesHorizontalMoving",
+    "HVCopiesVerticalMoving"   
 }
 
 class BackgroundTile implements ITile {
@@ -37,20 +27,30 @@ class BackgroundTile implements ITile {
         bg.origin = new Vector(0, 0);
         bg.C = new Vector(item.cx, item.cy);
         bg.R = new Vector(item.rx, item.ry);
-        if (item.type.type == 0) bg.Type = BackgroundType.LensFlare;
-        else bg.Type = BackgroundType.unknown6;
+        bg.Type = <BackgroundType>item.type;
 
         return bg;
     }
 
     draw(ctx: CanvasRenderingContext2D) {
+        if (!this.Tex.hasLoaded) return;
+
         switch (this.Type) {
-            case BackgroundType.LensFlare:
-                this.Tex.drawWithSize(ctx, 0, 0, ms.game.canvas.width, ms.game.canvas.height, false);
+            case BackgroundType.Regular:
+                //this.Tex.draw(ctx, this.position.x, this.position.y, false);
                 break;
 
-            case BackgroundType.Clouds:
-                this.Tex.draw(ctx, this.position.x - this.origin.x, this.position.y - this.origin.y, false);
+            case BackgroundType.HorizontalCopies:
+                var start = ms.camera.boundsLeft % this.Tex.image.width;
+                var cameraWidth = (ms.camera.boundsRight - ms.camera.boundsLeft);
+                var end = start + cameraWidth * 2;
+                for (var i = start; i < end; i += this.Tex.image.width) {
+                    this.Tex.draw(ctx, i + this.position.x, this.position.y, false);
+                }
+            case BackgroundType.VerticalCopies:
+
+                break;
+
 
             //var pos = Vector.plus(new Vector(game.totalGameTime % 100, 0), Position);
             //batch.Draw(Sprite.Tex, pos, Color.White);

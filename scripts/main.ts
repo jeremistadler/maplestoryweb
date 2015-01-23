@@ -63,8 +63,13 @@ class Game {
         ms.map.draw();
         ms.player.draw();
 
-        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        //ms.fps.draw(this.ctx);
+
+        this.ctx.translate(this.canvas.width / 2, 100);
+        this.ctx.scale(0.1, 0.1);
+        ms.map.draw();
+
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ms.fps.draw(this.ctx);
 	}
 }
 

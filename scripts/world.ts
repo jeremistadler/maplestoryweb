@@ -42,8 +42,8 @@ class World {
 
         for (var key in mapData.back) {
         	var item = mapData.back[key];
-            //var back = BackgroundTile.LoadBackground(item);
-        	//this.Backgrounds.push(back);
+            var back = BackgroundTile.LoadBackground(item);
+        	this.Backgrounds.push(back);
         }
 
         for (var key in mapData) {
