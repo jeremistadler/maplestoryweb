@@ -8,8 +8,10 @@ var World = (function () {
         this.loaded = false;
         this.center = new Vector(0, 0);
         this.mapLoadedEvent = new MapleEvent();
+        this.mapLoadingEvent = new MapleEvent();
     }
     World.prototype.loadMap = function (id, targetPortal) {
+        this.mapLoadingEvent.trigger();
         this.loaded = false;
         this.Footholds = [];
         this.LayeredTiles = [];
@@ -46,8 +48,10 @@ var World = (function () {
             AnimationSprite.loadTiles(layer, this.LayeredTiles);
         }
         this.LayeredTiles.sort(function (a, b) { return (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z); });
-        this.loaded = true;
-        this.mapLoadedEvent.trigger();
+        window.setTimeout(function () {
+            ms.map.loaded = true;
+            ms.map.mapLoadedEvent.trigger();
+        }, 500);
     };
     World.prototype.update = function () {
     };

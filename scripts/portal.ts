@@ -67,7 +67,7 @@ class Portal {
             portal.type = <PortalType>item.pt;
 
             if (portal.type == PortalType.Visible)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalContinue', portal.position);
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/pv', portal.position);
 
             if (portal.type == PortalType.Hidden)
                 portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);

@@ -42,14 +42,16 @@ var Game = (function () {
         ms.ui.update();
     };
     Game.prototype.draw = function () {
+        if (!ms.map.loaded)
+            return;
         ms.camera.reset();
         this.ctx.fillStyle = 'rgb(100, 149, 237)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         ms.camera.draw();
         ms.map.draw();
         ms.player.draw();
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ms.fps.draw(this.ctx);
+        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //ms.fps.draw(this.ctx);
     };
     return Game;
 })();

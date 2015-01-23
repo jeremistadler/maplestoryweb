@@ -53,6 +53,8 @@ class Game {
 	}
 
 	draw() {
+        if (!ms.map.loaded) return;
+
         ms.camera.reset();
 		this.ctx.fillStyle = 'rgb(100, 149, 237)';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -61,8 +63,8 @@ class Game {
         ms.map.draw();
         ms.player.draw();
 
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ms.fps.draw(this.ctx);
+        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //ms.fps.draw(this.ctx);
 	}
 }
 

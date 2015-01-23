@@ -12,9 +12,11 @@ class World {
     center: Vector = new Vector(0, 0);
     targetPortal: string;
     mapLoadedEvent: MapleEvent<void> = new MapleEvent<void>();
+    mapLoadingEvent: MapleEvent<void> = new MapleEvent<void>();
     name: string;
 
     loadMap(id: number, targetPortal: string) {
+        this.mapLoadingEvent.trigger();
         this.loaded = false;
         this.Footholds = [];
         this.LayeredTiles = [];
@@ -62,8 +64,11 @@ class World {
         }
 
         this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z) );
-        this.loaded = true;
-        this.mapLoadedEvent.trigger();
+
+        window.setTimeout(function () {
+            ms.map.loaded = true;
+            ms.map.mapLoadedEvent.trigger();
+        }, 500);
     }
 
     update() { }

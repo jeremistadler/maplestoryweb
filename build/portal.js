@@ -53,7 +53,7 @@ var Portal = (function () {
             portal.id = parseInt(key);
             portal.type = item.pt;
             if (portal.type == 2 /* Visible */)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalContinue', portal.position);
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/pv', portal.position);
             if (portal.type == 10 /* Hidden */)
                 portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
             list.push(portal);
