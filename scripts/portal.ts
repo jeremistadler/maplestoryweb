@@ -26,17 +26,21 @@ class Portal {
     public id: number;
     public size: number = 30;
     public type: PortalType;
+    public tex: AnimationSprite;
 
     draw(ctx: CanvasRenderingContext2D) {
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
-        ctx.strokeStyle = 'green';
-        if (this.isPlayerTouching(ms.player))
-            ctx.strokeStyle = 'red';
-        ctx.stroke();
+        //ctx.beginPath();
+        //ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
+        //ctx.strokeStyle = 'green';
+        //if (this.isPlayerTouching(ms.player))
+        //    ctx.strokeStyle = 'red';
+        //ctx.stroke();
 
-        ctx.fillStyle = 'black';
-        ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+        //ctx.fillStyle = 'black';
+        //ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+
+        if (this.tex)
+            this.tex.draw(ctx);
     }
 
     canUse(player: Player) {
@@ -61,6 +65,13 @@ class Portal {
             portal.name = item.pn;
             portal.id = parseInt(key);
             portal.type = <PortalType>item.pt;
+
+            if (portal.type == PortalType.Visible)
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalContinue', portal.position);
+
+            if (portal.type == PortalType.Hidden)
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
+
 
             list.push(portal);
         }

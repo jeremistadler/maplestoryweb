@@ -23,14 +23,16 @@ var Portal = (function () {
         this.size = 30;
     }
     Portal.prototype.draw = function (ctx) {
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
-        ctx.strokeStyle = 'green';
-        if (this.isPlayerTouching(ms.player))
-            ctx.strokeStyle = 'red';
-        ctx.stroke();
-        ctx.fillStyle = 'black';
-        ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+        //ctx.beginPath();
+        //ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
+        //ctx.strokeStyle = 'green';
+        //if (this.isPlayerTouching(ms.player))
+        //    ctx.strokeStyle = 'red';
+        //ctx.stroke();
+        //ctx.fillStyle = 'black';
+        //ctx.fillText(PortalType[this.type] + ':' + this.toMapId + ':' + this.toPortal, this.position.x - 30, this.position.y - 30);
+        if (this.tex)
+            this.tex.draw(ctx);
     };
     Portal.prototype.canUse = function (player) {
         return this.isPlayerTouching(player) && (this.type == 2 /* Visible */ || this.type == 10 /* Hidden */);
@@ -50,6 +52,10 @@ var Portal = (function () {
             portal.name = item.pn;
             portal.id = parseInt(key);
             portal.type = item.pt;
+            if (portal.type == 2 /* Visible */)
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalContinue', portal.position);
+            if (portal.type == 10 /* Hidden */)
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
             list.push(portal);
         }
         return list;

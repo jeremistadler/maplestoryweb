@@ -28,7 +28,7 @@ class AnimationSprite implements ILayeredTile, ITile {
                 var frame = new AnimationFrame();
 
                 var origin = data[key].origin;
-                var delay = data[key].delay || 600;
+                var delay = data[key].delay || 200;
 
                 if (!origin)
                     continue;
