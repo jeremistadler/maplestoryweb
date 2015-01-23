@@ -22,7 +22,7 @@ class Game {
 	public totalGameTime: number;
 	public lastGameTime: number;
 	public frameTime : number;
-	
+
 	init() {
 		this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
 		this.canvas.width = window.innerWidth;
@@ -39,7 +39,7 @@ class Game {
 	resize() {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
-	}	
+	}
 
 	update() {
 		ms.http.update();
@@ -56,9 +56,9 @@ class Game {
         if (!ms.map.loaded) return;
 
         ms.camera.reset();
-		this.ctx.fillStyle = 'rgb(100, 149, 237)';
+		this.ctx.fillStyle = 'rgb(255, 255, 255)';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-		
+
         ms.camera.draw();
         ms.map.draw();
         ms.player.draw();

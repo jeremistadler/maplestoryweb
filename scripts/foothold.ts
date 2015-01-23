@@ -3,8 +3,11 @@
 class Foothold {
     playerTouches: boolean;
     id: number;
+    rect: Rectangle;
 
-    constructor(public Position: Vector, public Size: Size) { }
+    constructor(public Position: Vector, public Size: Size) {
+        this.rect = new Rectangle(Position.y, Position.x + Size.width, Position.y + Size.height, Position.x);
+    }
 
     static loadFootholds(current): Foothold[] {
         var list = [];
@@ -41,9 +44,9 @@ class Foothold {
 
     isPointColliding(pointX: number, pointY: number, nextPosX: number, nextPosY: number): boolean {
         return (
-            this.Position.x <= pointX &&
-            this.Position.x + this.Size.width >= pointX &&
-            this.Position.y >= pointY &&
-            this.Position.y <= nextPosY);
+            this.rect.left <= pointX &&
+            this.rect.right >= pointX &&
+            this.rect.top >= pointY &&
+            this.rect.top <= nextPosY);
     }
 }

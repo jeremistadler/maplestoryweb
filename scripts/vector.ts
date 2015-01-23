@@ -1,11 +1,12 @@
 ﻿/// <reference path="main.ts" />
 
+class Rectangle {
+    constructor(public top: number, public right: number, bottom: number, left: number) { }
+}
+
 class Size {
     constructor(public width: number, public height: number) { }
-
-    static get zero(): Size {
-        return new Size(0, 0);
-    }
+    static zero(): Size { return new Size(0, 0); }
 }
 
 class Vector {
@@ -27,7 +28,5 @@ class Vector {
         var div = (mag === 0) ? Infinity : 1.0 / mag;
         return Vector.times(div, v);
     }
-    static get Zero(): Vector {
-        return new Vector(0, 0);
-    }
+    static Zero(): Vector { return new Vector(0, 0); }
 }
