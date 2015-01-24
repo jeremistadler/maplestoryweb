@@ -57,10 +57,10 @@ class World {
 
             //if (layer.id != 1) continue;
 
-            if (layer.info && layer.info.tS)
-                StaticTile.loadTiles(layer, this.LayeredTiles);
+            //if (layer.info && layer.info.tS)
+            //    StaticTile.loadTiles(layer, this.LayeredTiles);
 
-            AnimationSprite.loadTiles(layer, this.LayeredTiles);
+            //AnimationSprite.loadTiles(layer, this.LayeredTiles);
         }
 
         this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z) );

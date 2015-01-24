@@ -8,6 +8,10 @@ class Camera {
     boundsRight: number;
     boundsTop: number;
     boundsBottom: number;
+    width: number;
+    height: number;
+    centerX: number;
+    centerY: number;
 
     init() {
         this.Position = new Vector(0, 0);
@@ -39,6 +43,10 @@ class Camera {
         this.boundsRight = this.Position.x + ms.game.canvas.width;
         this.boundsTop = this.Position.y;
         this.boundsBottom = this.Position.y + ms.game.canvas.height;
+        this.width = ms.game.canvas.width / this.Zoom;
+        this.height = ms.game.canvas.height / this.Zoom;
+        this.centerX = this.boundsLeft + (this.boundsRight - this.boundsLeft) * 0.5;
+        this.centerY = this.boundsTop + (this.boundsBottom - this.boundsTop) * 0.5;
     }
 
     draw() {
