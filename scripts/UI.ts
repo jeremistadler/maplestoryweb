@@ -7,13 +7,11 @@ class UI {
 
     init(){
         var instance = this;
-        ms.map.mapLoadingEvent.on(instance.mapLoading);
+        ms.map.mapUnloadingEvent.on(instance.mapUnloading);
         ms.map.mapLoadedEvent.on(instance.mapLoaded);
-
-        //http.baseUrl + map.BasePath + 'minimap/canvas.png'
     }
 
-    mapLoading() {
+    mapUnloading() {
         ms.ui.minimap_name.innerHTML = ms.map.name;
         ms.ui.backdrop.className = "enabled";
     }

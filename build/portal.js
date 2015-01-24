@@ -1,21 +1,21 @@
 /// <reference path="main.ts" />
 var PortalType;
 (function (PortalType) {
-    PortalType[PortalType["Start Point"] = 0] = "Start Point";
+    PortalType[PortalType["StartPoint"] = 0] = "StartPoint";
     PortalType[PortalType["Invisible"] = 1] = "Invisible";
     PortalType[PortalType["Visible"] = 2] = "Visible";
     PortalType[PortalType["Collision"] = 3] = "Collision";
     PortalType[PortalType["Changable"] = 4] = "Changable";
     PortalType[PortalType["Changable Invisible"] = 5] = "Changable Invisible";
-    PortalType[PortalType["Town Portal"] = 6] = "Town Portal";
+    PortalType[PortalType["TownPortal"] = 6] = "TownPortal";
     PortalType[PortalType["Script"] = 7] = "Script";
-    PortalType[PortalType["Script Invisible"] = 8] = "Script Invisible";
-    PortalType[PortalType["Script Collision"] = 9] = "Script Collision";
+    PortalType[PortalType["ScriptInvisible"] = 8] = "ScriptInvisible";
+    PortalType[PortalType["ScriptCollision"] = 9] = "ScriptCollision";
     PortalType[PortalType["Hidden"] = 10] = "Hidden";
-    PortalType[PortalType["Script Hidden"] = 11] = "Script Hidden";
-    PortalType[PortalType["Vertical Spring"] = 12] = "Vertical Spring";
-    PortalType[PortalType["Custom Impact Spring"] = 13] = "Custom Impact Spring";
-    PortalType[PortalType["Unknown (PCIG)"] = 14] = "Unknown (PCIG)";
+    PortalType[PortalType["ScriptHidden"] = 11] = "ScriptHidden";
+    PortalType[PortalType["VerticalSpring"] = 12] = "VerticalSpring";
+    PortalType[PortalType["CustomImpactSpring"] = 13] = "CustomImpactSpring";
+    PortalType[PortalType["UnknownPCIG"] = 14] = "UnknownPCIG";
 })(PortalType || (PortalType = {}));
 ;
 var Portal = (function () {
@@ -35,7 +35,7 @@ var Portal = (function () {
             this.tex.draw(ctx);
     };
     Portal.prototype.canUse = function (player) {
-        return this.isPlayerTouching(player) && (this.type == 2 /* Visible */ || this.type == 10 /* Hidden */);
+        return this.isPlayerTouching(player) && (this.toMapId != 999999999);
     };
     Portal.prototype.isPlayerTouching = function (play) {
         var distance = Vector.distanceSquared(this.position, play.Position);
@@ -54,8 +54,10 @@ var Portal = (function () {
             portal.type = item.pt;
             if (portal.type == 2 /* Visible */)
                 portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/pv', portal.position);
-            if (portal.type == 10 /* Hidden */)
+            else if (portal.type == 10 /* Hidden */)
                 portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
+            else if (portal.toMapId != 999999999)
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/psh/default/portalStart', portal.position);
             list.push(portal);
         }
         return list;

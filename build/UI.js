@@ -7,11 +7,10 @@ var UI = (function () {
     }
     UI.prototype.init = function () {
         var instance = this;
-        ms.map.mapLoadingEvent.on(instance.mapLoading);
+        ms.map.mapUnloadingEvent.on(instance.mapUnloading);
         ms.map.mapLoadedEvent.on(instance.mapLoaded);
-        //http.baseUrl + map.BasePath + 'minimap/canvas.png'
     };
-    UI.prototype.mapLoading = function () {
+    UI.prototype.mapUnloading = function () {
         ms.ui.minimap_name.innerHTML = ms.map.name;
         ms.ui.backdrop.className = "enabled";
     };

@@ -43,10 +43,12 @@ var AnimationSprite = (function () {
             var l1 = item.l1;
             var l2 = item.l2;
             var quest = item.quest;
+            if (l0 == 'quest')
+                continue;
             //if (l0 != 'house14' || l2 != 2)
             //    continue;
-            if (typeof item.piece === 'number')
-                continue;
+            //if (typeof item.piece === 'number')
+            //    continue;
             var spriteName = "Map/Obj/" + objectSet + ".img/" + l0 + "/" + l1 + "/" + l2;
             var animation = new AnimationSprite(spriteName, new Vector(x, y));
             animation.z = z;

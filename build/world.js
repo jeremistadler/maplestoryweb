@@ -9,9 +9,10 @@ var World = (function () {
         this.center = new Vector(0, 0);
         this.mapLoadedEvent = new MapleEvent();
         this.mapLoadingEvent = new MapleEvent();
+        this.mapUnloadingEvent = new MapleEvent();
     }
     World.prototype.loadMap = function (id, targetPortal) {
-        this.mapLoadingEvent.trigger();
+        this.mapUnloadingEvent.trigger();
         this.loaded = false;
         this.Footholds = [];
         this.LayeredTiles = [];
@@ -35,6 +36,8 @@ var World = (function () {
         ms.camera.moveToPlayer();
         for (var key in mapData.back) {
             var item = mapData.back[key];
+            var back = BackgroundTile.LoadBackground(item);
+            this.Backgrounds.push(back);
         }
         for (var key in mapData) {
             var layer = mapData[key];
@@ -42,12 +45,12 @@ var World = (function () {
             if (isNaN(id))
                 continue;
             layer.id = id;
-            //if (layer.id != 1) continue;
             if (layer.info && layer.info.tS)
                 StaticTile.loadTiles(layer, this.LayeredTiles);
             AnimationSprite.loadTiles(layer, this.LayeredTiles);
         }
         this.LayeredTiles.sort(function (a, b) { return (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z); });
+        this.mapLoadingEvent.trigger(mapData);
         window.setTimeout(function () {
             ms.map.loaded = true;
             ms.map.mapLoadedEvent.trigger();

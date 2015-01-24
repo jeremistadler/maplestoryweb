@@ -27,8 +27,8 @@ class Camera {
     }
 
     update() {
-        var targetX = Math.round(ms.player.Position.x + -ms.game.canvas.width / 2 - ms.player.Size.width / 2);
-        var targetY = Math.round(ms.player.Position.y + -ms.game.canvas.height / 2 - ms.player.Size.height / 2);
+        var targetX = Math.round(ms.player.Position.x + -(ms.game.canvas.width * this.Zoom) / 2 - ms.player.Size.width / 2);
+        var targetY = Math.round(ms.player.Position.y + -(ms.game.canvas.height * this.Zoom ) / 2 - ms.player.Size.height / 2);
 
         if (Math.abs(this.Position.x - targetX) < 0.7)
             this.Position.x = targetX;

@@ -1,24 +1,14 @@
 /// <reference path="../main.ts" />
-var BackgroundTypeNames;
-(function (BackgroundTypeNames) {
-    BackgroundTypeNames[BackgroundTypeNames["Regular"] = 0] = "Regular";
-    BackgroundTypeNames[BackgroundTypeNames["Horizontal Copies"] = 1] = "Horizontal Copies";
-    BackgroundTypeNames[BackgroundTypeNames["Vertical Copies"] = 2] = "Vertical Copies";
-    BackgroundTypeNames[BackgroundTypeNames["H+V Copies"] = 3] = "H+V Copies";
-    BackgroundTypeNames[BackgroundTypeNames["Horizontal Moving+Copies"] = 4] = "Horizontal Moving+Copies";
-    BackgroundTypeNames[BackgroundTypeNames["Vertical Moving+Copies"] = 5] = "Vertical Moving+Copies";
-    BackgroundTypeNames[BackgroundTypeNames["H+V Copies, Horizontal Moving"] = 6] = "H+V Copies, Horizontal Moving";
-    BackgroundTypeNames[BackgroundTypeNames["H+V Copies, Vertical Moving"] = 7] = "H+V Copies, Vertical Moving";
-})(BackgroundTypeNames || (BackgroundTypeNames = {}));
-;
 var BackgroundType;
 (function (BackgroundType) {
-    BackgroundType[BackgroundType["LensFlare"] = 0] = "LensFlare";
-    BackgroundType[BackgroundType["unknown2"] = 1] = "unknown2";
-    BackgroundType[BackgroundType["unknown3"] = 2] = "unknown3";
-    BackgroundType[BackgroundType["unknown4"] = 3] = "unknown4";
-    BackgroundType[BackgroundType["Clouds"] = 4] = "Clouds";
-    BackgroundType[BackgroundType["unknown6"] = 5] = "unknown6";
+    BackgroundType[BackgroundType["Regular"] = 0] = "Regular";
+    BackgroundType[BackgroundType["HorizontalCopies"] = 1] = "HorizontalCopies";
+    BackgroundType[BackgroundType["VerticalCopies"] = 2] = "VerticalCopies";
+    BackgroundType[BackgroundType["HVCopies"] = 3] = "HVCopies";
+    BackgroundType[BackgroundType["HorizontalMovingCopies"] = 4] = "HorizontalMovingCopies";
+    BackgroundType[BackgroundType["VerticalMovingCopies"] = 5] = "VerticalMovingCopies";
+    BackgroundType[BackgroundType["HVCopiesHorizontalMoving"] = 6] = "HVCopiesHorizontalMoving";
+    BackgroundType[BackgroundType["HVCopiesVerticalMoving"] = 7] = "HVCopiesVerticalMoving";
 })(BackgroundType || (BackgroundType = {}));
 var BackgroundTile = (function () {
     function BackgroundTile() {
@@ -28,21 +18,41 @@ var BackgroundTile = (function () {
         bg.Tex = new Texture(ms.http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
         bg.position = new Vector(item.x, item.y);
         bg.origin = new Vector(0, 0);
-        bg.C = new Vector(item.cx, item.cy);
-        bg.R = new Vector(item.rx, item.ry);
-        if (item.type.type == 0)
-            bg.Type = 0 /* LensFlare */;
-        else
-            bg.Type = 5 /* unknown6 */;
+        bg.C = new Vector(item.cx || 0, item.cy || 0);
+        bg.R = new Vector(item.rx || 0, item.ry || 0);
+        bg.Type = item.type;
+        bg.flip = item.flip > 0;
         return bg;
     };
+    BackgroundTile.prototype.drawHorizontalCopies = function (ctx, x, y, cx) {
+        var width = this.Tex.image.width;
+        this.Tex.draw(ctx, x, y, this.flip);
+        var copyX = x - cx;
+        while (copyX + width > 0) {
+            this.Tex.draw(ctx, copyX, y, this.flip);
+            copyX -= cx;
+        }
+        copyX = x + cx;
+        while (copyX < ms.camera.width) {
+            this.Tex.draw(ctx, copyX, y, this.flip);
+            copyX += cx;
+        }
+    };
     BackgroundTile.prototype.draw = function (ctx) {
+        if (!this.Tex.hasLoaded)
+            return;
+        var x = this.position.x + this.R.x * -ms.camera.centerX * 0.01;
+        var y = this.position.y + 300 + ((this.R.y * (-ms.camera.centerY + 300)) / 100);
+        var cx = this.C.x || this.Tex.image.width;
+        var cy = this.C.y || this.Tex.image.height;
         switch (this.Type) {
-            case 0 /* LensFlare */:
-                this.Tex.drawWithSize(ctx, 0, 0, ms.game.canvas.width, ms.game.canvas.height, false);
+            case 0 /* Regular */:
+                this.Tex.draw(ctx, x, y, this.flip);
                 break;
-            case 4 /* Clouds */:
-                this.Tex.draw(ctx, this.position.x - this.origin.x, this.position.y - this.origin.y, false);
+            case 1 /* HorizontalCopies */:
+                this.drawHorizontalCopies(ctx, x, y, cy);
+            case 2 /* VerticalCopies */:
+                break;
         }
     };
     return BackgroundTile;

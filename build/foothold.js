@@ -3,6 +3,7 @@ var Foothold = (function () {
     function Foothold(Position, Size) {
         this.Position = Position;
         this.Size = Size;
+        this.rect = new Rectangle(Position.y, Position.x + Size.width, Position.y + Size.height, Position.x);
     }
     Foothold.loadFootholds = function (current) {
         var list = [];
@@ -33,7 +34,7 @@ var Foothold = (function () {
         return this.Size.height == 0 || this.Size.width == 0;
     };
     Foothold.prototype.isPointColliding = function (pointX, pointY, nextPosX, nextPosY) {
-        return (this.Position.x <= pointX && this.Position.x + this.Size.width >= pointX && this.Position.y >= pointY && this.Position.y <= nextPosY);
+        return (this.rect.left <= pointX && this.rect.right >= pointX && this.rect.top >= pointY && this.rect.top <= nextPosY);
     };
     return Foothold;
 })();

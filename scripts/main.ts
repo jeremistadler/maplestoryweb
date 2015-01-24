@@ -10,8 +10,10 @@
 /// <reference path="portal.ts" />
 /// <reference path="UI.ts" />
 /// <reference path="math-helper.ts" />
+/// <reference path="character-animator.ts" />
 /// <reference path="fps.ts" />
 /// <reference path="http-manager.ts" />
+/// <reference path="sound-player.ts" />
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
 /// <reference path="tiles/animated-tile.ts" />
@@ -56,7 +58,7 @@ class Game {
 		if (!ms.map.loaded) return;
 
 		ms.camera.reset();
-		this.ctx.fillStyle = 'rgb(255, 255, 255)';
+		this.ctx.fillStyle = 'cornflowerblue';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 		ms.camera.draw();
@@ -64,17 +66,18 @@ class Game {
 		ms.player.draw();
 
 
-		this.ctx.translate(ms.camera.boundsLeft, ms.camera.boundsTop + 100);
-		this.ctx.scale(0.1, 0.1);
-		ms.map.draw();
-		this.ctx.strokeStyle = "red";
-		this.ctx.lineWidth = 10;
-		this.ctx.strokeRect(ms.camera.boundsLeft, ms.camera.boundsTop, ms.camera.width, ms.camera.height);
-		this.ctx.lineWidth = 1;
+		//this.ctx.translate(ms.camera.boundsLeft, ms.camera.boundsTop + 100);
+		//this.ctx.scale(0.1, 0.1);
+        //ms.map.draw();
+        //ms.player.draw();
+		//this.ctx.strokeStyle = "red";
+		//this.ctx.lineWidth = 10;
+		//this.ctx.strokeRect(ms.camera.boundsLeft, ms.camera.boundsTop, ms.camera.width, ms.camera.height);
+		//this.ctx.lineWidth = 1;
 
 
-		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ms.fps.draw(this.ctx);
+		//this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		//ms.fps.draw(this.ctx);
 	}
 }
 
@@ -85,6 +88,7 @@ class Engine {
 	public player: Player = new Player();
 	public http: HttpManager = new HttpManager();
 	public ui: UI = new UI();
+	public sound: SoundPlayer = new SoundPlayer();
 	public fps: Fps = new Fps();
 
 	run() {
@@ -92,8 +96,10 @@ class Engine {
 		this.camera.init();
 		this.player.init();
 		this.ui.init();
+		this.sound.init();
 
-		this.map.loadMap(100000000, null);
+        //this.map.loadMap(101000000, null); // elina
+        this.map.loadMap(100000000, null); // henesys
 
 		$(window).resize(function () {
 			ms.game.resize();

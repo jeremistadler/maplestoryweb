@@ -24,13 +24,21 @@ var Texture = (function () {
             ctx.fillText('loading...', posX, posY);
             return;
         }
-        if (posX + this.image.width < ms.camera.boundsLeft || posX > ms.camera.boundsRight || posY > ms.camera.boundsBottom || posY + this.image.height < ms.camera.boundsTop)
-            return;
-        if (flip)
-            ctx.scale(-1, 1);
-        ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
-        if (flip)
-            ctx.scale(-1, 1);
+        //if (posX + this.image.width < ms.camera.boundsLeft || 
+        //    posX > ms.camera.boundsRight ||
+        //    posY > ms.camera.boundsBottom ||
+        //    posY + this.image.height < ms.camera.boundsTop
+        //    ) return;
+        if (flip) {
+            //ctx.save();
+            //ctx.translate(-(posX), 0);
+            //ctx.scale(-1, 1);
+            //ctx.translate(posX, 0);
+            ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
+        }
+        else {
+            ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
+        }
     };
     Texture.prototype.drawWithSize = function (ctx, posX, posY, width, height, flip) {
         if (this.hasError) {
@@ -47,11 +55,7 @@ var Texture = (function () {
             ctx.fillText('loading...', posX, posY);
             return;
         }
-        if (flip)
-            ctx.scale(-1, 1);
         ctx.drawImage(this.image, posX, posY, width, height);
-        if (flip)
-            ctx.scale(-1, 1);
     };
     return Texture;
 })();

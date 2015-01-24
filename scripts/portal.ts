@@ -1,21 +1,21 @@
 ﻿/// <reference path="main.ts" />
 
 enum PortalType {
-    "Start Point",
+    "StartPoint",
     "Invisible",
     "Visible",
     "Collision",
     "Changable",
     "Changable Invisible",
-    "Town Portal",
+    "TownPortal",
     "Script",
-    "Script Invisible",
-    "Script Collision",
+    "ScriptInvisible",
+    "ScriptCollision",
     "Hidden",
-    "Script Hidden",
-    "Vertical Spring",
-    "Custom Impact Spring",
-    "Unknown (PCIG)"
+    "ScriptHidden",
+    "VerticalSpring",
+    "CustomImpactSpring",
+    "UnknownPCIG"
 };
 
 class Portal {
@@ -45,7 +45,7 @@ class Portal {
 
     canUse(player: Player) {
         return this.isPlayerTouching(player) &&
-            (this.type == PortalType.Visible || this.type == PortalType.Hidden);
+            (this.toMapId != 999999999);
     }
 
     isPlayerTouching(play: Player) {
@@ -69,8 +69,14 @@ class Portal {
             if (portal.type == PortalType.Visible)
                 portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/pv', portal.position);
 
-            if (portal.type == PortalType.Hidden)
+            else if (portal.type == PortalType.Hidden)
                 portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
+
+
+            else if (portal.toMapId != 999999999)
+                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/psh/default/portalStart', portal.position);
+
+
 
 
             list.push(portal);

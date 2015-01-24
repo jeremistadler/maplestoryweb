@@ -9,8 +9,10 @@
 /// <reference path="portal.ts" />
 /// <reference path="UI.ts" />
 /// <reference path="math-helper.ts" />
+/// <reference path="character-animator.ts" />
 /// <reference path="fps.ts" />
 /// <reference path="http-manager.ts" />
+/// <reference path="sound-player.ts" />
 /// <reference path="tiles/static-tile.ts" />
 /// <reference path="tiles/background-tile.ts" />
 /// <reference path="tiles/animated-tile.ts" />
@@ -45,11 +47,19 @@ var Game = (function () {
         if (!ms.map.loaded)
             return;
         ms.camera.reset();
-        this.ctx.fillStyle = 'rgb(100, 149, 237)';
+        this.ctx.fillStyle = 'cornflowerblue';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         ms.camera.draw();
         ms.map.draw();
         ms.player.draw();
+        //this.ctx.translate(ms.camera.boundsLeft, ms.camera.boundsTop + 100);
+        //this.ctx.scale(0.1, 0.1);
+        //ms.map.draw();
+        //ms.player.draw();
+        //this.ctx.strokeStyle = "red";
+        //this.ctx.lineWidth = 10;
+        //this.ctx.strokeRect(ms.camera.boundsLeft, ms.camera.boundsTop, ms.camera.width, ms.camera.height);
+        //this.ctx.lineWidth = 1;
         //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         //ms.fps.draw(this.ctx);
     };
@@ -63,6 +73,7 @@ var Engine = (function () {
         this.player = new Player();
         this.http = new HttpManager();
         this.ui = new UI();
+        this.sound = new SoundPlayer();
         this.fps = new Fps();
     }
     Engine.prototype.run = function () {
@@ -70,7 +81,9 @@ var Engine = (function () {
         this.camera.init();
         this.player.init();
         this.ui.init();
-        this.map.loadMap(100000000, null);
+        this.sound.init();
+        //this.map.loadMap(101000000, null); // elina
+        this.map.loadMap(100000000, null); // henesys
         $(window).resize(function () {
             ms.game.resize();
         });

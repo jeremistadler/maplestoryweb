@@ -1,16 +1,21 @@
 /// <reference path="main.ts" />
+var Rectangle = (function () {
+    function Rectangle(top, right, bottom, left) {
+        this.top = top;
+        this.right = right;
+        this.bottom = bottom;
+        this.left = left;
+    }
+    return Rectangle;
+})();
 var Size = (function () {
     function Size(width, height) {
         this.width = width;
         this.height = height;
     }
-    Object.defineProperty(Size, "zero", {
-        get: function () {
-            return new Size(0, 0);
-        },
-        enumerable: true,
-        configurable: true
-    });
+    Size.zero = function () {
+        return new Size(0, 0);
+    };
     return Size;
 })();
 var Vector = (function () {
@@ -59,12 +64,8 @@ var Vector = (function () {
         var div = (mag === 0) ? Infinity : 1.0 / mag;
         return Vector.times(div, v);
     };
-    Object.defineProperty(Vector, "Zero", {
-        get: function () {
-            return new Vector(0, 0);
-        },
-        enumerable: true,
-        configurable: true
-    });
+    Vector.Zero = function () {
+        return new Vector(0, 0);
+    };
     return Vector;
 })();

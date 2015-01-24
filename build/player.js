@@ -14,12 +14,12 @@ var Player = (function () {
     Player.prototype.init = function () {
         this.Position = new Vector(3000, 570);
         this.Velocity = new Vector(0, 0);
-        this.Size = new Size(60, 80);
-        this.image = new Texture('http://nxcache.nexon.net/spotlight/112/007kn-7e9ea6e9-e3c1-402e-803d-7df82ad5ac53.gif');
+        this.Size = new Size(10, 70);
         this.hasJumped = true;
         var instance = this;
         window.onkeydown = function (e) { return instance.onKeyDown(e); };
         window.onkeyup = function (e) { return instance.onKeyUp(e); };
+        this.animator = new CharacterAnimator('Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
     };
     Player.prototype.moveToRandomPortal = function () {
         for (var i = 0; i < ms.map.portals.length; i++) {
@@ -69,8 +69,9 @@ var Player = (function () {
         }
         if (e.keyCode == 32 /* space */) {
             if (this.hasJumped == false) {
-                this.Velocity.y -= 11;
+                this.Velocity.y -= 10;
                 this.hasJumped = true;
+                ms.sound.playSound("Game.img/Jump");
             }
         }
     };
@@ -98,22 +99,27 @@ var Player = (function () {
         }
         this.Position.x = nextX;
         this.Position.y = nextY;
-        if (this.Position.y > 1000) {
+        if (this.Position.y > 5000) {
             this.Position.y = 0;
             this.Velocity.y = 0;
         }
     };
     Player.prototype.draw = function () {
-        this.image.drawWithSize(ms.game.ctx, this.Position.x - this.Size.width / 2, this.Position.y - this.Size.height, this.Size.width, this.Size.height, false);
-        ms.game.ctx.beginPath();
-        ms.game.ctx.strokeStyle = "black";
-        ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
-        ms.game.ctx.lineTo(this.Position.x + 5, this.Position.y);
-        ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
-        ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
-        ms.game.ctx.stroke();
-        ms.game.ctx.fillStyle = 'black';
-        ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
+        if (this.hasJumped || this.Velocity.y > 0)
+            this.animator.draw(ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'jump');
+        else if (this.Velocity.x != 0)
+            this.animator.draw(ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'walk1');
+        else
+            this.animator.draw(ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'stand1');
+        //ms.game.ctx.beginPath();
+        //ms.game.ctx.strokeStyle = "black";
+        //ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
+        //ms.game.ctx.lineTo(this.Position.x + 5, this.Position.y);
+        //ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
+        //ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
+        //ms.game.ctx.stroke();
+        //ms.game.ctx.fillStyle = 'black';
+        //ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
     };
     return Player;
 })();

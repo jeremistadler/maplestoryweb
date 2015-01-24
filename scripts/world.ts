@@ -12,11 +12,12 @@ class World {
     center: Vector = new Vector(0, 0);
     targetPortal: string;
     mapLoadedEvent: MapleEvent<void> = new MapleEvent<void>();
-    mapLoadingEvent: MapleEvent<void> = new MapleEvent<void>();
+    mapLoadingEvent: MapleEvent<any> = new MapleEvent<any>();
+    mapUnloadingEvent: MapleEvent<void> = new MapleEvent<void>();
     name: string;
 
     loadMap(id: number, targetPortal: string) {
-        this.mapLoadingEvent.trigger();
+        this.mapUnloadingEvent.trigger();
         this.loaded = false;
         this.Footholds = [];
         this.LayeredTiles = [];
@@ -54,16 +55,15 @@ class World {
                 continue;
 
             layer.id = id;
-
-            //if (layer.id != 1) continue;
-
-            //if (layer.info && layer.info.tS)
-            //    StaticTile.loadTiles(layer, this.LayeredTiles);
-
-            //AnimationSprite.loadTiles(layer, this.LayeredTiles);
+            if (layer.info && layer.info.tS)
+                StaticTile.loadTiles(layer, this.LayeredTiles);
+            
+            AnimationSprite.loadTiles(layer, this.LayeredTiles);
         }
 
-        this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z) );
+        this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
+
+        this.mapLoadingEvent.trigger(mapData);
 
         window.setTimeout(function () {
             ms.map.loaded = true;

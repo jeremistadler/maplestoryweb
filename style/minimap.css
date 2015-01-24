@@ -1,7 +1,6 @@
 ﻿.window__minimap {
-    bottom: 10px;
+    top: 10px;
     left: 10px;
-    width: 250px;
 }
 
 .image--full__width{

@@ -14,8 +14,8 @@ var Camera = (function () {
         this.Position.y = Math.round(ms.player.Position.y + -ms.game.canvas.height / 2 - ms.player.Size.height / 2);
     };
     Camera.prototype.update = function () {
-        var targetX = Math.round(ms.player.Position.x + -ms.game.canvas.width / 2 - ms.player.Size.width / 2);
-        var targetY = Math.round(ms.player.Position.y + -ms.game.canvas.height / 2 - ms.player.Size.height / 2);
+        var targetX = Math.round(ms.player.Position.x + -(ms.game.canvas.width * this.Zoom) / 2 - ms.player.Size.width / 2);
+        var targetY = Math.round(ms.player.Position.y + -(ms.game.canvas.height * this.Zoom) / 2 - ms.player.Size.height / 2);
         if (Math.abs(this.Position.x - targetX) < 0.7)
             this.Position.x = targetX;
         if (Math.abs(this.Position.y - targetY) < 0.7)
@@ -26,6 +26,10 @@ var Camera = (function () {
         this.boundsRight = this.Position.x + ms.game.canvas.width;
         this.boundsTop = this.Position.y;
         this.boundsBottom = this.Position.y + ms.game.canvas.height;
+        this.width = ms.game.canvas.width / this.Zoom;
+        this.height = ms.game.canvas.height / this.Zoom;
+        this.centerX = this.boundsLeft + (this.boundsRight - this.boundsLeft) * 0.5;
+        this.centerY = this.boundsTop + (this.boundsBottom - this.boundsTop) * 0.5;
     };
     Camera.prototype.draw = function () {
         this.reset();
