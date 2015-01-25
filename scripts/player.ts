@@ -136,13 +136,13 @@ class Player {
         else
             this.animator.draw(ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'stand1');
 
-        //ms.game.ctx.beginPath();
-        //ms.game.ctx.strokeStyle = "black";
-        //ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
-        //ms.game.ctx.lineTo(this.Position.x + 5, this.Position.y);
-        //ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
-        //ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
-        //ms.game.ctx.stroke();
+        ms.game.ctx.beginPath();
+        ms.game.ctx.strokeStyle = "black";
+        ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
+        ms.game.ctx.lineTo(this.Position.x + 5, this.Position.y);
+        ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
+        ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
+        ms.game.ctx.stroke();
 
         //ms.game.ctx.fillStyle = 'black';
         //ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);

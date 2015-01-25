@@ -20,8 +20,9 @@ class BackgroundTile implements ITile {
     C: Vector;
     R: Vector;
     position: Vector;
+    z: number;
 
-    static LoadBackground(item: any): BackgroundTile {
+    static LoadBackground(item: any, z: number): BackgroundTile {
         var bg = new BackgroundTile();
         bg.Tex = new Texture(ms.http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
         bg.position = new Vector(item.x, item.y);
@@ -30,38 +31,16 @@ class BackgroundTile implements ITile {
         bg.R = new Vector(item.rx || 0, item.ry || 0);
         bg.Type = <BackgroundType>item.type;
         bg.flip = item.flip > 0;
+        bg.z = z;
 
         return bg;
     }
 
-    drawHorizontalCopies(ctx: CanvasRenderingContext2D, x: number, y: number, cx: number)
-        {
-            var width = this.Tex.image.width;
-            this.Tex.draw(ctx, x, y, this.flip);
-
-
-            var copyX = x - cx;
-            while (copyX + width > 0) {
-                this.Tex.draw(ctx, copyX, y, this.flip);
-                copyX -= cx;
-            }
-
-
-            copyX = x + cx;
-            while (copyX < ms.camera.width) {
-                this.Tex.draw(ctx, copyX, y, this.flip);
-                copyX += cx;
-            }
-        }
-
     draw(ctx: CanvasRenderingContext2D) {
         if (!this.Tex.hasLoaded) return;
 
-        var x = this.position.x + this.R.x * -ms.camera.centerX * 0.01;
-        var y = this.position.y + 300 + ((this.R.y * (-ms.camera.centerY + 300)) / 100);
-
-        var cx = this.C.x || this.Tex.image.width;
-        var cy = this.C.y || this.Tex.image.height;
+        var x = this.position.x; //+ this.R.x * -ms.camera.centerX * 0.01;
+        var y = this.position.y; // + 300 + ((this.R.y * (-ms.camera.centerY + 300)) / 100);
 
         switch (this.Type) {
             case BackgroundType.Regular:
@@ -69,10 +48,36 @@ class BackgroundTile implements ITile {
                 break;
 
             case BackgroundType.HorizontalCopies:
-                this.drawHorizontalCopies(ctx, x, y, cy);
+                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, false);
+                break;
+
+            case BackgroundType.HorizontalMovingCopies:
+                x += (1422145382000 - ms.game.totalGameTime) * this.R.x * 0.004;
+                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, false);
+                break;
 
             case BackgroundType.VerticalCopies:
+                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, false, true);
+                break;
 
+            case BackgroundType.VerticalMovingCopies:
+                y += (1422145382000 - ms.game.totalGameTime) * this.R.y * 0.004;
+                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, false, true);
+                break;
+
+
+            case BackgroundType.HVCopies:
+                //this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, true);
+                break;
+
+            case BackgroundType.HVCopiesHorizontalMoving:
+                x += (1422145382000 - ms.game.totalGameTime) * this.R.x * 0.004;
+                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, true);
+                break;
+
+            case BackgroundType.HVCopiesVerticalMoving:
+                y += (1422145382000 - ms.game.totalGameTime) * this.R.y * 0.004;
+                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, true);
                 break;
 
 

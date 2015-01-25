@@ -27,7 +27,7 @@ class SoundPlayer
         ms.sound.backgroundMusic = new Audio(soundPath);
         ms.sound.backgroundMusic.loop = true;
         ms.sound.backgroundMusic.volume = 0.2;
-        ms.sound.backgroundMusic.play();
+        //ms.sound.backgroundMusic.play();
     }
 
     mapUnloaded() {

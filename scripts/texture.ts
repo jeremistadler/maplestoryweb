@@ -12,7 +12,64 @@ class Texture {
 		var instance = this;
 		this.image.onload = () => { instance.hasLoaded = true; }
 		this.image.onerror = () => instance.hasError = true;
-	}
+    }
+
+    drawTiled(ctx: CanvasRenderingContext2D, posX: number, posY: number, tilingDistanceX: number, tilingDistanceY: number, tileX: boolean, tileY: boolean) {
+        if (!this.hasLoaded) return;
+
+        if (tilingDistanceX == 0) tilingDistanceX = this.image.width;
+        if (tilingDistanceY == 0) tilingDistanceY = this.image.height;
+        if (tilingDistanceX < 0) tilingDistanceX = -tilingDistanceX;
+        if (tilingDistanceY < 0) tilingDistanceY = -tilingDistanceY;
+
+
+
+        var xbegin = posX;
+        var xend = posX;
+        var ybegin = posY;
+        var yend = posY;
+
+        if (tileX) {
+            while (xbegin > ms.camera.Position.x)
+                xbegin -= tilingDistanceX;
+
+            while (xend < ms.camera.boundsRight)
+                xend += tilingDistanceX;
+
+            //xbegin += this.image.width;
+            //xbegin %= tilingDistanceX;
+            //if (xbegin <= 0) xbegin += tilingDistanceX;
+            //xbegin -= this.image.width;
+
+            //xend -= ms.camera.width;
+            //xend %= tilingDistanceX;
+            //if (xend >= 0) xend -= tilingDistanceX;
+            //xend += ms.camera.width;
+            //if (xend < xbegin) return;
+        }
+        if (tileY) {
+            ybegin += this.image.height;
+            ybegin %= tilingDistanceY;
+            if (ybegin <= 0) ybegin += tilingDistanceY;
+            ybegin -= this.image.height;
+
+            yend -= ms.camera.height;
+            yend %= tilingDistanceY;
+            if (yend >= 0) yend -= tilingDistanceY;
+            yend += ms.camera.height;
+            if (yend < ybegin) return;
+        }
+        //if (xend + this.image.width < 0) return;
+        //if (xbegin > ms.camera.width) return;
+        //if (yend + this.image.height < 0) return;
+        //if (ybegin > ms.camera.height) return;
+
+        for (var x = xbegin; x <= xend; x += tilingDistanceX) {
+            for (var y = ybegin; y <= yend; y += tilingDistanceY) {
+                ctx.drawImage(this.image, x, y);
+            }
+        }
+    }
 
 	draw(ctx: CanvasRenderingContext2D, posX: number, posY: number, flip: boolean) {
 		if (this.hasError) {
@@ -38,12 +95,13 @@ class Texture {
         //    ) return;
 
         if (flip) {
-            //ctx.save();
-            //ctx.translate(-(posX), 0);
-            //ctx.scale(-1, 1);
-            //ctx.translate(posX, 0);
+            ctx.save();
+            var offset = ms.camera.targetX + ms.camera.width * 0.5;
+            ctx.translate(offset, 0);
+            ctx.scale(-1, 1);
+            ctx.translate(-offset, 0);
             ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
-            //ctx.restore();
+            ctx.restore();
         }
         else {
             ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);

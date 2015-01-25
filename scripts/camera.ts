@@ -12,6 +12,8 @@ class Camera {
     height: number;
     centerX: number;
     centerY: number;
+    targetX: number;
+    targetY: number;
 
     init() {
         this.Position = new Vector(0, 0);
@@ -27,17 +29,17 @@ class Camera {
     }
 
     update() {
-        var targetX = Math.round(ms.player.Position.x + -(ms.game.canvas.width * this.Zoom) / 2 - ms.player.Size.width / 2);
-        var targetY = Math.round(ms.player.Position.y + -(ms.game.canvas.height * this.Zoom ) / 2 - ms.player.Size.height / 2);
+        this.targetX = Math.round(ms.player.Position.x + -(ms.game.canvas.width * this.Zoom) / 2 - ms.player.Size.width / 2);
+        this.targetY = Math.round(ms.player.Position.y + -(ms.game.canvas.height * this.Zoom ) / 2 - ms.player.Size.height / 2);
 
-        if (Math.abs(this.Position.x - targetX) < 0.7)
-            this.Position.x = targetX;
+        if (Math.abs(this.Position.x - this.targetX) < 0.7)
+            this.Position.x = this.targetX;
 
-        if (Math.abs(this.Position.y - targetY) < 0.7)
-            this.Position.y = targetY;
+        if (Math.abs(this.Position.y - this.targetY) < 0.7)
+            this.Position.y = this.targetY;
 
-        this.Position.x = MathHelper.lerp(this.Position.x, targetX, 0.04);
-        this.Position.y = MathHelper.lerp(this.Position.y, targetY, 0.04);
+        this.Position.x = MathHelper.lerp(this.Position.x, this.targetX, 0.04);
+        this.Position.y = MathHelper.lerp(this.Position.y, this.targetY, 0.04);
 
         this.boundsLeft = this.Position.x;
         this.boundsRight = this.Position.x + ms.game.canvas.width;

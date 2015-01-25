@@ -66,18 +66,18 @@ class Game {
 		ms.player.draw();
 
 
-		//this.ctx.translate(ms.camera.boundsLeft, ms.camera.boundsTop + 100);
-		//this.ctx.scale(0.1, 0.1);
-        //ms.map.draw();
-        //ms.player.draw();
-		//this.ctx.strokeStyle = "red";
-		//this.ctx.lineWidth = 10;
-		//this.ctx.strokeRect(ms.camera.boundsLeft, ms.camera.boundsTop, ms.camera.width, ms.camera.height);
-		//this.ctx.lineWidth = 1;
+		this.ctx.translate(ms.camera.boundsLeft + 400, ms.camera.boundsTop + 400);
+		this.ctx.scale(0.1, 0.1);
+        ms.map.draw();
+        ms.player.draw();
+		this.ctx.strokeStyle = "red";
+		this.ctx.lineWidth = 10;
+		this.ctx.strokeRect(ms.camera.boundsLeft, ms.camera.boundsTop, ms.camera.width, ms.camera.height);
+		this.ctx.lineWidth = 1;
 
 
-		//this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		//ms.fps.draw(this.ctx);
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ms.fps.draw(this.ctx);
 	}
 }
 
@@ -98,8 +98,8 @@ class Engine {
 		this.ui.init();
 		this.sound.init();
 
-        //this.map.loadMap(101000000, null); // elina
-        this.map.loadMap(100000000, null); // henesys
+        this.map.loadMap(101000000, null); // elina
+        //this.map.loadMap(100000000, null); // henesys
 
 		$(window).resize(function () {
 			ms.game.resize();

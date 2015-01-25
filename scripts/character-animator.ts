@@ -1,5 +1,7 @@
 ﻿/// <reference path="main.ts" />
 
+
+
 class CharacterAnimationFrame {
     public id: number;
     public tex: Texture;

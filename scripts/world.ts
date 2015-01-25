@@ -43,25 +43,29 @@ class World {
 
         for (var key in mapData.back) {
         	var item = mapData.back[key];
-            var back = BackgroundTile.LoadBackground(item);
+            var back = BackgroundTile.LoadBackground(item, parseInt(key));
         	this.Backgrounds.push(back);
         }
 
-        for (var key in mapData) {
-            var layer = mapData[key];
-            var id = parseInt(key);
+        this.Backgrounds.sort((a, b) => b.z - a.z);
 
-            if (isNaN(id))
-                continue;
 
-            layer.id = id;
-            if (layer.info && layer.info.tS)
-                StaticTile.loadTiles(layer, this.LayeredTiles);
+        //for (var key in mapData) {
+        //    var layer = mapData[key];
+        //    var id = parseInt(key);
+
+        //    if (isNaN(id))
+        //        continue;
+
+        //    layer.id = id;
+
+        //    if (layer.info && layer.info.tS)
+        //        StaticTile.loadTiles(layer, this.LayeredTiles);
             
-            AnimationSprite.loadTiles(layer, this.LayeredTiles);
-        }
+        //    AnimationSprite.loadTiles(layer, this.LayeredTiles);
+        //}
 
-        this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
+        //this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
 
         this.mapLoadingEvent.trigger(mapData);
 
