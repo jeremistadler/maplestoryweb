@@ -2,11 +2,10 @@ var CharacterAnimationFrame = (function () {
     function CharacterAnimationFrame(ms, data, id, path, defaultDelay) {
         this.ms = ms;
         this.maps = {};
-        var offset = data.origin;
         this.frameLength = data.delay || defaultDelay;
         this.originalFrameLength = defaultDelay;
         this.tex = new Texture(ms, ms.http.baseUrl + path + '.png');
-        this.offset = new Vector(offset.x, offset.y);
+        this.offset = new Vector(data.origin.x, data.origin.y);
         this.id = id;
         this.z = data.z;
         for (var key in data.map) {
@@ -20,21 +19,25 @@ var CharacterPart = (function () {
     function CharacterPart() {
         this.timeToNextFrame = 0;
         this.currentFrame = 0;
+        this.isGoingBackwards = false;
         this.frames = [];
     }
-    CharacterPart.prototype.draw = function (ms, ctx, x, y, flip) {
-        this.timeToNextFrame -= ms.game.frameTime;
+    CharacterPart.prototype.draw = function (frameTime, ctx, x, y, flip) {
+        this.timeToNextFrame -= frameTime;
         while (this.timeToNextFrame < 0) {
-            this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+            if ((this.currentFrame == 0 && this.isGoingBackwards) ||
+                (this.currentFrame == this.frames.length - 1 && !this.isGoingBackwards))
+                this.isGoingBackwards = !this.isGoingBackwards;
+            this.currentFrame += this.isGoingBackwards ? -1 : 1;
             this.timeToNextFrame += this.frames[this.currentFrame].frameLength;
         }
         var frame = this.frames[this.currentFrame];
         var topLeftX = x - frame.offset.x;
         var topLeftY = y - frame.offset.y;
-        //if (frame.z == "arm") {
-        //    topLeftX += 6 + frame.maps["hand"].x;
-        //    topLeftY -= 15 + frame.maps["hand"].y;
-        //}
+        if (frame.z == "arm") {
+            topLeftX += 6 + frame.maps["hand"].x;
+            topLeftY -= 15 + frame.maps["hand"].y;
+        }
         frame.tex.draw(ctx, topLeftX, topLeftY, flip);
     };
     return CharacterPart;
@@ -44,11 +47,11 @@ var CharacterAnimation = (function () {
         this.parts = [];
         this.loaded = false;
     }
-    CharacterAnimation.prototype.draw = function (ms, ctx, x, y, flip) {
+    CharacterAnimation.prototype.draw = function (frameTime, ctx, x, y, flip) {
         if (!this.loaded)
             return;
         for (var i = 0; i < this.parts.length; i++)
-            this.parts[i].draw(ms, ctx, x, y, flip);
+            this.parts[i].draw(frameTime, ctx, x, y, flip);
     };
     return CharacterAnimation;
 })();
@@ -82,8 +85,8 @@ var CharacterAnimator = (function () {
             animation.loaded = true;
         });
     };
-    CharacterAnimator.prototype.draw = function (ctx, x, y, flip, animationName) {
-        this.animations[animationName].draw(this.ms, ctx, x, y, flip);
+    CharacterAnimator.prototype.draw = function (ctx, x, y, flip, animationName, frameTime) {
+        this.animations[animationName].draw(frameTime, ctx, x, y, flip);
     };
     return CharacterAnimator;
 })();
