@@ -5,7 +5,11 @@ enum KeyCodes {
     up = 38,
     down = 40,
     enter = 13,
-    space = 32
+    space = 32,
+    s = 83,
+    a = 65,
+    d = 68,
+    w = 87
 }
 
 
@@ -58,13 +62,13 @@ class Player {
     }
 
     onKeyDown(e: KeyboardEvent) {
-        if (e.keyCode == KeyCodes.left)
+        if (e.keyCode == KeyCodes.left || e.keyCode == KeyCodes.a)
             this.Velocity.x = -3;
-        else if (e.keyCode == KeyCodes.right)
+        else if (e.keyCode == KeyCodes.right || e.keyCode == KeyCodes.d)
             this.Velocity.x = 3;
 
-        if (e.keyCode == KeyCodes.down) { this.Position.y++; this.Velocity.y++; }
-        if (e.keyCode == KeyCodes.up) {
+        if (e.keyCode == KeyCodes.down || e.keyCode == KeyCodes.s) { this.Position.y++; this.Velocity.y++; }
+        if (e.keyCode == KeyCodes.up || e.keyCode == KeyCodes.w) {
             if (this.ms.map.loaded) {
                 for (var i = 0; i < this.ms.map.portals.length; i++) {
                     if (this.ms.map.portals[i].canUse(this.ms.player)) {
@@ -90,9 +94,9 @@ class Player {
     }
 
     onKeyUp(e: KeyboardEvent) {
-        if (e.keyCode == KeyCodes.left && this.Velocity.x < 0) // left
+        if ((e.keyCode == KeyCodes.left || e.keyCode == KeyCodes.a) && this.Velocity.x < 0) // left
             this.Velocity.x = 0;
-        else if (e.keyCode == KeyCodes.right && this.Velocity.x > 0) // right
+        else if ((e.keyCode == KeyCodes.right || e.keyCode == KeyCodes.d) && this.Velocity.x > 0) // right
             this.Velocity.x = 0;
     }
 

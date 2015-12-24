@@ -6,6 +6,10 @@ var KeyCodes;
     KeyCodes[KeyCodes["down"] = 40] = "down";
     KeyCodes[KeyCodes["enter"] = 13] = "enter";
     KeyCodes[KeyCodes["space"] = 32] = "space";
+    KeyCodes[KeyCodes["s"] = 83] = "s";
+    KeyCodes[KeyCodes["a"] = 65] = "a";
+    KeyCodes[KeyCodes["d"] = 68] = "d";
+    KeyCodes[KeyCodes["w"] = 87] = "w";
 })(KeyCodes || (KeyCodes = {}));
 var Player = (function () {
     function Player(ms) {
@@ -44,15 +48,15 @@ var Player = (function () {
             this.moveToRandomPortal();
     };
     Player.prototype.onKeyDown = function (e) {
-        if (e.keyCode == KeyCodes.left)
+        if (e.keyCode == KeyCodes.left || e.keyCode == KeyCodes.a)
             this.Velocity.x = -3;
-        else if (e.keyCode == KeyCodes.right)
+        else if (e.keyCode == KeyCodes.right || e.keyCode == KeyCodes.d)
             this.Velocity.x = 3;
-        if (e.keyCode == KeyCodes.down) {
+        if (e.keyCode == KeyCodes.down || e.keyCode == KeyCodes.s) {
             this.Position.y++;
             this.Velocity.y++;
         }
-        if (e.keyCode == KeyCodes.up) {
+        if (e.keyCode == KeyCodes.up || e.keyCode == KeyCodes.w) {
             if (this.ms.map.loaded) {
                 for (var i = 0; i < this.ms.map.portals.length; i++) {
                     if (this.ms.map.portals[i].canUse(this.ms.player)) {
@@ -76,9 +80,9 @@ var Player = (function () {
         }
     };
     Player.prototype.onKeyUp = function (e) {
-        if (e.keyCode == KeyCodes.left && this.Velocity.x < 0)
+        if ((e.keyCode == KeyCodes.left || e.keyCode == KeyCodes.a) && this.Velocity.x < 0)
             this.Velocity.x = 0;
-        else if (e.keyCode == KeyCodes.right && this.Velocity.x > 0)
+        else if ((e.keyCode == KeyCodes.right || e.keyCode == KeyCodes.d) && this.Velocity.x > 0)
             this.Velocity.x = 0;
     };
     Player.prototype.update = function () {
