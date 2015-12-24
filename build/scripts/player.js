@@ -31,6 +31,8 @@ var Player = (function () {
             var clampAt = 30;
             var multiplyWith = 0.1;
             this.Velocity.x = Math.min(Math.max(ev.gamma, -clampAt), clampAt) * multiplyWith;
+            if (this.Velocity.x < 0.5 && this.Velocity.x > -0.5)
+                this.Velocity.x = 0;
         }
     };
     Player.prototype.moveToRandomPortal = function () {
