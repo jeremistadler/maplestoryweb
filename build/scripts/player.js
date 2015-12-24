@@ -16,14 +16,22 @@ var Player = (function () {
         this.ms = ms;
     }
     Player.prototype.init = function () {
+        var _this = this;
         this.Position = new Vector(3000, 570);
         this.Velocity = new Vector(0, 0);
         this.Size = new Size(10, 70);
         this.hasJumped = true;
-        var instance = this;
-        window.onkeydown = function (e) { return instance.onKeyDown(e); };
-        window.onkeyup = function (e) { return instance.onKeyUp(e); };
         this.animator = new CharacterAnimator(this.ms, 'Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
+        window.onkeydown = function (e) { return _this.onKeyDown(e); };
+        window.onkeyup = function (e) { return _this.onKeyUp(e); };
+        window.addEventListener('deviceorientation', function (e) { return _this.handleDeviceOrigentation(e); }, false);
+    };
+    Player.prototype.handleDeviceOrigentation = function (ev) {
+        if (ev && typeof ev.gamma == 'number') {
+            var clampAt = 30;
+            var multiplyWith = 0.1;
+            this.Velocity.x = Math.min(Math.max(ev.gamma, -clampAt), clampAt) * multiplyWith;
+        }
     };
     Player.prototype.moveToRandomPortal = function () {
         for (var i = 0; i < this.ms.map.portals.length; i++) {

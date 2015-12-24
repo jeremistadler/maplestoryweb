@@ -27,13 +27,19 @@ class Player {
         this.Velocity = new Vector(0, 0);
         this.Size = new Size(10, 70);
         this.hasJumped = true;
-
-        var instance = this;
-        window.onkeydown = (e) => instance.onKeyDown(e);
-        window.onkeyup = (e) => instance.onKeyUp(e);
-
         this.animator = new CharacterAnimator(this.ms, 'Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
 
+        window.onkeydown = (e) => this.onKeyDown(e);
+        window.onkeyup = (e) => this.onKeyUp(e);
+        window.addEventListener('deviceorientation', e => this.handleDeviceOrigentation(e), false);
+    }
+
+    handleDeviceOrigentation(ev){
+      if (ev && typeof ev.gamma == 'number'){
+        var clampAt = 30;
+        var multiplyWith = 0.1;
+        this.Velocity.x = Math.min(Math.max(ev.gamma, -clampAt), clampAt) * multiplyWith;
+      }
     }
 
     moveToRandomPortal() {
