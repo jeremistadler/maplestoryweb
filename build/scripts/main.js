@@ -76,6 +76,7 @@ var Engine = (function () {
         //this.map.loadMap(101000000, null); // elina
         this.map.loadMap(100000000, null); // henesys
         window.addEventListener('resize', function () { return _this.game.resize(); }, false);
+        this.game.resize();
         this.gotAnimationFrame();
     };
     return Engine;

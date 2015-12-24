@@ -104,6 +104,7 @@ class Engine {
     this.map.loadMap(100000000, null); // henesys
 
 		window.addEventListener('resize', () => this.game.resize(), false);
+    this.game.resize();
     this.gotAnimationFrame();
   }
 }
