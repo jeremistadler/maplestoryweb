@@ -56,7 +56,7 @@ class Camera {
 
     draw() {
         this.reset();
-        this.ms.game.ctx.translate(Math.round(-this.Position.x * this.Zoom), Math.round(-this.Position.y * this.Zoom));
+        this.ms.game.ctx.translate(Math.round(-this.Position.x * this.Zoom * 2) / 2, Math.round(-this.Position.y * this.Zoom * 2) / 2);
         this.ms.game.ctx.scale(this.Zoom, this.Zoom);
     }
 }
