@@ -144,11 +144,11 @@ class Player {
 
     draw() {
         if (this.hasJumped || this.Velocity.y > 0)
-            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'jump');
+            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'jump', this.ms.game.frameTime);
         else if (this.Velocity.x != 0)
-            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'walk1');
+            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'walk1', this.ms.game.frameTime * Math.abs(this.Velocity.x / 3));
         else
-            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'stand1');
+            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'stand1', this.ms.game.frameTime);
 
         this.ms.game.ctx.beginPath();
         this.ms.game.ctx.strokeStyle = "black";
