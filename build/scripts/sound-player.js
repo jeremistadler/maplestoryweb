@@ -19,7 +19,8 @@ var SoundPlayer = (function () {
         this.ms.sound.backgroundMusic = new Audio(soundPath);
         this.ms.sound.backgroundMusic.loop = true;
         this.ms.sound.backgroundMusic.volume = 0.2;
-        //this.ms.sound.backgroundMusic.play();
+        if (!this.ms.isDebug)
+            this.ms.sound.backgroundMusic.play();
     };
     SoundPlayer.prototype.mapUnloaded = function () {
     };

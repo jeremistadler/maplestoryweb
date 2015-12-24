@@ -32,6 +32,11 @@ p {
     border-radius: 2px;
     overflow: hidden;
     box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+}
+
+.window:hover{
+    background-color: rgba(255, 255, 255, 1);
 }
 
 #backdrop{
@@ -42,6 +47,7 @@ p {
     right: 0;
     background: black;
     opacity: 0;
+    pointer-events: none;
 
     transition: 1s;
 }
@@ -50,4 +56,5 @@ p {
 #backdrop.enabled {
     transition: 0.5s;
     opacity: 1;
+    pointer-events: all;
 }
