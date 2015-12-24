@@ -23,12 +23,15 @@ var CharacterPart = (function () {
         this.frames = [];
     }
     CharacterPart.prototype.draw = function (frameTime, ctx, x, y, flip) {
+        if (this.frames.length == 0)
+            return;
         this.timeToNextFrame -= frameTime;
         while (this.timeToNextFrame < 0) {
             if ((this.currentFrame == 0 && this.isGoingBackwards) ||
                 (this.currentFrame == this.frames.length - 1 && !this.isGoingBackwards))
                 this.isGoingBackwards = !this.isGoingBackwards;
             this.currentFrame += this.isGoingBackwards ? -1 : 1;
+            this.currentFrame = Math.max(0, Math.min(this.currentFrame, this.frames.length - 1));
             this.timeToNextFrame += this.frames[this.currentFrame].frameLength;
         }
         var frame = this.frames[this.currentFrame];

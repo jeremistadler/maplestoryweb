@@ -30,6 +30,8 @@ class CharacterPart {
   public frames: CharacterAnimationFrame[] = [];
 
   draw(frameTime: number, ctx: CanvasRenderingContext2D, x: number, y: number, flip: boolean) {
+    if (this.frames.length == 0) return;
+    
     this.timeToNextFrame -= frameTime;
     while (this.timeToNextFrame < 0) {
 
@@ -38,6 +40,7 @@ class CharacterPart {
           this.isGoingBackwards = !this.isGoingBackwards;
 
       this.currentFrame += this.isGoingBackwards ? -1 : 1;
+      this.currentFrame = Math.max(0, Math.min(this.currentFrame, this.frames.length - 1));
       this.timeToNextFrame += this.frames[this.currentFrame].frameLength;
     }
 
