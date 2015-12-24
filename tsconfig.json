@@ -1,0 +1,46 @@
+{
+  "buildOnSave": false,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "declaration": false,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "filesGlob": [
+    "scripts/**/*.ts",
+    "!scripts/**/*-spec.ts"
+  ],
+  "files": [
+    "scripts/camera.ts",
+    "scripts/character-animator.ts",
+    "scripts/character-parts.ts",
+    "scripts/event.ts",
+    "scripts/foothold.ts",
+    "scripts/fps.ts",
+    "scripts/grid.ts",
+    "scripts/http-manager.ts",
+    "scripts/main.ts",
+    "scripts/math-helper.ts",
+    "scripts/player.ts",
+    "scripts/portal.ts",
+    "scripts/sound-player.ts",
+    "scripts/texture.ts",
+    "scripts/tiles/animated-tile.ts",
+    "scripts/tiles/background-tile.ts",
+    "scripts/tiles/static-tile.ts",
+    "scripts/UI.ts",
+    "scripts/vector.ts",
+    "scripts/world.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
+}

@@ -5,14 +5,16 @@ var AnimationFrame = (function () {
     return AnimationFrame;
 })();
 var AnimationSprite = (function () {
-    function AnimationSprite(path, pos) {
+    function AnimationSprite(ms, path, pos) {
+        var _this = this;
+        this.ms = ms;
         this.Frames = [];
         this.loaded = false;
         this.timeToNextFrame = 0;
         this.currentFrame = 0;
         this.position = pos;
         var instance = this;
-        ms.http.getJsonPropertyForPath(path, function (data) {
+        this.ms.http.getJsonPropertyForPath(path, function (data) {
             for (var key in data) {
                 if (isNaN(key))
                     continue;
@@ -21,7 +23,7 @@ var AnimationSprite = (function () {
                 var delay = data[key].delay || 200;
                 if (!origin)
                     continue;
-                frame.tex = new Texture(ms.http.baseUrl + path + '/' + key + '.png');
+                frame.tex = new Texture(ms, _this.ms.http.baseUrl + path + '/' + key + '.png');
                 frame.origin = new Vector(origin.x, origin.y);
                 frame.id = parseInt(key);
                 frame.frameLength = delay;
@@ -32,7 +34,7 @@ var AnimationSprite = (function () {
             instance.timeToNextFrame = instance.Frames[0].frameLength;
         });
     }
-    AnimationSprite.loadTiles = function (layer, tileList) {
+    AnimationSprite.loadTiles = function (ms, layer, tileList) {
         for (var objKey in layer["obj"]) {
             var item = layer["obj"][objKey];
             var x = item.x;
@@ -50,7 +52,7 @@ var AnimationSprite = (function () {
             //if (typeof item.piece === 'number')
             //    continue;
             var spriteName = "Map/Obj/" + objectSet + ".img/" + l0 + "/" + l1 + "/" + l2;
-            var animation = new AnimationSprite(spriteName, new Vector(x, y));
+            var animation = new AnimationSprite(ms, spriteName, new Vector(x, y));
             animation.z = z;
             animation.layer = layer.id;
             animation.flip = item.flip == '1';
@@ -60,7 +62,7 @@ var AnimationSprite = (function () {
     AnimationSprite.prototype.draw = function (ctx) {
         if (!this.loaded)
             return;
-        this.timeToNextFrame -= ms.game.frameTime;
+        this.timeToNextFrame -= this.ms.game.frameTime;
         while (this.timeToNextFrame < 0) {
             this.currentFrame = (this.currentFrame + 1) % this.Frames.length;
             this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;

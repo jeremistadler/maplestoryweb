@@ -1,119 +1,108 @@
-/// <reference path="libs/jquery/jquery.d.ts" />
-
-/// <reference path="world.ts" />
-/// <reference path="vector.ts" />
-/// <reference path="player.ts" />
-/// <reference path="texture.ts" />
-/// <reference path="foothold.ts" />
-/// <reference path="camera.ts" />
-/// <reference path="event.ts" />
-/// <reference path="portal.ts" />
-/// <reference path="UI.ts" />
-/// <reference path="math-helper.ts" />
-/// <reference path="character-animator.ts" />
-/// <reference path="fps.ts" />
-/// <reference path="http-manager.ts" />
-/// <reference path="sound-player.ts" />
-/// <reference path="tiles/static-tile.ts" />
-/// <reference path="tiles/background-tile.ts" />
-/// <reference path="tiles/animated-tile.ts" />
 
 class Game {
-	public ctx : CanvasRenderingContext2D;
-	public canvas : HTMLCanvasElement;
-	public totalGameTime: number;
-	public lastGameTime: number;
-	public frameTime : number;
+  public ctx: CanvasRenderingContext2D;
+  public canvas: HTMLCanvasElement;
+  public totalGameTime: number;
+  public lastGameTime: number;
+  public frameTime: number;
 
-	init() {
-		this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
+	constructor(private ms: IEngine){}
 
-		this.ctx = this.canvas.getContext('2d', { alpha: false });
-		this.ctx.font = '12px Segoe UI';
+  init() {
+    this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
 
-		this.totalGameTime = Date.now();
-		this.lastGameTime = this.totalGameTime - 20;
-		this.frameTime = 20;
-	}
+    this.ctx = <CanvasRenderingContext2D>this.canvas.getContext('2d', { alpha: false });
+    this.ctx.font = '12px Segoe UI';
 
-	resize() {
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
-	}
+    this.totalGameTime = Date.now();
+    this.lastGameTime = this.totalGameTime - 20;
+    this.frameTime = 20;
+  }
 
-	update() {
-		ms.http.update();
-		this.lastGameTime = this.totalGameTime;
-		this.totalGameTime = Date.now();
-		this.frameTime = this.totalGameTime - this.lastGameTime;
-		ms.camera.update();
-		ms.map.update();
-		ms.player.update();
-		ms.ui.update();
-	}
+  resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
 
-	draw() {
-		if (!ms.map.loaded) return;
+  update() {
+    this.ms.http.update();
+    this.lastGameTime = this.totalGameTime;
+    this.totalGameTime = Date.now();
+    this.frameTime = this.totalGameTime - this.lastGameTime;
+    this.ms.camera.update();
+    this.ms.map.update();
+    this.ms.player.update();
+    this.ms.ui.update();
+  }
 
-		ms.camera.reset();
-		this.ctx.fillStyle = 'cornflowerblue';
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  draw() {
+    if (!this.ms.map.loaded) return;
 
-		ms.camera.draw();
-		ms.map.draw();
-		ms.player.draw();
+    this.ms.camera.reset();
+    this.ctx.fillStyle = 'cornflowerblue';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ms.camera.draw();
+    this.ms.map.draw();
+    this.ms.player.draw();
+
+    //// Draw everything shrinked for debug
+    //this.ctx.translate(this.ms.camera.boundsLeft + 400, this.ms.camera.boundsTop + 400);
+    //this.ctx.scale(0.1, 0.1);
+    //    this.ms.map.draw();
+    //    this.ms.player.draw();
+    //this.ctx.strokeStyle = "red";
+    //this.ctx.lineWidth = 10;
+    //this.ctx.strokeRect(this.ms.camera.boundsLeft, this.ms.camera.boundsTop, this.ms.camera.width, this.ms.camera.height);
+    //this.ctx.lineWidth = 1;
 
 
-		this.ctx.translate(ms.camera.boundsLeft + 400, ms.camera.boundsTop + 400);
-		this.ctx.scale(0.1, 0.1);
-        ms.map.draw();
-        ms.player.draw();
-		this.ctx.strokeStyle = "red";
-		this.ctx.lineWidth = 10;
-		this.ctx.strokeRect(ms.camera.boundsLeft, ms.camera.boundsTop, ms.camera.width, ms.camera.height);
-		this.ctx.lineWidth = 1;
+    this.ms.fps.draw(this.ctx);
+  }
+}
 
-
-		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ms.fps.draw(this.ctx);
-	}
+interface IEngine {
+	game: Game;
+	camera: Camera;
+	map: World;
+	player: Player;
+	http: HttpManager;
+	ui: UI;
+	sound: SoundPlayer;
+	fps: Fps;
 }
 
 class Engine {
-	public game: Game = new Game();
-	public camera: Camera = new Camera();
-	public map: World = new World();
-	public player: Player = new Player();
-	public http: HttpManager = new HttpManager();
-	public ui: UI = new UI();
-	public sound: SoundPlayer = new SoundPlayer();
-	public fps: Fps = new Fps();
+  public game: Game = new Game(this);
+  public camera: Camera = new Camera(this);
+  public map: World = new World(this);
+  public player: Player = new Player(this);
+  public http: HttpManager = new HttpManager();
+  public ui: UI = new UI(this);
+  public sound: SoundPlayer = new SoundPlayer(this);
+  public fps: Fps = new Fps(this);
 
-	run() {
-		this.game.init();
-		this.camera.init();
-		this.player.init();
-		this.ui.init();
-		this.sound.init();
+  gotAnimationFrame() {
+    requestAnimationFrame(() => this.gotAnimationFrame());
 
-        this.map.loadMap(101000000, null); // elina
-        //this.map.loadMap(100000000, null); // henesys
+    this.game.update();
+    this.game.draw();
+  }
 
-		$(window).resize(function () {
-			ms.game.resize();
-		});
+  run() {
+    this.game.init();
+    this.camera.init();
+    this.player.init();
+    this.ui.init();
+    this.sound.init();
 
-		function gotAnimationFrame() {
-			requestAnimationFrame(gotAnimationFrame);
+    //this.map.loadMap(101000000, null); // elina
+    this.map.loadMap(100000000, null); // henesys
 
-			ms.game.update();
-			ms.game.draw();
-		}
-		gotAnimationFrame();
-	}
+		window.addEventListener('resize', () => this.game.resize(), false);
+    this.gotAnimationFrame();
+  }
 }
-
-var ms = new Engine();
-ms.run();
+new Engine().run();

@@ -1,4 +1,3 @@
-﻿/// <reference path="main.ts" />
 
 class Foothold {
     playerTouches: boolean;

@@ -37,7 +37,7 @@
         noConnectionTransport: "Connection is in an invalid state, there is no transport active.",
         webSocketsInvalidState: "The Web Socket transport is in an invalid state, transitioning into reconnecting.",
         reconnectTimeout: "Couldn't reconnect within the configured timeout of {0} ms, disconnecting.",
-        reconnectWindowTimeout: "The client has been inactive since {0} and it has exceeded the inactivity timeout of {1} ms. Stopping the connection."
+        reconnectWindowTimeout: "The client has been inactive since {0} and it has exceeded the inactivity timeout of {1} this.ms. Stopping the connection."
     };
 
     if (typeof ($) !== "function") {

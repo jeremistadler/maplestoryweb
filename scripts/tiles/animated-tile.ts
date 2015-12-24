@@ -17,10 +17,10 @@ class AnimationSprite implements ILayeredTile, ITile {
     currentFrame: number = 0;
     flip: boolean;
 
-    constructor(path: string, pos: Vector) {
+    constructor(private ms: IEngine, path: string, pos: Vector) {
         this.position = pos;
         var instance = this;
-        ms.http.getJsonPropertyForPath(path, (data) => {
+        this.ms.http.getJsonPropertyForPath(path, (data) => {
             for (var key in data) {
                 if (isNaN(key))
                     continue;
@@ -33,7 +33,7 @@ class AnimationSprite implements ILayeredTile, ITile {
                 if (!origin)
                     continue;
 
-                frame.tex = new Texture(ms.http.baseUrl + path + '/' + key + '.png');
+                frame.tex = new Texture(ms, this.ms.http.baseUrl + path + '/' + key + '.png');
                 frame.origin = new Vector(origin.x, origin.y);
                 frame.id = parseInt(key);
                 frame.frameLength = delay;
@@ -47,7 +47,7 @@ class AnimationSprite implements ILayeredTile, ITile {
         });
     }
 
-    static loadTiles(layer, tileList: ILayeredTile[]) {
+    static loadTiles(ms: IEngine, layer, tileList: ILayeredTile[]) {
         for (var objKey in layer["obj"]) {
             var item = layer["obj"][objKey];
             var x = item.x;
@@ -72,7 +72,7 @@ class AnimationSprite implements ILayeredTile, ITile {
             //    continue;
 
             var spriteName = "Map/Obj/" + objectSet + ".img/" + l0 + "/" + l1 + "/" + l2;
-            var animation = new AnimationSprite(spriteName, new Vector(x, y));
+            var animation = new AnimationSprite(ms, spriteName, new Vector(x, y));
             animation.z = z;
             animation.layer = layer.id;
             animation.flip = item.flip == '1';
@@ -84,7 +84,7 @@ class AnimationSprite implements ILayeredTile, ITile {
     draw(ctx: CanvasRenderingContext2D) {
         if (!this.loaded) return;
 
-        this.timeToNextFrame -= ms.game.frameTime;
+        this.timeToNextFrame -= this.ms.game.frameTime;
         while (this.timeToNextFrame < 0) {
             this.currentFrame = (this.currentFrame + 1) % this.Frames.length;
             this.timeToNextFrame += this.Frames[this.currentFrame].frameLength;

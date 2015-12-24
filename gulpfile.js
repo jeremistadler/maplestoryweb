@@ -4,7 +4,8 @@ var eventStream = require('event-stream');
 var connect = require('gulp-connect');
 
 gulp.task('scripts', function() {
-    return gulp.src('scripts/**/*.ts')
+    var tsProject = ts.createProject('tsconfig.json');
+    return tsProject.src()
                .pipe(ts({
                     declarationFiles: false,
                     noExternalResolve: false
@@ -21,17 +22,14 @@ gulp.task('serve', function() {
 });
 
 gulp.task('watch', function() {
-    gulp.watch('./**/*.ts', { debounceDelay: 200 },['scripts']);
+    gulp.watch('scripts/**/*.ts', { debounceDelay: 200 }, ['scripts']);
     gulp.watch(['build/**/*.*', 'index.html', 'style/**/*.css'], { debounceDelay: 200 }, ['reload']);
 });
 
 
 gulp.task('reload', function() {
     gulp.src('index.html')
-      .pipe(connect.reload());
+        .pipe(connect.reload());
 });
 
-gulp.task('default', ['scripts', 'serve', 'watch'], function() {
-
-
-});
+gulp.task('default', ['scripts', 'serve', 'watch']);

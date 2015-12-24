@@ -2,7 +2,7 @@
 var StaticTile = (function () {
     function StaticTile() {
     }
-    StaticTile.loadTiles = function (layer, tileList) {
+    StaticTile.loadTiles = function (ms, layer, tileList) {
         for (var tileKey in layer.tile) {
             var item = layer.tile[tileKey];
             var x = item.x;
@@ -16,13 +16,13 @@ var StaticTile = (function () {
             tile.z = parseInt(tileKey);
             tile.position = new Vector(x, y);
             tile.origin = new Vector(0, 1000);
-            tile.Tex = new Texture(ms.http.baseUrl + path + '.png');
-            StaticTile.loadTileMetadata(tile, path);
+            tile.Tex = new Texture(ms, ms.http.baseUrl + path + '.png');
+            StaticTile.loadTileMetadata(ms, tile, path);
             if (tile.layer < 7)
                 tileList.push(tile);
         }
     };
-    StaticTile.loadTileMetadata = function (tile, path) {
+    StaticTile.loadTileMetadata = function (ms, tile, path) {
         ms.http.getJsonPropertyForPath(path, function (prop) {
             var origin = prop.origin;
             if (!origin || typeof origin.x != 'number')

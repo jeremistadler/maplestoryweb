@@ -1,4 +1,3 @@
-/// <reference path="main.ts" />
 var MapleEvent = (function () {
     function MapleEvent() {
         this.handlers = [];

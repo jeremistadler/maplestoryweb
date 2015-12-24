@@ -1,4 +1,3 @@
-﻿/// <reference path="main.ts" />
 
 interface IEvent<T> {
     on(handler: { (data?: T): void });

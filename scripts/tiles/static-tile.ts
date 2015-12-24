@@ -18,7 +18,7 @@ class StaticTile implements ILayeredTile, ITile {
     layer: number;
     Tex: Texture;
 
-    static loadTiles(layer, tileList : ILayeredTile[]) {
+    static loadTiles(ms: IEngine, layer, tileList : ILayeredTile[]) {
         for (var tileKey in layer.tile) {
             var item = layer.tile[tileKey];
             var x = item.x;
@@ -33,15 +33,15 @@ class StaticTile implements ILayeredTile, ITile {
             tile.z = parseInt(tileKey);
             tile.position = new Vector(x, y);
             tile.origin = new Vector(0, 1000);
-            tile.Tex = new Texture(ms.http.baseUrl + path + '.png');
-            StaticTile.loadTileMetadata(tile, path);
+            tile.Tex = new Texture(ms, ms.http.baseUrl + path + '.png');
+            StaticTile.loadTileMetadata(ms, tile, path);
 
             if (tile.layer < 7)
                 tileList.push(tile);
         }
     }
 
-    static loadTileMetadata(tile, path) {
+    static loadTileMetadata(ms: IEngine, tile, path) {
         ms.http.getJsonPropertyForPath(path, function (prop) {
             var origin = prop.origin;
             if (!origin || typeof origin.x != 'number')

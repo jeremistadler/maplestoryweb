@@ -1,4 +1,3 @@
-/// <reference path="main.ts" />
 var MathHelper = (function () {
     function MathHelper() {
     }

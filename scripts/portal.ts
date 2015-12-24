@@ -1,4 +1,3 @@
-﻿/// <reference path="main.ts" />
 
 enum PortalType {
     "StartPoint",
@@ -32,7 +31,7 @@ class Portal {
         //ctx.beginPath();
         //ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
         //ctx.strokeStyle = 'green';
-        //if (this.isPlayerTouching(ms.player))
+        //if (this.isPlayerTouching(this.ms.player))
         //    ctx.strokeStyle = 'red';
         //ctx.stroke();
 
@@ -53,7 +52,7 @@ class Portal {
         return distance < this.size * this.size;
     }
 
-    static loadPortals(data): Portal[] {
+    static loadPortals(ms: IEngine, data): Portal[] {
         var list = [];
         for (var key in data) {
             var item = data[key];
@@ -67,17 +66,13 @@ class Portal {
             portal.type = <PortalType>item.pt;
 
             if (portal.type == PortalType.Visible)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/pv', portal.position);
+                portal.tex = new AnimationSprite(ms, 'Map/MapHelper.img/portal/game/pv', portal.position);
 
             else if (portal.type == PortalType.Hidden)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
-
+                portal.tex = new AnimationSprite(ms, 'Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
 
             else if (portal.toMapId != 999999999)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/psh/default/portalStart', portal.position);
-
-
-
+                portal.tex = new AnimationSprite(ms, 'Map/MapHelper.img/portal/game/psh/default/portalStart', portal.position);
 
             list.push(portal);
         }

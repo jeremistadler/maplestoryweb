@@ -1,5 +1,3 @@
-﻿/// <reference path="main.ts" />
-
 class World {
     Footholds: Foothold[] = [];
     portals: Portal[] = [];
@@ -16,6 +14,8 @@ class World {
     mapUnloadingEvent: MapleEvent<void> = new MapleEvent<void>();
     name: string;
 
+    constructor(private ms: IEngine){}
+
     loadMap(id: number, targetPortal: string) {
         this.mapUnloadingEvent.trigger();
         this.loaded = false;
@@ -26,63 +26,62 @@ class World {
         this.Id = id;
         this.targetPortal = targetPortal;
         this.BasePath = 'Map/Map/Map' + id.toString().substr(0, 1) + '/' + this.Id + '.img/';
-        var instance = this;
-        ms.http.httpGetAsset(this.BasePath + 'properties.json', function (data) { instance.loadData(data) });
+        this.ms.http.httpGetAsset(this.BasePath + 'properties.json', data => this.loadData(data));
     }
 
-    loadData(mapData) {
+    loadData(mapData: any) {
         this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
         this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
         this.name = mapData.info.mapMark;
 
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
-        this.portals = Portal.loadPortals(mapData.portal);
+        this.portals = Portal.loadPortals(this.ms, mapData.portal);
 
-        ms.player.moveToPortal(this.targetPortal);
-        ms.camera.moveToPlayer();
+        this.ms.player.moveToPortal(this.targetPortal);
+        this.ms.camera.moveToPlayer();
 
         for (var key in mapData.back) {
         	var item = mapData.back[key];
-            var back = BackgroundTile.LoadBackground(item, parseInt(key));
+            var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
         	this.Backgrounds.push(back);
         }
 
         this.Backgrounds.sort((a, b) => b.z - a.z);
 
 
-        //for (var key in mapData) {
-        //    var layer = mapData[key];
-        //    var id = parseInt(key);
+        for (var key in mapData) {
+            var layer = mapData[key];
+            var id = parseInt(key);
 
-        //    if (isNaN(id))
-        //        continue;
+            if (isNaN(id))
+                continue;
 
-        //    layer.id = id;
+            layer.id = id;
 
-        //    if (layer.info && layer.info.tS)
-        //        StaticTile.loadTiles(layer, this.LayeredTiles);
-            
-        //    AnimationSprite.loadTiles(layer, this.LayeredTiles);
-        //}
+            if (layer.info && layer.info.tS)
+                StaticTile.loadTiles(this.ms, layer, this.LayeredTiles);
 
-        //this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
+            AnimationSprite.loadTiles(this.ms, layer, this.LayeredTiles);
+        }
+
+        this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
 
         this.mapLoadingEvent.trigger(mapData);
 
-        window.setTimeout(function () {
-            ms.map.loaded = true;
-            ms.map.mapLoadedEvent.trigger();
+        window.setTimeout(() => {
+            this.ms.map.loaded = true;
+            this.ms.map.mapLoadedEvent.trigger();
         }, 500);
     }
 
     update() { }
     draw() {
 
-        for (var i = 0; i < this.Backgrounds.length; i++)
-            this.Backgrounds[i].draw(ms.game.ctx);
+        //for (var i = 0; i < this.Backgrounds.length; i++)
+        //    this.Backgrounds[i].draw(this.ms.game.ctx);
 
         for (var i = 0; i < this.LayeredTiles.length; i++)
-            this.LayeredTiles[i].draw(ms.game.ctx);
+            this.LayeredTiles[i].draw(this.ms.game.ctx);
 
         //game.ctx.beginPath();
         //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
@@ -103,8 +102,8 @@ class World {
         //game.ctx.fill();
         //game.ctx.stroke();
 
-        ms.game.ctx.beginPath();
+        this.ms.game.ctx.beginPath();
         for (var i = 0; i < this.portals.length; i++)
-            this.portals[i].draw(ms.game.ctx);
+            this.portals[i].draw(this.ms.game.ctx);
     }
 }

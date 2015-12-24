@@ -1,6 +1,6 @@
-/// <reference path="main.ts" />
 var World = (function () {
-    function World() {
+    function World(ms) {
+        this.ms = ms;
         this.Footholds = [];
         this.portals = [];
         this.Backgrounds = [];
@@ -12,6 +12,7 @@ var World = (function () {
         this.mapUnloadingEvent = new MapleEvent();
     }
     World.prototype.loadMap = function (id, targetPortal) {
+        var _this = this;
         this.mapUnloadingEvent.trigger();
         this.loaded = false;
         this.Footholds = [];
@@ -21,24 +22,23 @@ var World = (function () {
         this.Id = id;
         this.targetPortal = targetPortal;
         this.BasePath = 'Map/Map/Map' + id.toString().substr(0, 1) + '/' + this.Id + '.img/';
-        var instance = this;
-        ms.http.httpGetAsset(this.BasePath + 'properties.json', function (data) {
-            instance.loadData(data);
-        });
+        this.ms.http.httpGetAsset(this.BasePath + 'properties.json', function (data) { return _this.loadData(data); });
     };
     World.prototype.loadData = function (mapData) {
+        var _this = this;
         this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
         this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
         this.name = mapData.info.mapMark;
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
-        this.portals = Portal.loadPortals(mapData.portal);
-        ms.player.moveToPortal(this.targetPortal);
-        ms.camera.moveToPlayer();
+        this.portals = Portal.loadPortals(this.ms, mapData.portal);
+        this.ms.player.moveToPortal(this.targetPortal);
+        this.ms.camera.moveToPlayer();
         for (var key in mapData.back) {
             var item = mapData.back[key];
-            var back = BackgroundTile.LoadBackground(item);
+            var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
             this.Backgrounds.push(back);
         }
+        this.Backgrounds.sort(function (a, b) { return b.z - a.z; });
         for (var key in mapData) {
             var layer = mapData[key];
             var id = parseInt(key);
@@ -46,23 +46,22 @@ var World = (function () {
                 continue;
             layer.id = id;
             if (layer.info && layer.info.tS)
-                StaticTile.loadTiles(layer, this.LayeredTiles);
-            AnimationSprite.loadTiles(layer, this.LayeredTiles);
+                StaticTile.loadTiles(this.ms, layer, this.LayeredTiles);
+            AnimationSprite.loadTiles(this.ms, layer, this.LayeredTiles);
         }
         this.LayeredTiles.sort(function (a, b) { return (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z); });
         this.mapLoadingEvent.trigger(mapData);
         window.setTimeout(function () {
-            ms.map.loaded = true;
-            ms.map.mapLoadedEvent.trigger();
+            _this.ms.map.loaded = true;
+            _this.ms.map.mapLoadedEvent.trigger();
         }, 500);
     };
-    World.prototype.update = function () {
-    };
+    World.prototype.update = function () { };
     World.prototype.draw = function () {
-        for (var i = 0; i < this.Backgrounds.length; i++)
-            this.Backgrounds[i].draw(ms.game.ctx);
+        //for (var i = 0; i < this.Backgrounds.length; i++)
+        //    this.Backgrounds[i].draw(this.ms.game.ctx);
         for (var i = 0; i < this.LayeredTiles.length; i++)
-            this.LayeredTiles[i].draw(ms.game.ctx);
+            this.LayeredTiles[i].draw(this.ms.game.ctx);
         //game.ctx.beginPath();
         //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
         //game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
@@ -80,9 +79,9 @@ var World = (function () {
         //        this.Footholds[i].draw(game.ctx);
         //game.ctx.fill();
         //game.ctx.stroke();
-        ms.game.ctx.beginPath();
+        this.ms.game.ctx.beginPath();
         for (var i = 0; i < this.portals.length; i++)
-            this.portals[i].draw(ms.game.ctx);
+            this.portals[i].draw(this.ms.game.ctx);
     };
     return World;
 })();

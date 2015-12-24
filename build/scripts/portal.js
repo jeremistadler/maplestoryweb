@@ -1,4 +1,3 @@
-/// <reference path="main.ts" />
 var PortalType;
 (function (PortalType) {
     PortalType[PortalType["StartPoint"] = 0] = "StartPoint";
@@ -26,7 +25,7 @@ var Portal = (function () {
         //ctx.beginPath();
         //ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
         //ctx.strokeStyle = 'green';
-        //if (this.isPlayerTouching(ms.player))
+        //if (this.isPlayerTouching(this.ms.player))
         //    ctx.strokeStyle = 'red';
         //ctx.stroke();
         //ctx.fillStyle = 'black';
@@ -35,13 +34,14 @@ var Portal = (function () {
             this.tex.draw(ctx);
     };
     Portal.prototype.canUse = function (player) {
-        return this.isPlayerTouching(player) && (this.toMapId != 999999999);
+        return this.isPlayerTouching(player) &&
+            (this.toMapId != 999999999);
     };
     Portal.prototype.isPlayerTouching = function (play) {
         var distance = Vector.distanceSquared(this.position, play.Position);
         return distance < this.size * this.size;
     };
-    Portal.loadPortals = function (data) {
+    Portal.loadPortals = function (ms, data) {
         var list = [];
         for (var key in data) {
             var item = data[key];
@@ -52,12 +52,12 @@ var Portal = (function () {
             portal.name = item.pn;
             portal.id = parseInt(key);
             portal.type = item.pt;
-            if (portal.type == 2 /* Visible */)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/pv', portal.position);
-            else if (portal.type == 10 /* Hidden */)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
+            if (portal.type == PortalType.Visible)
+                portal.tex = new AnimationSprite(ms, 'Map/MapHelper.img/portal/game/pv', portal.position);
+            else if (portal.type == PortalType.Hidden)
+                portal.tex = new AnimationSprite(ms, 'Map/MapHelper.img/portal/game/ph/default/portalStart', portal.position);
             else if (portal.toMapId != 999999999)
-                portal.tex = new AnimationSprite('Map/MapHelper.img/portal/game/psh/default/portalStart', portal.position);
+                portal.tex = new AnimationSprite(ms, 'Map/MapHelper.img/portal/game/psh/default/portalStart', portal.position);
             list.push(portal);
         }
         return list;

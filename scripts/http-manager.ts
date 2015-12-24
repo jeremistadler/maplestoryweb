@@ -1,10 +1,9 @@
-﻿/// <reference path="main.ts" />
 
 class HttpManagerCachedRequest {
     public done: boolean = false;
     public data: any;
     public callbacks: Array<(any) => void>;
-    constructor(public path: string, callback: (any) => void) {
+    constructor(public path: string, callback: (any: any) => void) {
         this.callbacks = [callback]
     }
 }
@@ -37,7 +36,7 @@ class HttpManager {
         this.dirtyCallbacks.push(req);
     }
 
-    public httpGet(path: string, callback: (any) => void): void {
+    public httpGet(path: string, callback: (any: any) => void): void {
         var cached = this.requestCache[path];
         if (cached) {
             cached.callbacks.push(callback);
@@ -89,6 +88,3 @@ class HttpManager {
         });
     }
 }
-
-
-

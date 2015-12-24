@@ -1,4 +1,3 @@
-/// <reference path="main.ts" />
 var Foothold = (function () {
     function Foothold(Position, Size) {
         this.Position = Position;
@@ -34,7 +33,10 @@ var Foothold = (function () {
         return this.Size.height == 0 || this.Size.width == 0;
     };
     Foothold.prototype.isPointColliding = function (pointX, pointY, nextPosX, nextPosY) {
-        return (this.rect.left <= pointX && this.rect.right >= pointX && this.rect.top >= pointY && this.rect.top <= nextPosY);
+        return (this.rect.left <= pointX &&
+            this.rect.right >= pointX &&
+            this.rect.top >= pointY &&
+            this.rect.top <= nextPosY);
     };
     return Foothold;
 })();
