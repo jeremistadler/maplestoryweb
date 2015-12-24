@@ -8,6 +8,8 @@ var Fps = (function () {
         }
     }
     Fps.prototype.draw = function (ctx) {
+        if (!this.ms.isDebug)
+            return;
         this.index++;
         if (this.index == 99)
             this.index = 0;

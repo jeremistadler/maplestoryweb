@@ -58,6 +58,7 @@ var Engine = (function () {
         this.ui = new UI(this);
         this.sound = new SoundPlayer(this);
         this.fps = new Fps(this);
+        this.isDebug = window.location.hostname == 'localhost';
     }
     Engine.prototype.gotAnimationFrame = function () {
         var _this = this;
