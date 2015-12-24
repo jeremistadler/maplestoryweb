@@ -10,6 +10,8 @@ class Fps {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
+      if (!this.ms.isDebug) return;
+
         this.index++;
         if (this.index == 99)
             this.index = 0;

@@ -72,6 +72,7 @@ interface IEngine {
 	ui: UI;
 	sound: SoundPlayer;
 	fps: Fps;
+  isDebug: boolean;
 }
 
 class Engine {
@@ -83,6 +84,7 @@ class Engine {
   public ui: UI = new UI(this);
   public sound: SoundPlayer = new SoundPlayer(this);
   public fps: Fps = new Fps(this);
+  public isDebug = window.location.hostname == 'localhost';
 
   gotAnimationFrame() {
     requestAnimationFrame(() => this.gotAnimationFrame());
