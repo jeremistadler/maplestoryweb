@@ -34,7 +34,6 @@ var Game = (function () {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ms.camera.draw();
         this.ms.map.draw();
-        this.ms.player.draw();
         //// Draw everything shrinked for debug
         //this.ctx.translate(this.ms.camera.boundsLeft + 400, this.ms.camera.boundsTop + 400);
         //this.ctx.scale(0.1, 0.1);
@@ -81,4 +80,5 @@ var Engine = (function () {
     };
     return Engine;
 })();
-new Engine().run();
+window.engine = new Engine();
+window.engine.run();

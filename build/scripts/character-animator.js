@@ -68,18 +68,17 @@ var CharacterAnimator = (function () {
     }
     CharacterAnimator.prototype.loadAnimation = function (basePath, animationName) {
         var _this = this;
-        var instance = this;
+        var body = new CharacterPart();
+        var arm = new CharacterPart();
+        var animation = new CharacterAnimation();
+        animation.parts.push(body);
+        animation.parts.push(arm);
+        this.animations[animationName] = animation;
         this.ms.http.getJsonPropertyForPath(basePath + '/' + animationName, function (data) {
-            var body = new CharacterPart();
-            var arm = new CharacterPart();
-            var animation = new CharacterAnimation();
-            animation.parts.push(body);
-            animation.parts.push(arm);
-            instance.animations[animationName] = animation;
             for (var key in data) {
-                if (isNaN(key))
-                    continue;
                 var id = parseInt(key);
+                if (isNaN(id))
+                    continue;
                 body.frames.push(new CharacterAnimationFrame(_this.ms, data[key].body, id, basePath + '/' + animationName + "/" + key + "/body", data[key].delay));
                 arm.frames.push(new CharacterAnimationFrame(_this.ms, data[key].arm, id, basePath + '/' + animationName + "/" + key + "/arm", data[key].delay));
             }

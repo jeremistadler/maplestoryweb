@@ -35,20 +35,19 @@ var World = (function () {
         this.ms.camera.moveToPlayer();
         for (var key in mapData.back) {
             var item = mapData.back[key];
-            var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
-            this.Backgrounds.push(back);
         }
         this.Backgrounds.sort(function (a, b) { return b.z - a.z; });
-        for (var key in mapData) {
-            var layer = mapData[key];
-            var id = parseInt(key);
-            if (isNaN(id))
-                continue;
-            layer.id = id;
-            if (layer.info && layer.info.tS)
-                StaticTile.loadTiles(this.ms, layer, this.LayeredTiles);
-            AnimationSprite.loadTiles(this.ms, layer, this.LayeredTiles);
-        }
+        if (!this.ms.isDebug)
+            for (var key in mapData) {
+                var layer = mapData[key];
+                var id = parseInt(key);
+                if (isNaN(id))
+                    continue;
+                layer.id = id;
+                if (layer.info && layer.info.tS)
+                    StaticTile.loadTiles(this.ms, layer, this.LayeredTiles);
+                AnimationSprite.loadTiles(this.ms, layer, this.LayeredTiles);
+            }
         this.LayeredTiles.sort(function (a, b) { return (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z); });
         this.mapLoadingEvent.trigger(mapData);
         window.setTimeout(function () {
@@ -58,27 +57,15 @@ var World = (function () {
     };
     World.prototype.update = function () { };
     World.prototype.draw = function () {
-        //for (var i = 0; i < this.Backgrounds.length; i++)
-        //    this.Backgrounds[i].draw(this.ms.game.ctx);
+        for (var i = 0; i < this.Backgrounds.length; i++)
+            this.Backgrounds[i].draw(this.ms.game.ctx);
         for (var i = 0; i < this.LayeredTiles.length; i++)
             this.LayeredTiles[i].draw(this.ms.game.ctx);
-        //game.ctx.beginPath();
-        //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        //game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-        //game.ctx.lineWidth = 1;
-        //for (var i = 0; i < this.Footholds.length; i++)
-        //    this.Footholds[i].draw(game.ctx);
-        //game.ctx.fill();
-        //game.ctx.stroke();
-        //game.ctx.beginPath();
-        //game.ctx.fillStyle = 'rgba(200, 0, 0, 0.3)';
-        //game.ctx.strokeStyle = 'rgba(200, 0, 0, 0.5)';
-        //game.ctx.lineWidth = 1;
-        //for (var i = 0; i < this.Footholds.length; i++)
-        //    if (this.Footholds[i].playerTouches)
-        //        this.Footholds[i].draw(game.ctx);
-        //game.ctx.fill();
-        //game.ctx.stroke();
+        this.ms.player.draw();
+        if (this.ms.isDebug) {
+            for (var i = 0; i < this.Footholds.length; i++)
+                this.Footholds[i].draw(this.ms.game.ctx);
+        }
         this.ms.game.ctx.beginPath();
         for (var i = 0; i < this.portals.length; i++)
             this.portals[i].draw(this.ms.game.ctx);

@@ -31,7 +31,7 @@ class CharacterPart {
 
   draw(frameTime: number, ctx: CanvasRenderingContext2D, x: number, y: number, flip: boolean) {
     if (this.frames.length == 0) return;
-    
+
     this.timeToNextFrame -= frameTime;
     while (this.timeToNextFrame < 0) {
 
@@ -79,21 +79,20 @@ class CharacterAnimator {
   }
 
   loadAnimation(basePath: string, animationName: string) {
-    var instance = this;
+    var body = new CharacterPart();
+    var arm = new CharacterPart();
+    var animation = new CharacterAnimation();
+    animation.parts.push(body);
+    animation.parts.push(arm);
+    this.animations[animationName] = animation;
+
     this.ms.http.getJsonPropertyForPath(basePath + '/' + animationName, (data) => {
-      var body = new CharacterPart();
-      var arm = new CharacterPart();
-      var animation = new CharacterAnimation();
-
-      animation.parts.push(body);
-      animation.parts.push(arm);
-      instance.animations[animationName] = animation;
-
       for (var key in data) {
-        if (isNaN(key))
+        var id = parseInt(key);
+        
+        if (isNaN(id))
           continue;
 
-        var id = parseInt(key);
         body.frames.push(new CharacterAnimationFrame(this.ms, data[key].body, id, basePath + '/' + animationName + "/" + key + "/body", data[key].delay));
         arm.frames.push(new CharacterAnimationFrame(this.ms, data[key].arm, id, basePath + '/' + animationName + "/" + key + "/arm", data[key].delay));
       }
@@ -106,6 +105,6 @@ class CharacterAnimator {
   }
 
   draw(ctx: CanvasRenderingContext2D, x: number, y: number, flip: boolean, animationName: string, frameTime: number) {
-    this.animations[animationName].draw(frameTime, ctx, x, y, flip);
+      this.animations[animationName].draw(frameTime, ctx, x, y, flip);
   }
 }

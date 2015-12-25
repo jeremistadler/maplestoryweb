@@ -1,6 +1,7 @@
 class Camera {
     Position: Vector;
-    Zoom: number = 1 / (window.devicePixelRatio || 1);
+    //Zoom: number = 1 / (window.devicePixelRatio || 1);
+    Zoom: number = 1;
 
     boundsLeft: number;
     boundsRight: number;
@@ -56,7 +57,14 @@ class Camera {
 
     draw() {
         this.reset();
-        this.ms.game.ctx.translate(Math.round(-this.Position.x * this.Zoom * 2) / 2, Math.round(-this.Position.y * this.Zoom * 2) / 2);
+        var roundMultiple = this.Zoom;
+
+        var x = -this.Position.x * this.Zoom;
+        var y = -this.Position.y * this.Zoom;
+        x = Math.floor(x * roundMultiple) / roundMultiple;
+        y = Math.floor(y * roundMultiple) / roundMultiple;
+
+        this.ms.game.ctx.translate(x, y);
         this.ms.game.ctx.scale(this.Zoom, this.Zoom);
     }
 }

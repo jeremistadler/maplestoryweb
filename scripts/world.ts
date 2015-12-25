@@ -1,109 +1,98 @@
 class World {
-    Footholds: Foothold[] = [];
-    portals: Portal[] = [];
-    Id: number;
-    BasePath: string;
-    Backgrounds: BackgroundTile[] = [];
-    LayeredTiles: ILayeredTile[] = [];
-    loaded: boolean = false;
-    size: Size;
-    center: Vector = new Vector(0, 0);
-    targetPortal: string;
-    mapLoadedEvent: MapleEvent<void> = new MapleEvent<void>();
-    mapLoadingEvent: MapleEvent<any> = new MapleEvent<any>();
-    mapUnloadingEvent: MapleEvent<void> = new MapleEvent<void>();
-    name: string;
+  Footholds: Foothold[] = [];
+  portals: Portal[] = [];
+  Id: number;
+  BasePath: string;
+  Backgrounds: BackgroundTile[] = [];
+  LayeredTiles: ILayeredTile[] = [];
+  loaded: boolean = false;
+  size: Size;
+  center: Vector = new Vector(0, 0);
+  targetPortal: string;
+  mapLoadedEvent: MapleEvent<void> = new MapleEvent<void>();
+  mapLoadingEvent: MapleEvent<any> = new MapleEvent<any>();
+  mapUnloadingEvent: MapleEvent<void> = new MapleEvent<void>();
+  name: string;
 
-    constructor(private ms: IEngine){}
+  constructor(private ms: IEngine) { }
 
-    loadMap(id: number, targetPortal: string) {
-        this.mapUnloadingEvent.trigger();
-        this.loaded = false;
-        this.Footholds = [];
-        this.LayeredTiles = [];
-        this.Backgrounds = [];
-        this.portals = [];
-        this.Id = id;
-        this.targetPortal = targetPortal;
-        this.BasePath = 'Map/Map/Map' + id.toString().substr(0, 1) + '/' + this.Id + '.img/';
-        this.ms.http.httpGetAsset(this.BasePath + 'properties.json', data => this.loadData(data));
+  loadMap(id: number, targetPortal: string) {
+    this.mapUnloadingEvent.trigger();
+    this.loaded = false;
+    this.Footholds = [];
+    this.LayeredTiles = [];
+    this.Backgrounds = [];
+    this.portals = [];
+    this.Id = id;
+    this.targetPortal = targetPortal;
+    this.BasePath = 'Map/Map/Map' + id.toString().substr(0, 1) + '/' + this.Id + '.img/';
+    this.ms.http.httpGetAsset(this.BasePath + 'properties.json', data => this.loadData(data));
+  }
+
+  loadData(mapData: any) {
+    this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
+    this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
+    this.name = mapData.info.mapMark;
+
+    this.Footholds = Foothold.loadFootholds(mapData.foothold);
+    this.portals = Portal.loadPortals(this.ms, mapData.portal);
+
+    this.ms.player.moveToPortal(this.targetPortal);
+    this.ms.camera.moveToPlayer();
+
+    for (var key in mapData.back) {
+      var item = mapData.back[key];
+      //var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
+      //this.Backgrounds.push(back);
     }
 
-    loadData(mapData: any) {
-        this.size = new Size(mapData.miniMap.width, mapData.miniMap.height);
-        this.center = new Vector(mapData.miniMap.centerX, mapData.miniMap.centerY);
-        this.name = mapData.info.mapMark;
-
-        this.Footholds = Foothold.loadFootholds(mapData.foothold);
-        this.portals = Portal.loadPortals(this.ms, mapData.portal);
-
-        this.ms.player.moveToPortal(this.targetPortal);
-        this.ms.camera.moveToPlayer();
-
-        for (var key in mapData.back) {
-        	var item = mapData.back[key];
-            var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
-        	this.Backgrounds.push(back);
-        }
-
-        this.Backgrounds.sort((a, b) => b.z - a.z);
+    this.Backgrounds.sort((a, b) => b.z - a.z);
 
 
-        for (var key in mapData) {
-            var layer = mapData[key];
-            var id = parseInt(key);
+    if (!this.ms.isDebug)
+    for (var key in mapData) {
+      var layer = mapData[key];
+      var id = parseInt(key);
 
-            if (isNaN(id))
-                continue;
+      if (isNaN(id))
+        continue;
 
-            layer.id = id;
+      layer.id = id;
 
-            if (layer.info && layer.info.tS)
-                StaticTile.loadTiles(this.ms, layer, this.LayeredTiles);
+      if (layer.info && layer.info.tS)
+        StaticTile.loadTiles(this.ms, layer, this.LayeredTiles);
 
-            AnimationSprite.loadTiles(this.ms, layer, this.LayeredTiles);
-        }
-
-        this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
-
-        this.mapLoadingEvent.trigger(mapData);
-
-        window.setTimeout(() => {
-            this.ms.map.loaded = true;
-            this.ms.map.mapLoadedEvent.trigger();
-        }, 500);
+      AnimationSprite.loadTiles(this.ms, layer, this.LayeredTiles);
     }
 
-    update() { }
-    draw() {
+    this.LayeredTiles.sort((a, b) => (a.layer * 1000 + a.z) - (b.layer * 1000 + b.z));
 
-        //for (var i = 0; i < this.Backgrounds.length; i++)
-        //    this.Backgrounds[i].draw(this.ms.game.ctx);
+    this.mapLoadingEvent.trigger(mapData);
 
-        for (var i = 0; i < this.LayeredTiles.length; i++)
-            this.LayeredTiles[i].draw(this.ms.game.ctx);
+    window.setTimeout(() => {
+      this.ms.map.loaded = true;
+      this.ms.map.mapLoadedEvent.trigger();
+    }, 500);
+  }
 
-        //game.ctx.beginPath();
-        //game.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        //game.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-        //game.ctx.lineWidth = 1;
-        //for (var i = 0; i < this.Footholds.length; i++)
-        //    this.Footholds[i].draw(game.ctx);
-        //game.ctx.fill();
-        //game.ctx.stroke();
+  update() { }
+  draw() {
+    for (var i = 0; i < this.Backgrounds.length; i++)
+      this.Backgrounds[i].draw(this.ms.game.ctx);
 
-        //game.ctx.beginPath();
-        //game.ctx.fillStyle = 'rgba(200, 0, 0, 0.3)';
-        //game.ctx.strokeStyle = 'rgba(200, 0, 0, 0.5)';
-        //game.ctx.lineWidth = 1;
-        //for (var i = 0; i < this.Footholds.length; i++)
-        //    if (this.Footholds[i].playerTouches)
-        //        this.Footholds[i].draw(game.ctx);
-        //game.ctx.fill();
-        //game.ctx.stroke();
+    for (var i = 0; i < this.LayeredTiles.length; i++)
+      this.LayeredTiles[i].draw(this.ms.game.ctx);
 
-        this.ms.game.ctx.beginPath();
-        for (var i = 0; i < this.portals.length; i++)
-            this.portals[i].draw(this.ms.game.ctx);
+    this.ms.player.draw();
+
+    if (this.ms.isDebug) {
+      for (var i = 0; i < this.Footholds.length; i++)
+        this.Footholds[i].draw(this.ms.game.ctx);
     }
+
+
+    this.ms.game.ctx.beginPath();
+    for (var i = 0; i < this.portals.length; i++)
+      this.portals[i].draw(this.ms.game.ctx);
+  }
 }

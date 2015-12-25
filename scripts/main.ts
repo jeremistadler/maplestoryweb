@@ -46,7 +46,6 @@ class Game {
 
     this.ms.camera.draw();
     this.ms.map.draw();
-    this.ms.player.draw();
 
     //// Draw everything shrinked for debug
     //this.ctx.translate(this.ms.camera.boundsLeft + 400, this.ms.camera.boundsTop + 400);
@@ -108,4 +107,6 @@ class Engine {
     this.gotAnimationFrame();
   }
 }
-new Engine().run();
+
+window.engine = new Engine();
+window.engine.run();

@@ -1,11 +1,20 @@
 var Rectangle = (function () {
-    function Rectangle(top, right, bottom, left) {
-        this.top = top;
-        this.right = right;
-        this.bottom = bottom;
-        this.left = left;
+    function Rectangle(x1, y1, x2, y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
     }
     return Rectangle;
+})();
+var Line = (function () {
+    function Line(x1, y1, x2, y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
+    return Line;
 })();
 var Size = (function () {
     function Size(width, height) {

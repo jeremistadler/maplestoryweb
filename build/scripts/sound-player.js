@@ -8,6 +8,8 @@ var SoundPlayer = (function () {
         this.ms.map.mapUnloadingEvent.on(function () { return _this.mapUnloaded(); });
     };
     SoundPlayer.prototype.mapLoading = function (mapData) {
+        if (this.ms.isDebug)
+            return;
         var soundPath = mapData.info.bgm;
         soundPath = this.ms.http.baseUrl + "Sound/" + soundPath.replace("/", ".img/") + ".mp3";
         if (soundPath == this.ms.sound.backgroundMusicPath) {
@@ -19,8 +21,7 @@ var SoundPlayer = (function () {
         this.ms.sound.backgroundMusic = new Audio(soundPath);
         this.ms.sound.backgroundMusic.loop = true;
         this.ms.sound.backgroundMusic.volume = 0.2;
-        if (!this.ms.isDebug)
-            this.ms.sound.backgroundMusic.play();
+        this.ms.sound.backgroundMusic.play();
     };
     SoundPlayer.prototype.mapUnloaded = function () {
     };

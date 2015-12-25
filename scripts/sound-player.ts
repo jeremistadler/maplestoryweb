@@ -11,6 +11,8 @@ class SoundPlayer
     }
 
     mapLoading(mapData: any) {
+        if (this.ms.isDebug) return;
+
         var soundPath = <string>mapData.info.bgm;
         soundPath = this.ms.http.baseUrl + "Sound/" + soundPath.replace("/", ".img/") + ".mp3";
 
@@ -25,9 +27,7 @@ class SoundPlayer
         this.ms.sound.backgroundMusic = new Audio(soundPath);
         this.ms.sound.backgroundMusic.loop = true;
         this.ms.sound.backgroundMusic.volume = 0.2;
-
-        if (!this.ms.isDebug)
-          this.ms.sound.backgroundMusic.play();
+        this.ms.sound.backgroundMusic.play();
     }
 
     mapUnloaded() {

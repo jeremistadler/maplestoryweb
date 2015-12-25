@@ -1,7 +1,8 @@
 var Camera = (function () {
     function Camera(ms) {
         this.ms = ms;
-        this.Zoom = 1 / (window.devicePixelRatio || 1);
+        //Zoom: number = 1 / (window.devicePixelRatio || 1);
+        this.Zoom = 1;
     }
     Camera.prototype.init = function () {
         this.Position = new Vector(0, 0);
@@ -33,7 +34,12 @@ var Camera = (function () {
     };
     Camera.prototype.draw = function () {
         this.reset();
-        this.ms.game.ctx.translate(Math.round(-this.Position.x * this.Zoom * 2) / 2, Math.round(-this.Position.y * this.Zoom * 2) / 2);
+        var roundMultiple = this.Zoom;
+        var x = -this.Position.x * this.Zoom;
+        var y = -this.Position.y * this.Zoom;
+        x = Math.floor(x * roundMultiple) / roundMultiple;
+        y = Math.floor(y * roundMultiple) / roundMultiple;
+        this.ms.game.ctx.translate(x, y);
         this.ms.game.ctx.scale(this.Zoom, this.Zoom);
     };
     return Camera;

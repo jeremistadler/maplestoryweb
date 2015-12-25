@@ -14,13 +14,15 @@ var KeyCodes;
 var Player = (function () {
     function Player(ms) {
         this.ms = ms;
+        this.isInAir = false;
+        this.touchingFoothold = null;
     }
     Player.prototype.init = function () {
         var _this = this;
         this.Position = new Vector(3000, 570);
         this.Velocity = new Vector(0, 0);
         this.Size = new Size(10, 70);
-        this.hasJumped = true;
+        this.isInAir = true;
         this.animator = new CharacterAnimator(this.ms, 'Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
         window.onkeydown = function (e) { return _this.onKeyDown(e); };
         window.onkeyup = function (e) { return _this.onKeyUp(e); };
@@ -63,28 +65,27 @@ var Player = (function () {
         else if (e.keyCode == KeyCodes.right || e.keyCode == KeyCodes.d)
             this.Velocity.x = 3;
         if (e.keyCode == KeyCodes.down || e.keyCode == KeyCodes.s) {
-            this.Position.y++;
-            this.Velocity.y++;
+            this.Position.y += 2;
+            this.Velocity.y = 0;
+            this.isInAir = true;
         }
         if (e.keyCode == KeyCodes.up || e.keyCode == KeyCodes.w) {
-            if (this.ms.map.loaded) {
-                for (var i = 0; i < this.ms.map.portals.length; i++) {
-                    if (this.ms.map.portals[i].canUse(this.ms.player)) {
-                        if (this.ms.map.portals[i].toMapId == this.ms.map.Id) {
-                            this.ms.player.moveToPortal(this.ms.map.portals[i].toPortal);
-                        }
-                        else {
-                            this.ms.map.loadMap(this.ms.map.portals[i].toMapId, this.ms.map.portals[i].toPortal);
-                        }
-                        break;
+            for (var i = 0; this.ms.map.loaded && i < this.ms.map.portals.length; i++) {
+                if (this.ms.map.portals[i].canUse(this.ms.player)) {
+                    if (this.ms.map.portals[i].toMapId == this.ms.map.Id) {
+                        this.ms.player.moveToPortal(this.ms.map.portals[i].toPortal);
                     }
+                    else {
+                        this.ms.map.loadMap(this.ms.map.portals[i].toMapId, this.ms.map.portals[i].toPortal);
+                    }
+                    break;
                 }
             }
         }
         if (e.keyCode == KeyCodes.space) {
-            if (this.hasJumped == false) {
+            if (this.isInAir == false) {
                 this.Velocity.y -= 10;
-                this.hasJumped = true;
+                this.isInAir = true;
                 this.ms.sound.playSound("Game.img/Jump");
             }
         }
@@ -99,17 +100,17 @@ var Player = (function () {
         if (!this.ms.map.loaded)
             return;
         this.Velocity.y += 0.5;
-        for (var i = 0; i < this.ms.map.Footholds.length; i++)
-            this.ms.map.Footholds[i].playerTouches = false;
         var nextX = this.Position.x + this.Velocity.x * this.ms.game.frameTime * 0.05;
         var nextY = this.Position.y + this.Velocity.y * this.ms.game.frameTime * 0.05;
-        for (var i = 0; i < this.ms.map.Footholds.length; i++) {
-            if (this.ms.map.Footholds[i].isPointColliding(this.Position.x - this.Size.width / 2, this.Position.y, nextX, nextY) ||
-                this.ms.map.Footholds[i].isPointColliding(this.Position.x + this.Size.width / 2, this.Position.y, nextX, nextY)) {
-                this.ms.map.Footholds[i].playerTouches = true;
-                this.Velocity.y = 0;
-                nextY = this.Position.y = this.ms.map.Footholds[i].Position.y;
-                this.hasJumped = false;
+        if (!this.isInAir || this.Velocity.y > 0) {
+            for (var i = 0; i < this.ms.map.Footholds.length; i++) {
+                var intersection = this.ms.map.Footholds[i].getIntersection(this.Position.x, this.Position.y - 1 - (nextY - this.Position.y) * 3, nextX, nextY + 1);
+                if (!isNaN(intersection)) {
+                    this.touchingFoothold = this.ms.map.Footholds[i];
+                    this.Velocity.y = 0;
+                    nextY = this.Position.y = intersection;
+                    this.isInAir = false;
+                }
             }
         }
         this.Position.x = nextX;
@@ -120,7 +121,7 @@ var Player = (function () {
         }
     };
     Player.prototype.draw = function () {
-        if (this.hasJumped || this.Velocity.y > 0)
+        if (this.isInAir || this.Velocity.y > 0)
             this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'jump', this.ms.game.frameTime);
         else if (this.Velocity.x != 0)
             this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'walk1', this.ms.game.frameTime * Math.abs(this.Velocity.x / 3));
@@ -133,8 +134,9 @@ var Player = (function () {
         this.ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
         this.ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
         this.ms.game.ctx.stroke();
-        //ms.game.ctx.fillStyle = 'black';
-        //ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x - 30, this.Position.y - 100);
+        this.ms.game.ctx.fillStyle = 'black';
+        this.ms.game.ctx.textAlign = 'center';
+        this.ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x, this.Position.y + 15);
     };
     return Player;
 })();
