@@ -32,8 +32,12 @@ var Networking = (function () {
         if (state.id != this.clientId)
             this.Players[state.id] = state;
     };
-    Networking.prototype.onPlayersRecived = function (state) {
-        console.log('Recived players in map: ', state);
+    Networking.prototype.onPlayersRecived = function (players) {
+        var _this = this;
+        console.log('Received map players: ', players);
+        var lookup = {};
+        players.forEach(function (f) { return lookup[f.id] = _this.Players[f.id] || players[f.id]; });
+        this.Players = lookup;
     };
     Networking.prototype.onMyInfoRecived = function (info) {
         this.clientId = info.id;

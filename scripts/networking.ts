@@ -55,14 +55,18 @@ class Networking {
       this.Players[state.id] = state;
   }
 
-  onPlayersRecived(state: OtherPlayer[]) {
-    console.log('Recived players in map: ', state)
+  onPlayersRecived(players: OtherPlayer[]) {
+    console.log('Received map players: ', players)
+
+    var lookup: PlayerById = {};
+    players.forEach(f => lookup[f.id] = this.Players[f.id] || players[f.id]);
+    this.Players = lookup;
   }
 
   onMyInfoRecived(info: any) {
     this.clientId = info.id;
     console.log('Authenticated!', info)
-    this.socket.emit('joinMap', {mapId: this.ms.map.Id.toString()});
+    this.socket.emit('joinMap', { mapId: this.ms.map.Id.toString() });
     this.allowSending = true;
   }
 
@@ -74,7 +78,7 @@ class Networking {
       token = this.makeToken();
       window.localStorage.setItem('authToken', token);
     }
-    this.socket.emit('auth', {token: token});
+    this.socket.emit('auth', { token: token });
   }
 
   disconnected() {
@@ -82,16 +86,16 @@ class Networking {
   }
 
   onLoadedNewMap() {
-    this.socket.emit('joinMap', {mapId: this.ms.map.Id.toString()});
+    this.socket.emit('joinMap', { mapId: this.ms.map.Id.toString() });
   }
 
   update() {
     if (new Date().getTime() > this.nextFrameDate &&
-        this.allowSending &&
-        (this.lastXPos != this.ms.player.Position.x ||
-         this.lastYPos != this.ms.player.Position.y ||
-         new Date().getTime() > this.nextFrameDate + 1000)
-    ) {
+      this.allowSending &&
+      (this.lastXPos != this.ms.player.Position.x ||
+        this.lastYPos != this.ms.player.Position.y ||
+        new Date().getTime() > this.nextFrameDate + 1000)
+      ) {
       this.socket.emit('playerState',
         {
           id: this.clientId,
