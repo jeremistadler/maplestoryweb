@@ -21,6 +21,7 @@ class Networking {
   clientId: string;
   allowSending = false;
   lastXPos = 0;
+  lastYPos = 0;
 
   constructor(private ms: IEngine) { }
 
@@ -87,7 +88,9 @@ class Networking {
   update() {
     if (new Date().getTime() > this.nextFrameDate &&
         this.allowSending &&
-        (this.lastXPos != this.ms.player.Position.x || new Date().getTime() > this.nextFrameDate + 1000)
+        (this.lastXPos != this.ms.player.Position.x ||
+         this.lastYPos != this.ms.player.Position.y ||
+         new Date().getTime() > this.nextFrameDate + 1000)
     ) {
       this.socket.emit('playerState',
         {
@@ -97,11 +100,13 @@ class Networking {
           vX: this.ms.player.Velocity.x,
           vY: this.ms.player.Velocity.y,
           isInAir: this.ms.player.isInAir,
-          flipped: this.ms.player.flipped
+          flipped: this.ms.player.flipped,
+          mapId: this.ms.map.Id.toString()
         })
 
       this.nextFrameDate = new Date().getTime() + 100;
       this.lastXPos = this.ms.player.Position.x;
+      this.lastYPos = this.ms.player.Position.y;
     }
 
     for (var id in this.Players) {

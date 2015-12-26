@@ -5,6 +5,7 @@ var Networking = (function () {
         this.nextFrameDate = 0;
         this.allowSending = false;
         this.lastXPos = 0;
+        this.lastYPos = 0;
     }
     Networking.prototype.init = function () {
         var _this = this;
@@ -58,7 +59,9 @@ var Networking = (function () {
     Networking.prototype.update = function () {
         if (new Date().getTime() > this.nextFrameDate &&
             this.allowSending &&
-            (this.lastXPos != this.ms.player.Position.x || new Date().getTime() > this.nextFrameDate + 1000)) {
+            (this.lastXPos != this.ms.player.Position.x ||
+                this.lastYPos != this.ms.player.Position.y ||
+                new Date().getTime() > this.nextFrameDate + 1000)) {
             this.socket.emit('playerState', {
                 id: this.clientId,
                 x: this.ms.player.Position.x,
@@ -66,10 +69,12 @@ var Networking = (function () {
                 vX: this.ms.player.Velocity.x,
                 vY: this.ms.player.Velocity.y,
                 isInAir: this.ms.player.isInAir,
-                flipped: this.ms.player.flipped
+                flipped: this.ms.player.flipped,
+                mapId: this.ms.map.Id.toString()
             });
             this.nextFrameDate = new Date().getTime() + 100;
             this.lastXPos = this.ms.player.Position.x;
+            this.lastYPos = this.ms.player.Position.y;
         }
         for (var id in this.Players) {
             var player = this.Players[id];
