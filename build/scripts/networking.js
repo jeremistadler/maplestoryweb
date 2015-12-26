@@ -8,7 +8,7 @@ var Networking = (function () {
     Networking.prototype.init = function () {
         var _this = this;
         this.clientId = this.makeId();
-        this.socket = io('http://maplestoryserver.jeremi.se', { 'transports': ['websocket', 'polling'] });
+        this.socket = io('http://maplestoryserver.jeremi.se', { 'transports': ['polling'] });
         this.socket.on('connect', function () { return _this.connected(); });
         this.socket.on('playerState', function (data) { return _this.onStateRecived(data); });
         this.socket.on('disconnect', function () { return _this.disconnected(); });

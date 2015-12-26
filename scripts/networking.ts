@@ -24,7 +24,7 @@ class Networking {
 
   init() {
     this.clientId = this.makeId();
-    this.socket = io('http://maplestoryserver.jeremi.se', { 'transports': ['websocket', 'polling'] });
+    this.socket = io('http://maplestoryserver.jeremi.se', { 'transports': ['polling'] });
 
     this.socket.on('connect', () => this.connected());
     this.socket.on('playerState', data => this.onStateRecived(data));
