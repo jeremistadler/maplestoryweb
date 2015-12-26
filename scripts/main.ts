@@ -32,6 +32,7 @@ class Game {
     this.totalGameTime = Date.now();
     this.frameTime = this.totalGameTime - this.lastGameTime;
     this.ms.camera.update();
+    this.ms.network.update();
     this.ms.map.update();
     this.ms.player.update();
     this.ms.ui.update();
@@ -69,7 +70,8 @@ interface IEngine {
 	player: Player;
 	http: HttpManager;
 	ui: UI;
-	sound: SoundPlayer;
+  sound: SoundPlayer;
+	network: Networking;
 	fps: Fps;
   isDebug: boolean;
 }
@@ -82,6 +84,7 @@ class Engine {
   public http: HttpManager = new HttpManager();
   public ui: UI = new UI(this);
   public sound: SoundPlayer = new SoundPlayer(this);
+  public network: Networking = new Networking(this);
   public fps: Fps = new Fps(this);
   public isDebug = window.location.hostname == 'localhost';
 
@@ -94,6 +97,7 @@ class Engine {
 
   run() {
     this.game.init();
+    this.network.init();
     this.camera.init();
     this.player.init();
     this.ui.init();

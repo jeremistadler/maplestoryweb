@@ -22,6 +22,7 @@ var Game = (function () {
         this.totalGameTime = Date.now();
         this.frameTime = this.totalGameTime - this.lastGameTime;
         this.ms.camera.update();
+        this.ms.network.update();
         this.ms.map.update();
         this.ms.player.update();
         this.ms.ui.update();
@@ -56,6 +57,7 @@ var Engine = (function () {
         this.http = new HttpManager();
         this.ui = new UI(this);
         this.sound = new SoundPlayer(this);
+        this.network = new Networking(this);
         this.fps = new Fps(this);
         this.isDebug = window.location.hostname == 'localhost';
     }
@@ -68,6 +70,7 @@ var Engine = (function () {
     Engine.prototype.run = function () {
         var _this = this;
         this.game.init();
+        this.network.init();
         this.camera.init();
         this.player.init();
         this.ui.init();

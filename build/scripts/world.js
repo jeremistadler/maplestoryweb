@@ -66,9 +66,10 @@ var World = (function () {
         for (var i = 0; i < this.LayeredTiles.length; i++)
             this.LayeredTiles[i].draw(this.ms.game.ctx);
         this.ms.player.draw();
+        this.ms.network.draw();
         if (this.ms.isDebug) {
             for (var i = 0; i < this.Footholds.length; i++)
-                this.Footholds[i].draw(this.ms.game.ctx);
+                this.Footholds[i].draw(this.ms.game.ctx, false);
         }
         this.ms.game.ctx.beginPath();
         for (var i = 0; i < this.portals.length; i++)

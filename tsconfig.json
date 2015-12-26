@@ -16,7 +16,8 @@
   },
   "filesGlob": [
     "scripts/**/*.ts",
-    "!scripts/**/*-spec.ts"
+    "!scripts/**/*-spec.ts",
+    "typings/**/*.ts"
   ],
   "files": [
     "scripts/camera.ts",
@@ -29,6 +30,7 @@
     "scripts/http-manager.ts",
     "scripts/main.ts",
     "scripts/math-helper.ts",
+    "scripts/networking.ts",
     "scripts/player.ts",
     "scripts/portal.ts",
     "scripts/sound-player.ts",
@@ -38,7 +40,9 @@
     "scripts/tiles/static-tile.ts",
     "scripts/UI.ts",
     "scripts/vector.ts",
-    "scripts/world.ts"
+    "scripts/world.ts",
+    "typings/socket.io-client/socket.io-client.d.ts",
+    "typings/tsd.d.ts"
   ],
   "atom": {
     "rewriteTsconfig": true
