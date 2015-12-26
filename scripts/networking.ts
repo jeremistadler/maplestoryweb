@@ -17,7 +17,6 @@ class Networking {
   Players: PlayerById = {};
   socket: SocketIOClient;
   animator: CharacterAnimator;
-  sendNextFrame = true;
   nextFrameDate = 0;
   clientId: string;
   allowSending = false;
@@ -51,9 +50,7 @@ class Networking {
   }
 
   onStateRecived(state: OtherPlayer) {
-    if (state.id == this.clientId)
-      this.sendNextFrame = true;
-    else
+    if (state.id != this.clientId)
       this.Players[state.id] = state;
   }
 
@@ -88,11 +85,9 @@ class Networking {
   }
 
   update() {
-    if (
-      //this.sendNextFrame &&
-      new Date().getTime() > this.nextFrameDate &&
-      this.allowSending &&
-      (this.lastXPos != this.ms.player.Position.x || new Date().getTime() > this.nextFrameDate + 1000)
+    if (new Date().getTime() > this.nextFrameDate &&
+        this.allowSending &&
+        (this.lastXPos != this.ms.player.Position.x || new Date().getTime() > this.nextFrameDate + 1000)
     ) {
       this.socket.emit('playerState',
         {
@@ -105,7 +100,6 @@ class Networking {
           flipped: this.ms.player.flipped
         })
 
-      this.sendNextFrame = false;
       this.nextFrameDate = new Date().getTime() + 100;
       this.lastXPos = this.ms.player.Position.x;
     }

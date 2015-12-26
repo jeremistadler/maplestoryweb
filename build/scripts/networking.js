@@ -2,7 +2,6 @@ var Networking = (function () {
     function Networking(ms) {
         this.ms = ms;
         this.Players = {};
-        this.sendNextFrame = true;
         this.nextFrameDate = 0;
         this.allowSending = false;
         this.lastXPos = 0;
@@ -29,9 +28,7 @@ var Networking = (function () {
         return text;
     };
     Networking.prototype.onStateRecived = function (state) {
-        if (state.id == this.clientId)
-            this.sendNextFrame = true;
-        else
+        if (state.id != this.clientId)
             this.Players[state.id] = state;
     };
     Networking.prototype.onPlayersRecived = function (state) {
@@ -59,9 +56,7 @@ var Networking = (function () {
         this.socket.emit('joinMap', { mapId: this.ms.map.Id.toString() });
     };
     Networking.prototype.update = function () {
-        if (
-        //this.sendNextFrame &&
-        new Date().getTime() > this.nextFrameDate &&
+        if (new Date().getTime() > this.nextFrameDate &&
             this.allowSending &&
             (this.lastXPos != this.ms.player.Position.x || new Date().getTime() > this.nextFrameDate + 1000)) {
             this.socket.emit('playerState', {
@@ -73,7 +68,6 @@ var Networking = (function () {
                 isInAir: this.ms.player.isInAir,
                 flipped: this.ms.player.flipped
             });
-            this.sendNextFrame = false;
             this.nextFrameDate = new Date().getTime() + 100;
             this.lastXPos = this.ms.player.Position.x;
         }
