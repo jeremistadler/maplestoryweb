@@ -47,13 +47,13 @@ class World {
     this.ms.player.moveToPortal(this.targetPortal);
     this.ms.camera.moveToPlayer();
 
-    for (var key in mapData.back) {
-      var item = mapData.back[key];
-      var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
-      this.Backgrounds.push(back);
-    }
 
-    this.Backgrounds.sort((a, b) => a.z - b.z);
+    //for (var key in mapData.back) {
+    //  var item = mapData.back[key];
+    //  var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
+    //  this.Backgrounds.push(back);
+    //}
+    //this.Backgrounds.sort((a, b) => a.z - b.z);
 
 
     if (!this.ms.isDebug)

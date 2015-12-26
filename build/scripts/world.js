@@ -35,12 +35,12 @@ var World = (function () {
         this.bounds = new Rectangle(Math.min.apply(null, this.Footholds.map(function (x) { return x.rect.x1; })), Math.min.apply(null, this.Footholds.map(function (x) { return x.rect.y1; })), Math.max.apply(null, this.Footholds.map(function (x) { return x.rect.x2; })), Math.max.apply(null, this.Footholds.map(function (x) { return x.rect.y2; })));
         this.ms.player.moveToPortal(this.targetPortal);
         this.ms.camera.moveToPlayer();
-        for (var key in mapData.back) {
-            var item = mapData.back[key];
-            var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
-            this.Backgrounds.push(back);
-        }
-        this.Backgrounds.sort(function (a, b) { return a.z - b.z; });
+        //for (var key in mapData.back) {
+        //  var item = mapData.back[key];
+        //  var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
+        //  this.Backgrounds.push(back);
+        //}
+        //this.Backgrounds.sort((a, b) => a.z - b.z);
         if (!this.ms.isDebug)
             for (var key in mapData) {
                 var layer = mapData[key];
