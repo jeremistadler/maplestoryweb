@@ -52,6 +52,15 @@ var Texture = (function () {
             }
         }
     };
+    Texture.prototype.createFlippedImage = function () {
+        this.flippedImage = document.createElement('canvas');
+        this.flippedImage.width = this.image.width;
+        this.flippedImage.height = this.image.height;
+        var ctx = this.flippedImage.getContext('2d');
+        ctx.scale(-1, 1);
+        ctx.translate(-this.flippedImage.width, 0);
+        ctx.drawImage(this.image, 0, 0);
+    };
     Texture.prototype.draw = function (ctx, posX, posY, flip) {
         if (this.hasError) {
             ctx.fillStyle = 'rgba(200, 0, 0, 0.2)';
@@ -73,13 +82,9 @@ var Texture = (function () {
         //    posY + this.image.height < this.ms.camera.boundsTop
         //    ) return;
         if (flip) {
-            ctx.save();
-            var offset = this.ms.camera.targetX + this.ms.camera.width * 0.5;
-            ctx.translate(offset, 0);
-            ctx.scale(-1, 1);
-            ctx.translate(-offset, 0);
-            ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
-            ctx.restore();
+            if (!this.flippedImage)
+                this.createFlippedImage();
+            ctx.drawImage(this.flippedImage, posX, posY, this.image.width, this.image.height);
         }
         else {
             ctx.drawImage(this.image, posX, posY, this.image.width, this.image.height);
