@@ -134,9 +134,9 @@ var Player = (function () {
         this.ms.game.ctx.moveTo(this.Position.x, this.Position.y + 5);
         this.ms.game.ctx.lineTo(this.Position.x, this.Position.y - 5);
         this.ms.game.ctx.stroke();
-        this.ms.game.ctx.fillStyle = 'black';
-        this.ms.game.ctx.textAlign = 'center';
-        this.ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x, this.Position.y + 15);
+        //this.ms.game.ctx.fillStyle = 'black';
+        //this.ms.game.ctx.textAlign = 'center';
+        //this.ms.game.ctx.fillText('x: ' + Math.round(this.Position.x) + ', y: ' + Math.round(this.Position.y), this.Position.x, this.Position.y + 15);
     };
     return Player;
 })();

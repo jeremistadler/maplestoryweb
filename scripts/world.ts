@@ -42,8 +42,8 @@ class World {
 
     for (var key in mapData.back) {
       var item = mapData.back[key];
-      //var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
-      //this.Backgrounds.push(back);
+      var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
+      this.Backgrounds.push(back);
     }
 
     this.Backgrounds.sort((a, b) => b.z - a.z);

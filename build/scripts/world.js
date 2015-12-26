@@ -35,6 +35,8 @@ var World = (function () {
         this.ms.camera.moveToPlayer();
         for (var key in mapData.back) {
             var item = mapData.back[key];
+            var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
+            this.Backgrounds.push(back);
         }
         this.Backgrounds.sort(function (a, b) { return b.z - a.z; });
         if (!this.ms.isDebug)

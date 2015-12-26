@@ -16,6 +16,7 @@ var BackgroundTile = (function () {
     }
     BackgroundTile.LoadBackground = function (ms, item, z) {
         var bg = new BackgroundTile(ms);
+        // Todo, if item.ani == true then use Map/Ani/ instead of Map/Back/
         bg.Tex = new Texture(ms, ms.http.baseUrl + 'Map/Back/' + item.bS + '.img/back/' + item.no + '.png');
         bg.position = new Vector(item.x, item.y);
         bg.origin = new Vector(0, 0);
@@ -24,6 +25,7 @@ var BackgroundTile = (function () {
         bg.Type = item.type;
         bg.flip = item.flip > 0;
         bg.z = z;
+        // Todo, if item.front then add to foreground layer
         return bg;
     };
     BackgroundTile.prototype.draw = function (ctx) {
@@ -33,32 +35,18 @@ var BackgroundTile = (function () {
         var y = this.position.y; // + 300 + ((this.R.y * (-this.ms.camera.centerY + 300)) / 100);
         switch (this.Type) {
             case BackgroundType.Regular:
-                this.Tex.draw(ctx, x, y, this.flip);
+                for (var x_1 = this.R.x; x_1 < 30000; x_1 += this.position.x) {
+                    this.Tex.draw(ctx, x_1, y, this.flip);
+                }
                 break;
             case BackgroundType.HorizontalCopies:
+                this.ms.game.ctx.setTransform(1, 0, 0, 1, 0, 0);
                 this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, false);
+                this.ms.camera.draw();
                 break;
             case BackgroundType.HorizontalMovingCopies:
-                x += (1422145382000 - this.ms.game.totalGameTime) * this.R.x * 0.004;
+                x += this.R.x * 0.004;
                 this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, false);
-                break;
-            case BackgroundType.VerticalCopies:
-                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, false, true);
-                break;
-            case BackgroundType.VerticalMovingCopies:
-                y += (1422145382000 - this.ms.game.totalGameTime) * this.R.y * 0.004;
-                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, false, true);
-                break;
-            case BackgroundType.HVCopies:
-                //this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, true);
-                break;
-            case BackgroundType.HVCopiesHorizontalMoving:
-                x += (1422145382000 - this.ms.game.totalGameTime) * this.R.x * 0.004;
-                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, true);
-                break;
-            case BackgroundType.HVCopiesVerticalMoving:
-                y += (1422145382000 - this.ms.game.totalGameTime) * this.R.y * 0.004;
-                this.Tex.drawTiled(ctx, x, y, this.C.x, this.C.y, true, true);
                 break;
         }
     };
