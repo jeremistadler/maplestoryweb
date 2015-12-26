@@ -8,6 +8,7 @@ class World {
   loaded: boolean = false;
   size: Size;
   center: Vector = new Vector(0, 0);
+  bounds: Rectangle = new Rectangle(0, 0, 1, 1);
   targetPortal: string;
   mapLoadedEvent: MapleEvent<void> = new MapleEvent<void>();
   mapLoadingEvent: MapleEvent<any> = new MapleEvent<any>();
@@ -36,6 +37,12 @@ class World {
 
     this.Footholds = Foothold.loadFootholds(mapData.foothold);
     this.portals = Portal.loadPortals(this.ms, mapData.portal);
+    this.bounds = new Rectangle(
+      Math.min.apply(null, this.Footholds.map(x => x.rect.x1)),
+      Math.min.apply(null, this.Footholds.map(x => x.rect.y1)),
+      Math.max.apply(null, this.Footholds.map(x => x.rect.x2)),
+      Math.max.apply(null, this.Footholds.map(x => x.rect.y2))
+    );
 
     this.ms.player.moveToPortal(this.targetPortal);
     this.ms.camera.moveToPlayer();
@@ -46,7 +53,7 @@ class World {
       this.Backgrounds.push(back);
     }
 
-    this.Backgrounds.sort((a, b) => b.z - a.z);
+    this.Backgrounds.sort((a, b) => a.z - b.z);
 
 
     if (!this.ms.isDebug)

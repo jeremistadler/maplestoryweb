@@ -7,6 +7,7 @@ var World = (function () {
         this.LayeredTiles = [];
         this.loaded = false;
         this.center = new Vector(0, 0);
+        this.bounds = new Rectangle(0, 0, 1, 1);
         this.mapLoadedEvent = new MapleEvent();
         this.mapLoadingEvent = new MapleEvent();
         this.mapUnloadingEvent = new MapleEvent();
@@ -31,6 +32,7 @@ var World = (function () {
         this.name = mapData.info.mapMark;
         this.Footholds = Foothold.loadFootholds(mapData.foothold);
         this.portals = Portal.loadPortals(this.ms, mapData.portal);
+        this.bounds = new Rectangle(Math.min.apply(null, this.Footholds.map(function (x) { return x.rect.x1; })), Math.min.apply(null, this.Footholds.map(function (x) { return x.rect.y1; })), Math.max.apply(null, this.Footholds.map(function (x) { return x.rect.x2; })), Math.max.apply(null, this.Footholds.map(function (x) { return x.rect.y2; })));
         this.ms.player.moveToPortal(this.targetPortal);
         this.ms.camera.moveToPlayer();
         for (var key in mapData.back) {
@@ -38,7 +40,7 @@ var World = (function () {
             var back = BackgroundTile.LoadBackground(this.ms, item, parseInt(key));
             this.Backgrounds.push(back);
         }
-        this.Backgrounds.sort(function (a, b) { return b.z - a.z; });
+        this.Backgrounds.sort(function (a, b) { return a.z - b.z; });
         if (!this.ms.isDebug)
             for (var key in mapData) {
                 var layer = mapData[key];

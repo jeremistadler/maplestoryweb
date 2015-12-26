@@ -36,6 +36,9 @@ class Camera {
         this.targetX = Math.round(this.ms.player.Position.x + -this.width / 2 - this.ms.player.Size.width / 2);
         this.targetY = Math.round(this.ms.player.Position.y + -this.height / 2 - this.ms.player.Size.height / 2);
 
+        this.targetX = Math.max(this.ms.map.bounds.x1, this.targetX);
+        this.targetX = Math.min(this.ms.map.bounds.x2, this.targetX + this.width) - this.width;
+
         if (Math.abs(this.Position.x - this.targetX) < 0.7)
             this.Position.x = this.targetX;
 
