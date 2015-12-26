@@ -36,7 +36,7 @@ var Networking = (function () {
         var _this = this;
         console.log('Received map players: ', players);
         var lookup = {};
-        players.forEach(function (f) { return lookup[f.id] = _this.Players[f.id] || players[f.id]; });
+        players.forEach(function (f) { return lookup[f.id] = _this.Players[f.id] || f; });
         this.Players = lookup;
     };
     Networking.prototype.onMyInfoRecived = function (info) {

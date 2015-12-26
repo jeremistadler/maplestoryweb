@@ -59,7 +59,7 @@ class Networking {
     console.log('Received map players: ', players)
 
     var lookup: PlayerById = {};
-    players.forEach(f => lookup[f.id] = this.Players[f.id] || players[f.id]);
+    players.forEach(f => lookup[f.id] = this.Players[f.id] || f);
     this.Players = lookup;
   }
 
