@@ -20,6 +20,7 @@ class Player {
   animator: CharacterAnimator;
 
   isInAir: boolean = false;
+  flipped: boolean = false;
   touchingFoothold: Foothold = null;
 
   constructor(private ms: IEngine) { }
@@ -125,8 +126,6 @@ class Player {
     var nextY = this.Position.y + this.Velocity.y * this.ms.game.frameTime * 0.05;
 
     if (!this.isInAir || this.Velocity.y > 0) {
-
-
       for (var i = 0; i < this.ms.map.Footholds.length; i++) {
         var intersection = this.ms.map.Footholds[i].getIntersection(this.Position.x, this.Position.y - 1 - (nextY - this.Position.y) * 3, nextX, nextY + 1);
         if (!isNaN(intersection)) {
@@ -137,6 +136,9 @@ class Player {
         }
       }
     }
+
+    if (this.Velocity.x < 0) this.flipped = false;
+    if (this.Velocity.x > 0) this.flipped = true;
 
     this.Position.x = nextX;
     this.Position.y = nextY;
@@ -149,11 +151,11 @@ class Player {
 
   draw() {
     if (this.isInAir || this.Velocity.y > 0)
-      this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'jump', this.ms.game.frameTime);
+      this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.flipped, 'jump', this.ms.game.frameTime);
     else if (this.Velocity.x != 0)
-      this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'walk1', this.ms.game.frameTime * Math.abs(this.Velocity.x / 3));
+      this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.flipped, 'walk1', this.ms.game.frameTime * Math.abs(this.Velocity.x / 3));
     else
-      this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'stand1', this.ms.game.frameTime);
+      this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.flipped, 'stand1', this.ms.game.frameTime);
 
     this.ms.game.ctx.beginPath();
     this.ms.game.ctx.strokeStyle = "black";

@@ -15,6 +15,7 @@ var Player = (function () {
     function Player(ms) {
         this.ms = ms;
         this.isInAir = false;
+        this.flipped = false;
         this.touchingFoothold = null;
     }
     Player.prototype.init = function () {
@@ -113,6 +114,10 @@ var Player = (function () {
                 }
             }
         }
+        if (this.Velocity.x < 0)
+            this.flipped = false;
+        if (this.Velocity.x > 0)
+            this.flipped = true;
         this.Position.x = nextX;
         this.Position.y = nextY;
         if (this.Position.y > 5000) {
@@ -122,11 +127,11 @@ var Player = (function () {
     };
     Player.prototype.draw = function () {
         if (this.isInAir || this.Velocity.y > 0)
-            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'jump', this.ms.game.frameTime);
+            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.flipped, 'jump', this.ms.game.frameTime);
         else if (this.Velocity.x != 0)
-            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'walk1', this.ms.game.frameTime * Math.abs(this.Velocity.x / 3));
+            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.flipped, 'walk1', this.ms.game.frameTime * Math.abs(this.Velocity.x / 3));
         else
-            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.Velocity.x > 0, 'stand1', this.ms.game.frameTime);
+            this.animator.draw(this.ms.game.ctx, this.Position.x, this.Position.y, this.flipped, 'stand1', this.ms.game.frameTime);
         this.ms.game.ctx.beginPath();
         this.ms.game.ctx.strokeStyle = "black";
         this.ms.game.ctx.moveTo(this.Position.x - 5, this.Position.y);
