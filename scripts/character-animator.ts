@@ -9,7 +9,7 @@ class CharacterAnimationFrame {
   public maps: { [name: string]: Vector } = {};
 
   constructor(private ms: IEngine, data, id, path, defaultDelay) {
-    this.frameLength = data.delay || defaultDelay;
+    this.frameLength = data.delay || defaultDelay || 300;
     this.originalFrameLength = defaultDelay;
     this.tex = new Texture(ms, ms.http.baseUrl + path + '.png');
     this.offset = new Vector(data.origin.x, data.origin.y);
@@ -48,10 +48,23 @@ class CharacterPart {
     var topLeftX = x - frame.offset.x;
     var topLeftY = y - frame.offset.y;
 
-    if (frame.z == "arm") {
-        topLeftX += 6 + frame.maps["hand"].x;
-        topLeftY -= 15 + frame.maps["hand"].y;
+    var bodyMap = {
+      neck: { x: 0, y: -30 },
+      hand: { x: 10, y: -15 },
+      navel: { x: 0, y: 5 }
     }
+
+    var bodypartMap = {
+      arm: { x: 0, y: -30 },
+      body: { x: 10, y: -15 },
+      head: { x: 0, y: 5 }
+    }
+
+    var aa = bodypartMap[frame.z];
+    if (!aa) debugger;
+
+    topLeftX += aa.x;
+    topLeftY += aa.y;
 
     frame.tex.draw(ctx, topLeftX, topLeftY, flip);
   }
@@ -60,6 +73,8 @@ class CharacterPart {
 class CharacterAnimation {
   parts: CharacterPart[] = [];
   loaded: boolean = false;
+
+  constructor(public name: string){}
 
   draw(frameTime: number, ctx: CanvasRenderingContext2D, x: number, y: number, flip: boolean) {
     if (!this.loaded) return;
@@ -73,32 +88,41 @@ class CharacterAnimator {
   loaded: boolean = false;
   animations: { [name: string]: CharacterAnimation } = {};
 
-  constructor(private ms: IEngine, path: string, animationNames: string[]) {
-    for (var i = 0; i < animationNames.length; i++)
-      this.loadAnimation(path, animationNames[i]);
+  constructor(private ms: IEngine, paths: string[], animationNames: string[]) {
+    for (var i = 0; i < animationNames.length; i++){
+      var animation = new CharacterAnimation(animationNames[i]);
+      this.animations[animationNames[i]] = animation;
+
+      for (let q = 0; q < paths.length; q++) {
+        this.loadAnimation(paths[q], animationNames[i]);
+      }
+    }
   }
 
   loadAnimation(basePath: string, animationName: string) {
-    var body = new CharacterPart();
-    var arm = new CharacterPart();
-    var animation = new CharacterAnimation();
-    animation.parts.push(body);
-    animation.parts.push(arm);
-    this.animations[animationName] = animation;
-
     this.ms.http.getJsonPropertyForPath(basePath + '/' + animationName, (data) => {
+      var partLookup = {};
+      var animation = this.animations[animationName];
       for (var key in data) {
         var id = parseInt(key);
-        
+
         if (isNaN(id))
           continue;
 
-        body.frames.push(new CharacterAnimationFrame(this.ms, data[key].body, id, basePath + '/' + animationName + "/" + key + "/body", data[key].delay));
-        arm.frames.push(new CharacterAnimationFrame(this.ms, data[key].arm, id, basePath + '/' + animationName + "/" + key + "/arm", data[key].delay));
+        for (var partName in data[key]) {
+          if (typeof data[key][partName] !== 'object') continue;
+          var part = partLookup[partName];
+          if (!part){
+            part = new CharacterPart();
+            partLookup[partName] = part;
+            animation.parts.push(part);
+          }
+          part.frames.push(new CharacterAnimationFrame(this.ms, data[key][partName], id, basePath + '/' + animationName + "/" + key + "/" + partName, data[key].delay));
+        }
       }
 
-      body.frames.sort((a, b) => b.id - a.id);
-      arm.frames.sort((a, b) => b.id - a.id);
+      for (let i = 0; i < animation.parts.length; i++)
+        animation.parts[i].frames.sort((a, b) => b.id - a.id);
 
       animation.loaded = true;
     });

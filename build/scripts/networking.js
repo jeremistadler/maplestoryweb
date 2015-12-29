@@ -10,6 +10,8 @@ var Networking = (function () {
     Networking.prototype.init = function () {
         var _this = this;
         if (this.ms.isDebug)
+            return;
+        if (this.ms.isDebug)
             this.socket = io('http://localhost:3000', { 'transports': ['websocket', 'polling'] });
         else
             this.socket = io('http://maplestoryserver.jeremi.se:3000', { 'transports': ['websocket', 'polling'] });

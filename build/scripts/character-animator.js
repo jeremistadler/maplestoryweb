@@ -2,7 +2,7 @@ var CharacterAnimationFrame = (function () {
     function CharacterAnimationFrame(ms, data, id, path, defaultDelay) {
         this.ms = ms;
         this.maps = {};
-        this.frameLength = data.delay || defaultDelay;
+        this.frameLength = data.delay || defaultDelay || 300;
         this.originalFrameLength = defaultDelay;
         this.tex = new Texture(ms, ms.http.baseUrl + path + '.png');
         this.offset = new Vector(data.origin.x, data.origin.y);
@@ -37,16 +37,28 @@ var CharacterPart = (function () {
         var frame = this.frames[this.currentFrame];
         var topLeftX = x - frame.offset.x;
         var topLeftY = y - frame.offset.y;
-        if (frame.z == "arm") {
-            topLeftX += 6 + frame.maps["hand"].x;
-            topLeftY -= 15 + frame.maps["hand"].y;
-        }
+        var bodyMap = {
+            neck: { x: 0, y: -30 },
+            hand: { x: 10, y: -15 },
+            navel: { x: 0, y: 5 }
+        };
+        var bodypartMap = {
+            arm: { x: 0, y: -30 },
+            body: { x: 10, y: -15 },
+            head: { x: 0, y: 5 }
+        };
+        var aa = bodypartMap[frame.z];
+        if (!aa)
+            debugger;
+        topLeftX += aa.x;
+        topLeftY += aa.y;
         frame.tex.draw(ctx, topLeftX, topLeftY, flip);
     };
     return CharacterPart;
 })();
 var CharacterAnimation = (function () {
-    function CharacterAnimation() {
+    function CharacterAnimation(name) {
+        this.name = name;
         this.parts = [];
         this.loaded = false;
     }
@@ -59,31 +71,41 @@ var CharacterAnimation = (function () {
     return CharacterAnimation;
 })();
 var CharacterAnimator = (function () {
-    function CharacterAnimator(ms, path, animationNames) {
+    function CharacterAnimator(ms, paths, animationNames) {
         this.ms = ms;
         this.loaded = false;
         this.animations = {};
-        for (var i = 0; i < animationNames.length; i++)
-            this.loadAnimation(path, animationNames[i]);
+        for (var i = 0; i < animationNames.length; i++) {
+            var animation = new CharacterAnimation(animationNames[i]);
+            this.animations[animationNames[i]] = animation;
+            for (var q = 0; q < paths.length; q++) {
+                this.loadAnimation(paths[q], animationNames[i]);
+            }
+        }
     }
     CharacterAnimator.prototype.loadAnimation = function (basePath, animationName) {
         var _this = this;
-        var body = new CharacterPart();
-        var arm = new CharacterPart();
-        var animation = new CharacterAnimation();
-        animation.parts.push(body);
-        animation.parts.push(arm);
-        this.animations[animationName] = animation;
         this.ms.http.getJsonPropertyForPath(basePath + '/' + animationName, function (data) {
+            var partLookup = {};
+            var animation = _this.animations[animationName];
             for (var key in data) {
                 var id = parseInt(key);
                 if (isNaN(id))
                     continue;
-                body.frames.push(new CharacterAnimationFrame(_this.ms, data[key].body, id, basePath + '/' + animationName + "/" + key + "/body", data[key].delay));
-                arm.frames.push(new CharacterAnimationFrame(_this.ms, data[key].arm, id, basePath + '/' + animationName + "/" + key + "/arm", data[key].delay));
+                for (var partName in data[key]) {
+                    if (typeof data[key][partName] !== 'object')
+                        continue;
+                    var part = partLookup[partName];
+                    if (!part) {
+                        part = new CharacterPart();
+                        partLookup[partName] = part;
+                        animation.parts.push(part);
+                    }
+                    part.frames.push(new CharacterAnimationFrame(_this.ms, data[key][partName], id, basePath + '/' + animationName + "/" + key + "/" + partName, data[key].delay));
+                }
             }
-            body.frames.sort(function (a, b) { return b.id - a.id; });
-            arm.frames.sort(function (a, b) { return b.id - a.id; });
+            for (var i = 0; i < animation.parts.length; i++)
+                animation.parts[i].frames.sort(function (a, b) { return b.id - a.id; });
             animation.loaded = true;
         });
     };

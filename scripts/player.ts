@@ -30,7 +30,7 @@ class Player {
     this.Velocity = new Vector(0, 0);
     this.Size = new Size(10, 70);
     this.isInAir = true;
-    this.animator = new CharacterAnimator(this.ms, 'Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
+    this.animator = new CharacterAnimator(this.ms, ['Character/00002000.img', 'Character/00012000.img'], ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
 
     window.onkeydown = (e) => this.onKeyDown(e);
     window.onkeyup = (e) => this.onKeyUp(e);

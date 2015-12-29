@@ -26,6 +26,8 @@ class Networking {
   constructor(private ms: IEngine) { }
 
   init() {
+    if (this.ms.isDebug) return;
+
     if (this.ms.isDebug)
       this.socket = io('http://localhost:3000', { 'transports': ['websocket', 'polling'] });
     else
