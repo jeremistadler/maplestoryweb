@@ -39,7 +39,7 @@ class Networking {
     this.socket.on('playerInfo', data => this.onMyInfoRecived(data));
     this.socket.on('disconnect', () => this.disconnected());
 
-    this.animator = new CharacterAnimator(this.ms, 'Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
+    this.animator = new CharacterAnimator(this.ms, ['Character/00002000.img'], ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
 
     this.ms.map.mapLoadedEvent.on(() => this.onLoadedNewMap());
   }

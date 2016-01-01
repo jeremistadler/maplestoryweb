@@ -20,7 +20,7 @@ var Networking = (function () {
         this.socket.on('players', function (data) { return _this.onPlayersRecived(data); });
         this.socket.on('playerInfo', function (data) { return _this.onMyInfoRecived(data); });
         this.socket.on('disconnect', function () { return _this.disconnected(); });
-        this.animator = new CharacterAnimator(this.ms, 'Character/00002000.img', ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
+        this.animator = new CharacterAnimator(this.ms, ['Character/00002000.img'], ['walk1', 'walk2', 'jump', 'stand1', 'stand2']);
         this.ms.map.mapLoadedEvent.on(function () { return _this.onLoadedNewMap(); });
     };
     Networking.prototype.makeToken = function () {
