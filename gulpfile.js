@@ -3,7 +3,7 @@ var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var eventStream = require('event-stream');
 var connect = require('gulp-connect');
-var nodeserver = require('gulp-develop-server');
+//var nodeserver = require('gulp-develop-server');
 
 gulp.task('scripts', function() {
   var tsProject = ts.createProject('tsconfig.json');
