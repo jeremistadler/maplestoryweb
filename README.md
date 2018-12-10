@@ -13,9 +13,4 @@ Demo: http://maplestoryweb.github.io/maplestoryweb
 Getting started
 ==============
 Make sure you have node and then run:
-
-    npm install
-    gulp
-Then go to http://localhost:8080
-    
-Gulp compiles all the typescript to javascript and runs a webserver.
+`npm start`
